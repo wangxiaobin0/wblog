@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="public/head :: head(搜索)"></head>
+<body class="">
+<div class="page">
+    <div class="flex-fill">
+        <!--响应式顶部菜单-->
+        <div th:replace="public/topbar :: flexTopbar"></div>
+        <div class="my-3 my-md-5">
+            <div class="container">
+                <div class="row mb-3">
+                    <div class="col-3 dropdown d-xl-inline-block d-none">
+                        <div class="card card-profile">
+                            <div class="card-body text-center">
+                                <a href="#" class="nav-link pr-0 leading-none">
+                                    <span class="avatar"
+                                          style="background-image: url(/static/demo/faces/female/25.jpg)"></span>
+                                    <span class="ml-2 d-lg-block">
+										<span class="text-default">Jane Pearson</span>
+									</span>
+                                </a>
+                            </div>
+                            <form action="" method="get" class="card-body">
+                                <div class="col-auto">
+                                    <h2 class="page-title">
+                                        搜索结果
+                                    </h2>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="text-muted text-h5 mt-2">共1001条，耗时10ms</div>
+                                </div>
+                                <div class="hr-text text-blue">分类</div>
+                                <div class="list-group list-group-transparent mb-3">
+                                    <a class="list-group-item list-group-item-action d-flex align-items-center active"
+                                       href="#">
+                                        Java
+                                        <small class="text-muted ml-auto">24</small>
+                                    </a>
+                                    <a class="list-group-item list-group-item-action d-flex align-items-center"
+                                       href="#">
+                                        Html
+                                        <small class="text-muted ml-auto">149</small>
+                                    </a>
+                                    <a class="list-group-item list-group-item-action d-flex align-items-center"
+                                       href="#">
+                                        JavaScript
+                                        <small class="text-muted ml-auto">88</small>
+                                    </a>
+                                    <a class="list-group-item list-group-item-action d-flex align-items-center"
+                                       href="#">
+                                        Toys
+                                        <small class="text-muted ml-auto">54</small>
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-lg-9">
+                        <!--顶部菜单-->
+                        <div th:replace="public/topbar :: topbar"></div>
+                        <div class="card">
+                            <div class="card-body d-flex flex-column">
+                                <div class="empty">
+                                    <div class="empty-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                             stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                            <circle cx="11" cy="11" r="8"></circle>
+                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                        </svg>
+                                    </div>
+                                    <p class="empty-title h3">没有搜索到相关结果</p>
+                                    <div class="empty-action">
+                                        <a href="index.html" class="btn btn-primary">
+                                            返回首页
+                                        </a>
+                                    </div>
+                                </div>
+                                <ul class="list-unstyled d-none">
+
+                                    <li class="mb-5">
+                                        <a href="#">Amazons Super Bowl commercial might contain a clue about where HQ2
+                                            will be</a>
+                                        <p class="mb-1">Eagleeyed viewers of the Super Bowl spotted something most
+                                            people missed in Amazons
+                                            commercial for its Alexa voice assistant Before Alexa lo…</p>
+                                        <div class="row">
+                                            <div class="col text-muted">businessinsider.com</div>
+                                            <div class="col text-muted text-right">2 days ago</div>
+                                        </div>
+                                    </li>
+                                    <li class="mb-5">
+                                        <a href="#">Holiday performance propels Amazon to stellar quarter results</a>
+                                        <p>This story was delivered to BI Intelligence ECommerce Briefing subscribers
+                                            hours before appearing
+                                            on Business Insider To be the first to kno…</p>
+                                        <div class="row">
+                                            <div class="col text-muted">businessinsider.com</div>
+                                            <div class="col text-muted text-right">2 days ago</div>
+                                        </div>
+                                    </li>
+                                    <li class="mb-5">
+                                        <a href="#">12 highpaying jobs Amazons HQ2 will likely bring to its future
+                                            city</a>
+                                        <p class="mb-1">These Amazon jobs all earn over 90000tanleimagesShutterstock</p>
+                                        <div class="row">
+                                            <div class="col text-muted">businessinsider.com</div>
+                                            <div class="col text-muted text-right" title="2018-02-02T12:32:00.000Z">4
+                                                days ago
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="mb-5">
+                                        <a href="http://businessinsider.com/amazon-dominates-online-shopping-2018-2">Amazon
+                                            is tightening its
+                                            iron grip online</a>
+                                        <p class="mb-1">ReutersLindsey Wasson To say Amazon is doing well would be an
+                                            understatement In its
+                                            latest earnings report the company reported 6045 billion…</p>
+                                        <div class="row">
+                                            <div class="col text-muted">businessinsider.com</div>
+                                            <div class="col text-muted text-right" title="2018-02-02T10:45:00.000Z">5
+                                                days ago
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="mb-4">
+                                        <a href="http://businessinsider.com/tough-amazon-interview-questions-you-should-be-prepared-to-answer-2018-1">21
+                                            tough interview questions you may have to answer if you want to work at
+                                            Amazon</a>
+                                        <p class="mb-1">How would you answer Amazon is a peculiar company whats peculiar
+                                            about youAlex
+                                            WongGetty Images</p>
+                                        <div class="row">
+                                            <div class="col text-muted">businessinsider.com</div>
+                                            <div class="col text-muted text-right" title="2018-02-01T11:25:00.000Z">6
+                                                days ago
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="public/footer :: footer"></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="public/head :: head(欢迎使用wblog)"></head>
+<body class="">
+<div class="page">
+    <div class="page-single">
+        <div class="container">
+            <div class="row">
+                <div class="col col-login mx-auto">
+                    <div class="text-center mb-6">
+                        <img src="/static/demo/brand/tabler.svg" class="h-6" alt="">
+                    </div>
+                    <div class="card">
+                        <div class="card-body p-6">
+                            <div class="card-title">创建账户</div>
+                            <div class="form-group">
+                                <label class="form-label">博客名</label>
+                                <input type="text" class="form-control" id="blogName" placeholder="请输入博客名">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">密码</label>
+                                <input type="password" class="form-control" id="password" placeholder="请输入密码">
+                            </div>
+                            <div class="form-footer">
+                                <button type="submit" class="btn btn-primary btn-block" id="register">注册</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/static/assets/js/vendors/jquery-3.2.1.min.js"></script>
+<script>
+    $(function () {
+        $("#register").click(function () {
+            $.ajax({
+                type: "post",
+                url: "/auth/register",
+                data: {
+                    "blogName": $("#blogName").val(),
+                    "password": $("#password").val()
+                },
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function (data) {
+                    // 请求失败函数
+                    console.log("请稍后重试");
+                }
+            })
+        });
+    });
+</script>
+</body>
+</html>

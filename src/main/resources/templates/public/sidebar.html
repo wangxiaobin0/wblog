@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="dropdown d-xl-flex d-none col-md-3" th:fragment="sidebar">
+    <div class="card card-profile">
+        <div class="card-header"
+             style="background-image: url(/static/demo/photos/eberhard-grossgasteiger-311213-500.jpg);"></div>
+        <div class="card-body text-center">
+            <img class="card-profile-img" src="../../static/demo/faces/female/25.jpg" th:src="@{/static/demo/faces/female/25.jpg}">
+            <h3 class="mb-3">Jane Pearson</h3>
+            <p class="mb-4">
+                这个家伙很懒,什么也没有留下
+            </p>
+            <ul class="social-links list-inline mb-0 mt-2">
+                <li class="list-inline-item">
+                    <a href="javascript:void(0)" title="GitHub" data-toggle="tooltip"><i
+                            class="fa fa-github"></i></a>
+                </li>
+                <li class="list-inline-item">
+                    <a href="javascript:void(0)" title="QQ" data-toggle="tooltip"><i
+                            class="fa fa-qq"></i></a>
+                </li>
+                <li class="list-inline-item">
+                    <a href="javascript:void(0)" title="123456@qq.com" data-toggle="tooltip"><i
+                            class="fa fa-envelope"></i></a>
+                </li>
+                <li class="list-inline-item">
+                    <a href="javascript:void(0)" title="关注我" data-toggle="tooltip"><i
+                            class="fa fa-wechat"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

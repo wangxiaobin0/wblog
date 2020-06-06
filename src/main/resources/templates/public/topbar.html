@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="header py-4  toggle d-xl-none" th:fragment="flexTopbar">
+    <div class="container">
+        <div class="d-flex">
+            <div class="d-flex order-lg-1 mr-auto">
+                <a href="#" class="nav-link pr-0 leading-none">
+                    <span class="avatar" style="background-image: url(/static/demo/faces/female/25.jpg)"></span>
+                    <span class="ml-2 d-lg-block">
+								<span class="text-default">Jane Pearson</span>
+							</span>
+                </a>
+            </div>
+            <a href="#" class="header-toggler d-lg-none ml-3 ml-lg-0" data-toggle="collapse"
+               data-target="#headerMenuCollapse">
+                <span class="header-toggler-icon"></span>
+            </a>
+        </div>
+    </div>
+</div>
+<div class="card collapse d-lg-flex" id="headerMenuCollapse" th:fragment="topbar">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-3 ml-auto">
+                <form class="input-icon my-3 my-lg-0" action="../search.html" th:action="@{/search}">
+                    <input type="search" class="form-control header-search"
+                           placeholder="Search&hellip;"
+                           tabindex="1">
+                    <div class="input-icon-addon">
+                        <i class="fe fe-search"></i>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg order-lg-first">
+                <ul class="nav nav-tabs border-0 flex-column flex-lg-row">
+                    <li class="nav-item">
+                        <a href="../index.html" class="nav-link" th:href="@{/}">
+                            <i class="fe fe-home"></i>
+                            首页
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" th:href="@{/column}">
+                            <i class="fe fe-tag"></i>
+                            专栏
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../archive.html" class="nav-link" th:href="@{/archive}">
+                            <i class="fe fe-folder"></i>
+                            归档
+                        </a>
+                    </li>
+                    <li class="nav-item toggle d-lg-none">
+                        <a href="#" class="nav-link">
+                            <i class="fe fe-message-circle"></i>
+                            联系我
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

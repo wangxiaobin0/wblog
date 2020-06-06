@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Content-Language" content="en"/>
+    <meta name="msapplication-TileColor" content="#2d89ef">
+    <meta name="theme-color" content="#4188c9">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <title>新增博客</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,500,500i,600,600i,700,700i&amp;subset=latin-ext">
+    <link href="/static/assets/editor/css/style.css" rel="stylesheet"/>
+    <link href="/static/assets/editor/css/editormd.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/static/assets/editor/lib/codemirror/codemirror.min.css"/>
+    <link href="/static/assets/css/dashboard.css" rel="stylesheet"/>
+</head>
+<body class="">
+<div class="page">
+    <div class="flex-fill">
+        <div th:replace="public/menu :: topbar"></div>
+        <div th:replace="public/menu :: menu(1)"></div>
+        <div class="my-3 my-md-5">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <form action="">
+                                    <div class="form-group">
+                                        <div class="row align-items-center">
+                                            <label class="col-sm-1">标题:</label>
+                                            <div class="col-sm-11">
+                                                <input type="text" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row align-items-center">
+                                            <label class="col-sm-1">标签</label>
+                                            <div class="col-sm-11">
+                                                <input type="text" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="editor"></div>
+                                    <div class="btn-list mt-4 text-right">
+                                        <button type="button" class="btn btn-secondary btn-space">存草稿</button>
+                                        <button type="submit" class="btn btn-primary btn-space">&nbsp;&nbsp;&nbsp;发布&nbsp;&nbsp;&nbsp;</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="admin/dashboard :: footer"></div>
+</div>
+<script src="/static/assets/js/require.min.js"></script>
+<script src="/static/assets/js/dashboard.js"></script>
+<script>
+    requirejs.config({
+        baseUrl: '/static/assets/editor/',
+        paths: {
+            jquery: "/static/assets/editor/js/jquery.min",
+            marked: "/static/assets/editor/lib/marked.min",
+            prettify: "/static/assets/editor/lib/prettify.min",
+            raphael: "/static/assets/editor/lib/raphael.min",
+            underscore: "/static/assets/editor/lib/underscore.min",
+            flowchart: "/static/assets/editor/lib/flowchart.min",
+            jqueryflowchart: "/static/assets/editor/lib/jquery.flowchart.min",
+            sequenceDiagram: "/static/assets/editor/lib/sequence-diagram.min",
+            katex: "//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.1.1/katex.min",
+            editormd: "/static/assets/editor/js/editormd.amd" // Using Editor.md amd version for Require.js
+        }
+    });
+    var deps = [
+        "editormd",
+        "/static/assets/editor/languages/en.js",
+        "/static/assets/editor/plugins/link-dialog/link-dialog.js",
+        "/static/assets/editor/plugins/reference-link-dialog/reference-link-dialog.js",
+        "/static/assets/editor/plugins/image-dialog/image-dialog.js",
+        "/static/assets/editor/plugins/code-block-dialog/code-block-dialog.js",
+        "/static/assets/editor/plugins/table-dialog/table-dialog.js",
+        "/static/assets/editor/plugins/emoji-dialog/emoji-dialog.js",
+        "/static/assets/editor/plugins/goto-line-dialog/goto-line-dialog.js",
+        "/static/assets/editor/plugins/help-dialog/help-dialog.js",
+        "/static/assets/editor/plugins/html-entities-dialog/html-entities-dialog.js",
+        "/static/assets/editor/plugins/preformatted-text-dialog/preformatted-text-dialog.js"
+    ];
+    var editor;
+
+    var md = "## hello world";
+    require(deps, function (editormd) {
+
+        // if enable codeFold
+        // or <link rel="stylesheet" href="../lib/codemirror/addon/fold/foldgutter.css" />
+        editormd.loadCSS("/static/assets/editor/lib/codemirror/addon/fold/foldgutter");
+
+        $(function () {
+            editor = editormd("editor", {
+                width: "100%",
+                height: 720,
+                path: '/static/assets/editor/lib/',
+                theme: "light",
+                previewTheme: "light",
+                editorTheme: "xq-light",
+                markdown: md,
+                codeFold: true,
+                //syncScrolling : false,
+                saveHTMLToTextarea: true,    // 保存 HTML 到 Textarea
+                searchReplace: true,
+                //watch : false,                // 关闭实时预览
+                htmlDecode: "style,script,iframe|on*",            // 开启 HTML 标签解析，为了安全性，默认不开启
+                toolbar: false,             //关闭工具栏
+                //previewCodeHighlight : false, // 关闭预览 HTML 的代码块高亮，默认开启
+                emoji: true,
+                taskList: true,
+                tocm: true,         // Using [TOCM]
+                tex: true,                   // 开启科学公式TeX语言支持，默认关闭
+                flowChart: true,             // 开启流程图支持，默认关闭
+                sequenceDiagram: true,       // 开启时序/序列图支持，默认关闭,
+                //dialogLockScreen : false,   // 设置弹出层对话框不锁屏，全局通用，默认为true
+                //dialogShowMask : false,     // 设置弹出层对话框显示透明遮罩层，全局通用，默认为true
+                //dialogDraggable : false,    // 设置弹出层对话框不可拖动，全局通用，默认为true
+                //dialogMaskOpacity : 0.4,    // 设置透明遮罩层的透明度，全局通用，默认值为0.1
+                //dialogMaskBgColor : "#000", // 设置透明遮罩层的背景颜色，全局通用，默认为#fff
+                imageUpload: true,
+                imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+                imageUploadURL: "./php/upload.php",
+                onload: function () {
+                    console.log('onload', this);
+                    //this.fullscreen();
+                    //this.unwatch();
+                    //this.watch().fullscreen();
+
+                    //this.setMarkdown("#PHP");
+                    //this.width("100%");
+                    //this.height(480);
+                    //this.resize("100%", 640);
+                }
+            })
+        })
+
+        $("#get-md-btn").bind('click', function () {
+            console.log(editor.getMarkdown());
+        });
+        $("#get-html-btn").bind('click', function () {
+            console.log(editor.getHTML());
+        });
+    })
+</script>
+</body>
+</html>

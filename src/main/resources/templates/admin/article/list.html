@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="public/head :: head(博客列表)"></head>
+<body class="">
+<div class="page">
+	<div class="flex-fill">
+		<div th:replace="public/menu :: topbar"></div>
+		<div th:replace="public/menu :: menu(1)"></div>
+		<div class="my-3 my-md-5">
+			<div class="container">
+				<div class="col-12">
+					<div class="card">
+						<div class="card-header">
+							<h3 class="card-title">所有文章</h3>
+						</div>
+						<div class="table-responsive">
+							<table class="table card-table table-hover text-nowrap">
+								<thead>
+								<tr>
+									<th class="w-1">ID</th>
+									<th>标题</th>
+									<th>标签</th>
+									<th>发表时间</th>
+									<th>访问人数</th>
+									<th>状态</th>
+									<th>操作</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr>
+									<td><span class="text-muted">001401</span></td>
+									<td><a href="invoice.html" class="text-inherit">Java设计模式</a></td>
+									<td>
+										<span class="tag tag-warning">Java</span>
+										<span class="tag tag-indigo">设计模式</span>
+									</td>
+									<td>
+										2020-02-29
+									</td>
+									<td>2</td>
+									<td>
+										<span class="status-icon bg-success"></span> 已发表
+									</td>
+									<td>
+										<a class="icon" href="javascript:void(0)">
+											<i class="fe fe-edit"></i>
+										</a>
+										<a class="icon" href="javascript:void(0)">
+											<i class="fe fe-trash-2"></i>
+										</a>
+									</td>
+								</tr>
+								<tr>
+									<td><span class="text-muted">001416</span></td>
+									<td><a href="invoice.html" class="text-inherit">Spring全家桶 从入门到放弃</a></td>
+									<td>
+										<span class="tag tag-lime">Spring</span>
+										<span class="tag tag-warning">Spring Boot</span>
+										<span class="tag ">Spring Cloud</span>
+									</td>
+									<td>
+										2019-12-31
+									</td>
+									<td>10</td>
+									<td>
+										<span class="status-icon bg-red"></span> 已删除
+									</td>
+									<td>
+										<a class="icon" href="javascript:void(0)">
+											<i class="fe fe-edit"></i>
+										</a>
+										<a class="icon" href="javascript:void(0)">
+											<i class="fe fe-trash-2"></i>
+										</a>
+									</td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:replace="admin/dashboard :: footer"></div>
+</div>
+</body>
+</html>

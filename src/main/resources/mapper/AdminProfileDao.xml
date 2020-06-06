@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wblog.dao.AdminProfileDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.wblog.model.entity.AdminProfileEntity" id="adminProfileMap">
+        <result property="id" column="id"/>
+        <result property="adminId" column="admin_id"/>
+        <result property="avatar" column="avatar"/>
+        <result property="pblogName" column="pblog_name"/>
+        <result property="blogIntroduce" column="blog_introduce"/>
+        <result property="socialWeibo" column="social_weibo"/>
+        <result property="socialWeixin" column="social_weixin"/>
+        <result property="socialGithub" column="social_github"/>
+    </resultMap>
+
+
+</mapper>
