@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.List;
+
 @Configuration
 public class BlogWebMvcConfig implements WebMvcConfigurer {
 
@@ -16,13 +18,12 @@ public class BlogWebMvcConfig implements WebMvcConfigurer {
     @Autowired
     UserRequestInterceptor userRequestInterceptor;
 
-
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         //为后台管理添加请求拦截器
-        registry.addInterceptor(adminRequestInterceptor).addPathPatterns("/admin/**").excludePathPatterns("/admin", "/auth/**", "/error");
+        registry.addInterceptor(adminRequestInterceptor).addPathPatterns("/admin/**").excludePathPatterns("/admin", "/auth/**", "/error", "/favicon.ico");
 
         //为游客访问添加请求拦截器
-        registry.addInterceptor(userRequestInterceptor).addPathPatterns("/**").excludePathPatterns("/admin/**", "/auth/**", "/error");
+        registry.addInterceptor(userRequestInterceptor).addPathPatterns("/**").excludePathPatterns("/admin/**", "/auth/**", "/error", "/favicon.ico");
     }
 }

@@ -12,6 +12,7 @@ public class BaseMetaObjectHandler implements MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
         this.setInsertFieldValByName("createTime", new Date(), metaObject);
         this.setInsertFieldValByName("updateTime", new Date(), metaObject);
+        this.setInsertFieldValByName("time", new Date(), metaObject);
     }
 
     @Override

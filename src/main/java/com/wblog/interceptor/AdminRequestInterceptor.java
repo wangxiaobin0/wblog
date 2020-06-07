@@ -32,7 +32,7 @@ public class AdminRequestInterceptor implements HandlerInterceptor {
         AdminTo adminTo = (AdminTo) session.getAttribute(AuthConstant.SESSION_LOGIN_USER);
 
         if (adminTo == null) {
-            response.sendRedirect(AuthConstant.LOGIN_URL);
+            response.sendRedirect(AuthConstant.LOGIN_URL + request.getRequestURI());
             return false;
         }
         return true;

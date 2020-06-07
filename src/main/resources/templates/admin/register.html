@@ -7,6 +7,13 @@
         <div class="container">
             <div class="row">
                 <div class="col col-login mx-auto">
+                    <div class="alert alert-success" style="display: none" role="alert" id="alert-success">
+                        注册成功
+                    </div>
+                    <div class="alert alert-danger" style="display: none" role="alert" id="alert-fail">
+                        注册失败，请刷新页面后重试
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close"></a>
+                    </div>
                     <div class="text-center mb-6">
                         <img src="/static/demo/brand/tabler.svg" class="h-6" alt="">
                     </div>
@@ -43,15 +50,30 @@
                     "password": $("#password").val()
                 },
                 success: function (data) {
-                    console.log(data);
+                    if (data.code == 200) {
+                        $("#alert-success").fadeIn();
+                        setTimeout(function() {
+                            $("#alert-success").fadeOut();
+                            location.href = "/admin";
+                        }, 1000);
+
+
+                    } else {
+                        $("#alert-fail").fadeIn();
+                        setTimeout(function () {
+                            $("#alert-fail").fadeOut();
+                        }, 800);
+                    }
+
+
                 },
                 error: function (data) {
-                    // 请求失败函数
-                    console.log("请稍后重试");
+                    $("#alert-fail").fadeIn();
                 }
             })
         });
     });
+
 </script>
 </body>
 </html>

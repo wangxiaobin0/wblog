@@ -28,7 +28,7 @@ public class UserEntity implements Serializable {
 	/**
 	 * user_key
 	 */
-	private String key;
+	private String userKey;
 	/**
 	 * 昵称，用于评论等
 	 */

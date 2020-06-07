@@ -12,7 +12,27 @@ public class AuthConstant {
      */
     public static final String SESSION_LOGIN_USER = "SESSION_LOGIN_USER";
 
-    public static final String LOGIN_URL = "http://localhost/admin";
+    /**
+     * 登录链接
+     */
+    public static final String LOGIN_URL = "http://localhost/admin?returnUrl=";
 
-    public static final String USER_KEY = "USER_KEY";
+    /**
+     * 页面重定向
+     */
+    public static final String RETURN_URL = "returnUrl";
+
+    /**
+     * 访客cookie的key
+     */
+    public static final String USER_COOKIE_KEY = "USER_KEY";
+    /**
+     * 访客cookie的domain
+     */
+    public static final String USER_COOKIE_DOMAIN = "";
+
+    /**
+     * 访客cookie生命,30天
+     */
+    public static final Integer USER_COOKIE_MAX_AGE = 60 * 60 * 24 * 30;
 }

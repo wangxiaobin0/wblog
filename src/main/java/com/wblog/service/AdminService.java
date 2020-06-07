@@ -3,6 +3,8 @@ package com.wblog.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.model.entity.AdminEntity;
+import com.wblog.model.to.AdminTo;
+import com.wblog.model.vo.LoginVo;
 import com.wblog.model.vo.RegisterVo;
 
 import java.util.Map;
@@ -18,5 +20,7 @@ public interface AdminService extends IService<AdminEntity> {
     PageUtils queryPage(Map<String, Object> params);
 
     void register(RegisterVo registerVo);
+
+    AdminTo login(LoginVo loginVo);
 }
 
