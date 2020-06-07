@@ -34,12 +34,12 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body">
-                                <form action="">
+                                <form id="postForm" method="post">
                                     <div class="form-group">
                                         <div class="row align-items-center">
                                             <label class="col-sm-1">标题:</label>
                                             <div class="col-sm-11">
-                                                <input type="text" class="form-control">
+                                                <input type="text" class="form-control" name="title" id="title">
                                             </div>
                                         </div>
                                     </div>
@@ -47,14 +47,21 @@
                                         <div class="row align-items-center">
                                             <label class="col-sm-1">标签</label>
                                             <div class="col-sm-11">
-                                                <input type="text" class="form-control">
+                                                <input type="text" class="form-control" name="tag">
                                             </div>
                                         </div>
                                     </div>
                                     <div id="editor"></div>
+                                    <!--html内容-->
+                                    <input type="hidden" name="html" id="html">
+                                    <!--markdown内容-->
+                                    <input type="hidden" name="markdown" id="markdown">
+                                    <!--状态，默认公开-->
+                                    <input type="hidden" name="state" id="state" value="1">
                                     <div class="btn-list mt-4 text-right">
-                                        <button type="button" class="btn btn-secondary btn-space">存草稿</button>
-                                        <button type="submit" class="btn btn-primary btn-space">&nbsp;&nbsp;&nbsp;发布&nbsp;&nbsp;&nbsp;</button>
+                                        <button type="button" class="btn btn-secondary btn-space" onclick="saveDraft()">存草稿</button>
+                                        <button type="button" class="btn btn-info btn-space" onclick="previewArticle()">预览</button>
+                                        <button type="button" class="btn btn-primary btn-space" onclick="postArticle()">&nbsp;&nbsp;&nbsp;发布&nbsp;&nbsp;&nbsp;</button>
                                     </div>
                                 </form>
                             </div>
@@ -100,7 +107,15 @@
     ];
     var editor;
 
-    var md = "## hello world";
+    var md = "## 1.1. 概念\n" +
+        "\n" +
+        "> **`index`\t索引.\t类比数据库**\n" +
+        ">\n" +
+        "> **`Type`\t类型.\t类比表, 保存同类型数据的区域**\n" +
+        ">\n" +
+        "> **`document`\t文档.\t类比表中的一条数据, 每条数据都是一个文档**\n" +
+        ">\n" +
+        "> **`field`\t字段.\t文档中包含的字段. 类比表中的列**";
     require(deps, function (editormd) {
 
         // if enable codeFold
@@ -159,6 +174,40 @@
             console.log(editor.getHTML());
         });
     })
+    function postArticle() {
+        let title = $("#title").val();
+        if (title == null || title == '') {
+            $("#title").val("[[${#dates.format(new java.util.Date().getTime(), 'yyyy-MM-dd hh:mm:ss')}]]");
+        }
+        $("#html").val(editor.getHTML());
+        $("#markdown").val(editor.getMarkdown());
+        $("#postForm").attr('action', '/admin/article');
+        $("#postForm").submit();
+    }
+
+    function previewArticle() {
+        let title = $("#title").val();
+        if (title == null || title == '') {
+            $("#title").val("[[${#dates.format(new java.util.Date().getTime(), 'yyyy-MM-dd hh:mm:ss')}]]");
+        }
+        $("#html").val(editor.getHTML());
+        $("#markdown").val(editor.getMarkdown());
+        $("#postForm").attr('action', '/admin/article/preview');
+        $("#postForm").submit();
+    }
+
+    function saveDraft() {
+        let title = $("#title").val();
+        if (title == null || title == '') {
+            $("#title").val("[[${#dates.format(new java.util.Date().getTime(), 'yyyy-MM-dd HH:mm:ss')}]]");
+        }
+        let $postForm = $("#postForm");
+        $("#html").val(editor.getHTML());
+        $("#markdown").val(editor.getMarkdown());
+        $("#state").val(3);
+        $postForm.attr('action', '/admin/article');
+        $postForm.submit();
+    }
 </script>
 </body>
 </html>

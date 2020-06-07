@@ -12,10 +12,6 @@
                 <img src="/static/demo/brand/tabler.svg" class="header-brand-img" alt="tabler logo">
             </a>
             <div class="d-flex order-lg-2 ml-auto">
-                <div class="nav-item d-none d-md-flex">
-                    <a href="https://github.com/tabler/tabler" class="btn btn-sm btn-outline-primary"
-                       target="_blank">Source code</a>
-                </div>
                 <div class="dropdown d-none d-md-flex">
                     <a class="nav-link icon" data-toggle="dropdown">
                         <i class="fe fe-bell"></i>
@@ -54,8 +50,7 @@
                     <a href="#" class="nav-link pr-0 leading-none" data-toggle="dropdown">
                         <span class="avatar" style="background-image: url(/static/demo/faces/female/25.jpg)"></span>
                         <span class="ml-2 d-none d-lg-block">
-                      <span class="text-default">Jane Pearson</span>
-                      <small class="text-muted d-block mt-1">Administrator</small>
+                      <span class="text-default" th:text="${session.SESSION_LOGIN_USER.blogName}">Jane Pearson</span>
                     </span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
@@ -113,21 +108,25 @@
                            th:classappend="${menu} == 1 ? 'active' : ''" data-toggle="dropdown">
                             <i class="fe fe-folder"></i> 文章管理</a>
                         <div class="dropdown-menu dropdown-menu-arrow">
-                            <a class="dropdown-item " th:href="@{/admin/article/lists}"><i
+                            <a class="dropdown-item " th:href="@{/admin/article/list}"><i
                                     class="fe fe-file"></i>所有文章</a>
                             <a class="dropdown-item " th:href="@{/admin/article}"><i class="fe fe-edit"></i>新增文章</a>
-                            <a class="dropdown-item " th:href="@{/admin/article}"><i
+                            <a class="dropdown-item " th:href="@{/admin/article/list/draft}"><i
                                     class="fe fe-file-plus"></i>草稿箱</a>
-                            <a class="dropdown-item " th:href="@{/admin/article}"><i class="fe fe-trash"></i>回收站</a>
+                            <a class="dropdown-item " th:href="@{/admin/article/list/trash}"><i class="fe fe-trash"></i>回收站</a>
                         </div>
                     </li>
                     <li class="nav-item">
                         <a href="./gallery.html" class="nav-link"
-                           th:classappend="${menu} == 2 ? 'active' : ''"><i class="fe fe-tag"></i> 专栏</a>
+                           th:classappend="${menu} == 2 ? 'active' : ''"><i class="fe fe-column"></i> 专栏</a>
                     </li>
                     <li class="nav-item">
                         <a href="./docs/index.html" class="nav-link"
-                           th:classappend="${menu} == 3 ? 'active' : ''"><i class="fe fe-file-text"></i>
+                           th:classappend="${menu} == 3 ? 'active' : ''"><i class="fe fe-tag"></i>标签</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./docs/index.html" class="nav-link"
+                           th:classappend="${menu} == 4 ? 'active' : ''"><i class="fe fe-file-text"></i>
                             操作记录</a>
                     </li>
                 </ul>

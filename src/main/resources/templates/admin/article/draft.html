@@ -11,7 +11,7 @@
 				<div class="col-12">
 					<div class="card">
 						<div class="card-header">
-							<h3 class="card-title">所有文章</h3>
+							<h3 class="card-title">草稿箱</h3>
 						</div>
 						<div class="table-responsive">
 							<table class="table card-table table-hover text-nowrap">
@@ -28,7 +28,7 @@
 								</thead>
 								<tbody>
 								<tr th:each="item : ${page.list}">
-									<td><span class="text-muted" th:text="${item.id}">001401</span></td>
+									<td><span class="text-muted" th:text="${item.id}">001401<	/span></td>
 									<td><a href="invoice.html" class="text-inherit" th:text="${item.title}">Java设计模式</a></td>
 									<td>
 										<span class="tag tag-warning">Java</span>
@@ -37,18 +37,9 @@
 									<td th:text="${#dates.format(item.updateTime, 'yyyy-MM-dd')}">
 										2020-02-29
 									</td>
-									<td th:text="${item.viewNum}"></td>
-									<td th:if="${item.state} == 1">
-										<span class="status-icon bg-lime"></span> 已发表
-									</td>
-									<td th:if="${item.state} == 2">
-										<span class="status-icon bg-warning"></span> 保密
-									</td>
-									<td th:if="${item.state} == 3">
-										<span class="status-icon bg-info"></span> 草稿箱
-									</td>
-									<td th:if="${item.state} == 4">
-										<span class="status-icon bg-red"></span> 已删除
+									<td>2</td>
+									<td>
+										<span class="status-icon bg-success"></span> 已发表
 									</td>
 									<td>
 										<a class="icon" href="javascript:void(0)">

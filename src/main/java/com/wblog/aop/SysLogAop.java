@@ -101,7 +101,7 @@ public class SysLogAop {
     public void doAfterThrowing(Throwable t) {
         UserLogEntity logEntity = threadLocal.get();
         logEntity.setState(LogStateEnum.FAIL.getCode());
-        logEntity.setStateMessage(t.getMessage());
+        logEntity.setStateMessage(t.getCause().getMessage());
         log.error(logEntity.getClassName() + "." + logEntity.getMethodName()+ "()流程异常{}", t.getMessage());
     }
 
@@ -159,6 +159,7 @@ public class SysLogAop {
         //参数
         Object[] args = joinpoint.getArgs();
         String[] parameterNames = ((MethodSignature) joinpoint.getSignature()).getParameterNames();
+        String parameter = formatParameter(parameterNames, args);
         //交易
         SysLog sysLog = (SysLog) getAnnotation(joinpoint, SysLog.class);
         String business = sysLog.business();
@@ -172,7 +173,7 @@ public class SysLogAop {
         logEntity.setUrl(url);
         logEntity.setClassName(className);
         logEntity.setMethodName(methodName);
-        logEntity.setParameter(formatParameter(parameterNames, args));
+        logEntity.setParameter(parameter.substring(0, parameter.length() > 255 ? 255 : parameter.length()));
         logEntity.setBusiness(business);
         return logEntity;
     }

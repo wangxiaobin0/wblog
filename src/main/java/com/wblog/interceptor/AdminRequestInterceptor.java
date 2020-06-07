@@ -35,6 +35,7 @@ public class AdminRequestInterceptor implements HandlerInterceptor {
             response.sendRedirect(AuthConstant.LOGIN_URL + request.getRequestURI());
             return false;
         }
+        threadLocal.set(adminTo);
         return true;
     }
 
