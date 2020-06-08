@@ -1,15 +1,19 @@
 package com.wblog.model.vo;
 
+import com.wblog.model.entity.TagEntity;
 import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
 
-/**
- * 博客展示Vo
- */
+
 @Data
-public class ArticleShowVo {
+public class ArticleListVo {
+
+    /**
+     * 标题
+     */
+    private Long id;
     /**
      * 标题
      */
@@ -17,7 +21,7 @@ public class ArticleShowVo {
     /**
      * 标签
      */
-    private List<String> tag;
+    private List<TagEntity> tags;
     /**
      * html
      */
@@ -36,25 +40,13 @@ public class ArticleShowVo {
      * 是否置顶。0：否；1：是
      */
     private Boolean top;
-
-    /**
-     * 浏览数
-     */
-    private Long viewNum;
-    /**
-     * 点赞数
-     */
-    private Long thumbUp;
-    /**
-     * 收藏数
-     */
-    private Long collectNum;
     /**
      * 修改时间
      */
     private Date updateTime;
+
     /**
-     *
+     * 剩余时间
      */
-    private Integer sort;
+    private Integer remainTime;
 }

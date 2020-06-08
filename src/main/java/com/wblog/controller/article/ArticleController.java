@@ -35,9 +35,9 @@ public class ArticleController {
     /**
      * 列表
      */
-    @SysLog(business = "查询所有文章")
-    @GetMapping("/list")
-    public String listAll(@RequestParam Map<String, Object> params, Model model){
+    @SysLog(business = "查询已发布文章")
+    @GetMapping("/publish")
+    public String listPublish(@RequestParam Map<String, Object> params, Model model){
         PageUtils page = articleService.queryPage(params);
         model.addAttribute("page", page);
         return "admin/article/list";
@@ -49,26 +49,25 @@ public class ArticleController {
      * @return
      */
     @SysLog(business = "查询草稿箱列表")
-    @GetMapping("/list/draft")
-    public String list(@RequestParam Map<String, Object> params, Model model) {
-
+    @GetMapping("/draft")
+    public String listDraft(@RequestParam Map<String, Object> params, Model model) {
         PageUtils page = articleService.listDraft(params);
         model.addAttribute("page", page);
         return "admin/article/draft";
     }
 
     /**
-     * 已删除列表
+     * 回收站
      * @param params
      * @return
      */
     @SysLog(business = "查询回收站列表")
-    @GetMapping("/list/trash")
+    @GetMapping("/trash")
     public String listTrash(@RequestParam Map<String, Object> params, Model model) {
 
         PageUtils page = articleService.listTrash(params);
         model.addAttribute("page", page);
-        return "admin/article/draft";
+        return "admin/article/trash";
     }
 
     /**
@@ -83,8 +82,7 @@ public class ArticleController {
 
     @PostMapping("/preview")
     public String preview(ArticlePostVo articlePostVo, Model model){
-        ArticleShowVo showVo = new ArticleShowVo();
-        BeanUtils.copyProperties(articlePostVo, showVo);
+        ArticleShowVo showVo = articleService.preview(articlePostVo);
         model.addAttribute("item", showVo);
         return "item";
     }
@@ -96,7 +94,25 @@ public class ArticleController {
     @PostMapping
     public String save(ArticlePostVo article){
 		articleService.save(article);
-        return "redirect:/admin/article/list";
+        return "redirect:/admin/article/publish";
+    }
+
+    @SysLog(business = "修改博客置顶状态")
+    @PostMapping("/top")
+    @ResponseBody
+    public R updateTop(@RequestParam("articleId") Long id,
+                            @RequestParam("top") Boolean top){
+        articleService.updateTop(id, top);
+        return R.ok();
+    }
+
+    @SysLog(business = "修改博客状态")
+    @PostMapping("/state")
+    @ResponseBody
+    public R updateState(@RequestParam("articleId") Long id,
+                       @RequestParam("state") Integer state){
+        articleService.updateState(id, state);
+        return R.ok();
     }
 
     /**

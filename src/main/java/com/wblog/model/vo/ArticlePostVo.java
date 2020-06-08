@@ -28,5 +28,5 @@ public class ArticlePostVo {
     /**
      * 状态
      */
-    private String state;
+    private Integer state;
 }

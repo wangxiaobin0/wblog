@@ -3,6 +3,8 @@ package com.wblog.service.impl;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.common.utils.Query;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -25,5 +27,12 @@ public class TagServiceImpl extends ServiceImpl<TagDao, TagEntity> implements Ta
 
         return new PageUtils(page);
     }
+
+    @Override
+    public List<TagEntity> listTagByArticleId(Long articleId) {
+        List<TagEntity> tags = this.baseMapper.listTagByArticleId(articleId);
+        return tags;
+    }
+
 
 }

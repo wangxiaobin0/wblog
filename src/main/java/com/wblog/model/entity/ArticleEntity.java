@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -44,7 +46,7 @@ public class ArticleEntity implements Serializable {
 	/**
 	 * 状态。1：公开；2：保密；3：草稿箱；4：回收站
 	 */
-	private String state;
+	private Integer state;
 	/**
 	 * 是否置顶。0：否；1：是
 	 */
@@ -75,5 +77,8 @@ public class ArticleEntity implements Serializable {
 	 * 
 	 */
 	private Integer sort;
+
+	@TableField(exist = false)
+	private List<TagEntity> tags;
 
 }

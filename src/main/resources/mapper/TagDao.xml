@@ -12,5 +12,11 @@
         <result property="state" column="state"/>
     </resultMap>
 
-
+    <select id="listTagByArticleId" parameterType="java.lang.Long" resultType="TagEntity">
+        select bt.id as id, bt.name as name
+        from blog_tag bt
+            left join blog_article_tag bat on bt.id = bat.tag_id
+            left join blog_article ba on ba.id = bat.article_id
+        where ba.id = #{articleId}
+    </select>
 </mapper>
