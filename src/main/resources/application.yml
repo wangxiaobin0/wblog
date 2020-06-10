@@ -21,3 +21,17 @@ mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true
+blog:
+  #对象存储
+  oss:
+    access-key-id: LTAI4FmzDBZByNuokPMs7QwC
+    bucket: xbwang
+    endpoint: oss-cn-beijing.aliyuncs.com
+    access-key-secret: spbY2KlKJjoI3wk0CpPTr7eEv4X90M
+  #异步编排线程池配置
+  thread:
+    core-pool-size: 50
+    max-pool-size: 80
+    keep-alive-time: 10
+    time-unit: seconds
+    queue-capacity: 100

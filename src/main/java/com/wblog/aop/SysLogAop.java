@@ -2,6 +2,7 @@ package com.wblog.aop;
 
 import com.wblog.annotation.SysLog;
 import com.wblog.common.enume.LogStateEnum;
+import com.wblog.common.utils.R;
 import com.wblog.interceptor.AdminRequestInterceptor;
 import com.wblog.interceptor.UserRequestInterceptor;
 import com.wblog.model.entity.UserLogEntity;
@@ -16,6 +17,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -66,6 +68,10 @@ public class SysLogAop {
             //异常
             doAfterThrowing(throwable);
             throwable.printStackTrace();
+            Annotation annotation = getAnnotation(pjp, ResponseBody.class);
+            if (annotation != null) {
+                return R.error();
+            }
         } finally {
             //最终通知
             adAfter();
@@ -101,7 +107,7 @@ public class SysLogAop {
     public void doAfterThrowing(Throwable t) {
         UserLogEntity logEntity = threadLocal.get();
         logEntity.setState(LogStateEnum.FAIL.getCode());
-        logEntity.setStateMessage(t.getCause().getMessage());
+        logEntity.setStateMessage(t !=null && t.getCause() !=null ? t.getCause().getMessage() : "");
         log.error(logEntity.getClassName() + "." + logEntity.getMethodName()+ "()流程异常{}", t.getMessage());
     }
 

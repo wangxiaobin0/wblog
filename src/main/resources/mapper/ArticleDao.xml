@@ -16,9 +16,14 @@
         <result property="thumbUp" column="thumb_up"/>
         <result property="collectNum" column="collect_num"/>
         <result property="createTime" column="create_time"/>
-        <result property="baUpdateTime" column="ba_update_time"/>
-        <result property="baSort" column="ba_sort"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="sort" column="sort"/>
     </resultMap>
 
+    <select id="queryArticleByColumnId" parameterType="Long" resultType="ArticleEntity">
+        select *
+    from blog_article ba, blog_column_item bci
+    where ba.id = bci.article_id and bci.column_id=#{columnId}
+    </select>
 
 </mapper>

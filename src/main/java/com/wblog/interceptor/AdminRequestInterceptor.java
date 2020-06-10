@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession;
 @Configuration
 public class AdminRequestInterceptor implements HandlerInterceptor {
 
-    public static final ThreadLocal<AdminTo> threadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<AdminTo> threadLocal = new ThreadLocal<>();
 
     /**
      * 前置拦截

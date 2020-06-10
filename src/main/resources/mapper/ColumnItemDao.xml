@@ -10,8 +10,18 @@
         <result property="columnName" column="column_name"/>
         <result property="articleId" column="article_id"/>
         <result property="articleTitle" column="article_title"/>
-        <result property="addTime" column="add_time"/>
+        <result property="sort" column="sort"/>
     </resultMap>
 
-
+    <select id="getColumnItems" parameterType="java.lang.Long" resultType="com.wblog.model.vo.ColumnItemVo">
+        select
+            bci.id as id,
+            ba.id as articleId,
+            ba.title as articleTitle,
+            bci.sort as sort,
+            ba.create_time as createTime,
+            ba.collect_num as collectNum
+        from blog_column_item bci, blog_article ba
+        where bci.article_id = ba.id and bci.column_id = #{columnId}
+    </select>
 </mapper>

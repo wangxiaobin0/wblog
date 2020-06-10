@@ -120,8 +120,7 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a href="./gallery.html" class="nav-link"
-                           th:classappend="${menu} == 2 ? 'active' : ''"><i class="fe fe-column"></i> 专栏</a>
+                        <a class="nav-link" th:href="@{/admin/column/list}" th:classappend="${menu} == 2 ? 'active' : ''"><i class="fe fe-star"></i> 专栏</a>
                     </li>
                     <li class="nav-item">
                         <a href="./docs/index.html" class="nav-link"

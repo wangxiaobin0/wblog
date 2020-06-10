@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head xmlns:th="http://www.thymeleaf.org">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="modal modal-blur fade" id="modal-report" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">
+                    <div class="mb-3 float-right">
+                        <div class="input-icon">
+                            <input type="text" class="form-control form-control-rounded" placeholder="请输入关键字…">
+                            <span class="input-icon-addon">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                </span>
+                        </div>
+                        <div class="alert alert-success col-login float-right" role="alert" style="position:absolute;zIndex:-1;right: 50px;display: none" id="alert-success">
+                            修改成功
+                        </div>
+                        <div class="alert alert-error col-login float-right" style="position:absolute;zIndex:-1;right: 50px;display: none" role="alert"  id="alert-fail">
+                            修改失败，请稍后重试
+                        </div>
+                    </div>
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table card-table table-hover text-nowrap">
+                        <thead>
+                        <tr>
+                            <th class="w-1">ID</th>
+                            <th>标题</th>
+                            <th>创建时间</th>
+                            <th>收藏人数</th>
+                            <th>标签</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody th:fragment="columnItem" id="columnItem">
+                        <tr th:each="article : ${addList}">
+                            <td>
+                                <span class="text-muted" th:text="${article.id}">001401</span>
+                            </td>
+                            <td>
+                                <a href="javascript:void(0)" class="text-inherit" th:text="${article.title}">设计模式</a>
+                            </td>
+                            <td>
+                                <span class="tag tag-warning" th:text="${#dates.format(article.updateTime, 'yyyy-MM-dd')}">2020-02-29</span>
+                            </td>
+                            <td th:text="${article.collectNum}">20</td>
+                            <td>
+                                <span class="tag tag-warning" th:each="tag : ${article.tags}">[[${tag.name}]]</span>
+                            </td>
+                            <td>
+                                <a href="#" onclick="addOrDeleteColumn(this)" th:attr="articleId=${article.id},articleTitle=${article.title},state=false">删除</a>
+                            </td>
+                        </tr>
+                        <tr th:each="article : ${unAddList}">
+                            <td>
+                                <span class="text-muted" th:text="${article.id}">001401</span>
+                            </td>
+                            <td>
+                                <a href="javascript:void(0)" class="text-inherit" th:text="${article.title}">设计模式</a>
+                            </td>
+                            <td>
+                                <span class="tag tag-warning" th:text="${#dates.format(article.updateTime, 'yyyy-MM-dd')}">2020-02-29</span>
+                            </td>
+                            <td th:text="${article.collectNum}">20</td>
+                            <td>
+                                <span class="tag tag-warning" th:each="tag : ${article.tags}">[[${tag.name}]]</span>
+                            </td>
+                            <td>
+                                <a href="#" onclick="addOrDeleteColumn(this)" th:attr="articleId=${article.id},articleTitle=${article.title},state=true">添加</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

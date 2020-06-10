@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="public/head :: head(专栏)"></head>
+<style>
+    .btn-options {
+    display: flex;
+    align-items: center;
+    padding: 0;
+    color: #868c97;
+    cursor: pointer;
+    background: none;
+    border: none; }
+    .btn-options:focus {
+    outline: 0; }
+    .btn-options .icon {
+    width: 1rem;
+    height: 1rem; }
+</style>
+<body class="">
+<div class="page">
+    <div class="flex-fill">
+        <div th:replace="public/menu :: topbar"></div>
+        <div th:replace="public/menu :: menu(2)"></div>
+        <div class="my-3 my-md-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3">
+                        <h3 class="mb-4"><p class="lh-1">专栏</p></h3>
+                        <div>
+                            <div class="list-group list-group-transparent mb-0">
+                                <a href="#" class="list-group-item list-group-item-action d-flex align-items-center active" th:href="@{/admin/column/list}">
+                                    <span class="icon mr-3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
+                                    </span>所有专栏
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action d-flex align-items-center" th:href="@{/admin/column}">
+                                    <span class="icon mr-3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                                    </span>新增专栏
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row row-sm align-items-center">
+                                    <div class="col-auto">
+                                        <span class="avatar avatar-lg" th:style="'background-image: url(' +  ${detail.image} + ')'"></span>
+                                    </div>
+                                    <div class="col">
+                                        <h4 class="card-title m-0">
+                                            <a href="#" th:text="${detail.name}">专栏名：Redis</a>
+                                        </h4>
+                                        <div class="text-muted" th:text="${detail.summary}">
+                                            Working in Kare
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <a href="#" class="btn btn-sm btn-secondary d-none d-md-inline-block" onclick="editItem(this)" th:attr="columnId=${detail.id},columnName=${detail.name}">
+                                            添加文章
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-header">
+                                <h3 class="card-title">已添加文章</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table card-table table-hover text-nowrap">
+                                        <thead>
+                                        <tr>
+                                            <th class="w-1">ID</th>
+                                            <th>标题</th>
+                                            <th>创建时间</th>
+                                            <th>收藏人数</th>
+                                            <th>排序</th>
+                                            <th>操作</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody th:fragment="columnItem" id="columnItem">
+                                        <tr th:each="item : ${detail.itemVos}">
+                                            <td>
+                                                <span class="text-muted" th:text="${item.articleId}">001401</span>
+                                            </td>
+                                            <td>
+                                                <a href="javascript:void(0)" class="text-inherit" th:text="${item.articleTitle}">设计模式</a>
+                                            </td>
+                                            <td>
+                                                <span class="tag tag-warning" th:text="${#dates.format(item.createTime, 'yyyy-MM-dd')}">2020-02-29</span>
+                                            </td>
+                                            <td th:text="${item.collectNum}">20</td>
+                                            <td th:text="${item.sort}" id="sort" th:attr="itemId=${item.id}">
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="deleteArticle(this)" th:attr="itemId=${item.id}">删除</a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="admin/dashboard :: footer"></div>
+</div>
+<script>
+    let currentColumnId = "";
+    let currentColumnName = "";
+    function editItem(ele) {
+        currentColumnId = $(ele).attr("columnId");
+        currentColumnName = $(ele).attr("columnName");
+        $.ajax({
+            type: "get",
+            url: "/admin/column/item/list",
+            data: {"columnId": currentColumnId},
+            success: function (data) {
+                console.log(data);
+                if (data.code == 200) {
+                    $("#columnItem").html(data);
+                }
+                $("#modal-report").modal('show');
+            },
+            error: function (data) {
+            }
+        })
+    }
+    function deleteArticle(ele) {
+        $.ajax({
+            type: "post",
+            url: "/admin/column/item",
+            data: {
+                "itemId": $(ele).attr("itemId")
+            },
+            success: function (data) {
+                if (data.code == 200) {
+                    $("#alert-success").fadeIn();
+                    setTimeout(function() {
+                        $("#alert-success").fadeOut();
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    $("#alert-fail").fadeIn();
+                    setTimeout(function () {
+                        $("#alert-fail").fadeOut();
+                    }, 800);
+                }
+            },
+            error: function (data) {
+                $("#alert-fail").fadeIn();
+            }
+        })
+    }
+</script>
+</body>
+</html>

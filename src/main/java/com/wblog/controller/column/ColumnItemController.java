@@ -1,16 +1,23 @@
 package com.wblog.controller.column;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import com.wblog.annotation.SysLog;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.common.utils.R;
+import com.wblog.model.entity.ArticleEntity;
+import com.wblog.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.wblog.model.entity.ColumnItemEntity;
 import com.wblog.service.ColumnItemService;
 
+import javax.validation.Valid;
 
 
 /**
@@ -19,21 +26,18 @@ import com.wblog.service.ColumnItemService;
  * @author wangxb
  * @email 
  */
-@RestController
-@RequestMapping("wblog/columnitem")
+@Controller
+@RequestMapping("/admin/column/item")
 public class ColumnItemController {
     @Autowired
     private ColumnItemService columnItemService;
 
     /**
-     * 列表
+     * 查询已添加列表和未添加列表
      */
     @GetMapping("/list")
-    //@RequiresPermissions("wblog:columnitem:list")
-    public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = columnItemService.queryPage(params);
-
-        return R.ok().put("page", page);
+    public String list(@RequestParam("columnId") Long columnId, Model model){
+        return "/admin/column/columnModal :: columnItem";
     }
 
 
@@ -41,7 +45,6 @@ public class ColumnItemController {
      * 信息
      */
     @GetMapping("/info/{id}")
-    //@RequiresPermissions("wblog:columnitem:info")
     public R info(@PathVariable("id") Long id){
 		ColumnItemEntity columnItem = columnItemService.getById(id);
 
@@ -51,11 +54,11 @@ public class ColumnItemController {
     /**
      * 保存
      */
-    @PostMapping("/save")
-    //@RequiresPermissions("wblog:columnitem:save")
-    public R save(@RequestBody ColumnItemEntity columnItem){
+    @SysLog(business = "专栏添加文章")
+    @PostMapping
+    @ResponseBody
+    public R save(@Valid ColumnItemEntity columnItem){
 		columnItemService.save(columnItem);
-
         return R.ok();
     }
 

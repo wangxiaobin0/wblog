@@ -2,7 +2,11 @@ package com.wblog.dao;
 
 import com.wblog.model.entity.ColumnItemEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.wblog.model.vo.ColumnItemVo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * 
@@ -12,5 +16,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface ColumnItemDao extends BaseMapper<ColumnItemEntity> {
-	
+    List<ColumnItemVo> getColumnItems(@Param("columnId") Long id);
 }

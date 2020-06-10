@@ -54,6 +54,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
         QueryWrapper<ArticleEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("state", ArticleStateEnum.PUBLIC.getCode());
         queryWrapper.or().eq("state", ArticleStateEnum.SECRET.getCode());
+        queryWrapper.orderByDesc("update_time");
         IPage<ArticleEntity> page = this.page(
                 new Query<ArticleEntity>().getPage(params),
                 queryWrapper
@@ -181,6 +182,22 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
         articleEntity.setId(id);
         articleEntity.setState(state);
         this.updateById(articleEntity);
+    }
+
+    @Override
+    public List<ArticleShowVo> queryArticleByColumnId(Long id) {
+        List<ArticleEntity> articleEntityList = this.baseMapper.queryArticleByColumnId(id);
+
+        return articleEntityList.stream().map(articleEntity -> {
+            ArticleShowVo showVo = new ArticleShowVo();
+            BeanUtils.copyProperties(articleEntity, showVo);
+            //查询文章关联的标签
+            List<TagEntity> tags = tagService.listTagByArticleId(showVo.getId());
+            //抽取标签名
+            List<String> tagNames = tags.stream().map(TagEntity::getName).collect(Collectors.toList());
+            showVo.setTag(tagNames);
+            return showVo;
+        }).collect(Collectors.toList());
     }
 
     private int remainTime(Date updateTime) {

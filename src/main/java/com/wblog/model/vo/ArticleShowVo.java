@@ -11,6 +11,10 @@ import java.util.List;
 @Data
 public class ArticleShowVo {
     /**
+     * id
+     */
+    private Long id;
+    /**
      * 标题
      */
     private String title;

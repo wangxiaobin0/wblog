@@ -37,9 +37,11 @@
                                 <tbody>
                                 <tr th:each="item : ${page.list}">
                                     <td><span class="text-muted" th:text="${item.id}">001401</span></td>
-                                    <td><a href="javascript:void(0)" class="text-inherit" th:text="${item.title}"
+                                    <td>
+                                        <a href="javascript:void(0)" class="text-inherit" th:text="${item.title}"
                                            th:attr="viewNum=${item.viewNum},thumbUp=${item.thumbUp},,collectNum=${item.collectNum} "
-                                           onclick="showDetail(this)">Java设计模式</a>
+                                           onclick="showDetail(this)">Java设计模式
+                                        </a>
                                     </td>
                                     <td>
                                         <span class="tag tag-warning" th:each="tag : ${item.tags}">[[${tag.name}]]</span>

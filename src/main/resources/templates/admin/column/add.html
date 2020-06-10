@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="public/head :: head(添加专栏)"></head>
+<body class="">
+<div class="page">
+    <div class="flex-fill">
+        <div th:replace="public/menu :: topbar"></div>
+        <div th:replace="public/menu :: menu(2)"></div>
+        <div class="my-3 my-md-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3">
+                        <h3 class="mb-4"><p class="lh-1">专栏</p></h3>
+                        <div>
+                            <div class="list-group list-group-transparent mb-0">
+                                <a href="#" class="list-group-item list-group-item-action d-flex align-items-center" th:href="@{/admin/column/list}">
+                                    <span class="icon mr-3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
+                                    </span>所有专栏
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action d-flex align-items-center active" th:href="@{/admin/column}">
+                                    <span class="icon mr-3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                                    </span>新增专栏
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">新增专栏</h3>
+                                <div class="alert alert-success col-login float-right" style="position:absolute;zIndex:-1;right: 50px;display: none" role="alert"  id="alert-success">
+                                    新增成功
+                                    <a href="#" class="close" data-dismiss="alert" aria-label="close"></a>
+                                </div>
+                                <div class="alert alert-error col-login float-right" style="position:absolute;zIndex:-1;right: 50px;display: none" role="alert"  id="alert-fail">
+                                    新增失败，请稍后重试
+                                    <a href="#" class="close" data-dismiss="alert" aria-label="close"></a>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <form id="addForm">
+                                    <div class="mb-3  col-md-9">
+                                        <label class="form-label">专栏名</label>
+                                        <input type="text" class="form-control" id="name" placeholder="请输入专栏名">
+                                    </div>
+                                    <div class="mb-3  col-md-9">
+                                        <label class="form-label">简介 <span class="form-label-description" id="inputNum">0/120</span></label>
+                                        <textarea class="form-control" id="summary" rows="6" placeholder="请输入简介..." onblur="countNum()" maxlength="120"></textarea>
+                                    </div>
+                                    <div class="mb-3  col-md-9">
+                                        <label class="form-label">封面</label>
+                                        <img src="/static/demo/photos/9f36332564ca271d.jpg" class="card-img" style="height: 200px; width: auto" id="images" onclick="uploadImg()">
+                                    </div>
+                                    <div class="mb-3  col-md-9">
+                                        <input type="file" id="fileInput" style="display: none">
+                                        <button type="button" class="btn btn-outline-primary" onclick="uploadImg()">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                            上传
+                                        </button>
+                                        <a href="#" class="btn btn-primary float-right" style="top:100%" onclick="addColumn()">保存专栏</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="admin/dashboard :: footer"></div>
+</div>
+<script>
+    function uploadImg() {
+        $("#fileInput").click();
+    }
+    function countNum() {
+        let length = $("#summary").val().length;
+        $("#inputNum").text(length + "/120");
+    }
+    function addColumn() {
+        $.ajax({
+            type: "post",
+            url: "/admin/column",
+            data: {
+                "name": $("#name").val(),
+                "summary": $("#summary").val(),
+                "image": $("#images").attr("src")
+            },
+            success: function (data) {
+                if (data.code == 200) {
+                    $("#alert-success").fadeIn();
+                    setTimeout(function() {
+                        $("#alert-success").fadeOut();
+                        window.location.href = "/admin/column/list";
+                    }, 1000);
+                } else {
+                    $("#alert-fail").fadeIn();
+                    setTimeout(function () {
+                        $("#alert-fail").fadeOut();
+                    }, 800);
+                }
+            },
+            error: function (data) {
+                $("#alert-fail").fadeIn();
+            }
+        })
+    }
+</script>
+</body>
+</html>
