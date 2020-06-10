@@ -16,4 +16,6 @@ import java.util.List;
 @Mapper
 public interface TagDao extends BaseMapper<TagEntity> {
     List<TagEntity> listTagByArticleId(@Param("articleId") Long articleId);
+
+    Boolean updateArticleNumById(@Param("id")Long id);
 }

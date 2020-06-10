@@ -32,7 +32,7 @@ public class TagEntity implements Serializable {
 	/**
 	 * 文章数量
 	 */
-	private Integer articleNum;
+	private Integer articleNum = 1;
 	/**
 	 * 创建时间
 	 */

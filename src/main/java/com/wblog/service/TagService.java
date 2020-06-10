@@ -18,5 +18,7 @@ public interface TagService extends IService<TagEntity> {
     PageUtils queryPage(Map<String, Object> params);
 
     List<TagEntity> listTagByArticleId(Long articleId);
+
+    Boolean updateArticleNumById(Long id);
 }
 

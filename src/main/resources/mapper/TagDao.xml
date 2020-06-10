@@ -19,4 +19,8 @@
             left join blog_article ba on ba.id = bat.article_id
         where ba.id = #{articleId}
     </select>
+
+    <update id="updateArticleNumById" parameterType="java.lang.Long">
+        update blog_tag set article_num = article_num + 1 where id = #{id}
+    </update>
 </mapper>

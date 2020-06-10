@@ -120,7 +120,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
     @Override
     @Transactional
     public void save(ArticlePostVo article) {
-
         //保存文章
         ArticleEntity articleEntity = new ArticleEntity();
         BeanUtils.copyProperties(article, articleEntity);
@@ -144,6 +143,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
                 tagId = tagEntity.getId();
             } else {
                 tagId = tagMap.get(tag);
+                tagService.updateArticleNumById(tagId);
             }
             //保存文章与tag的关系
             ArticleTagEntity articleTagEntity = new ArticleTagEntity();

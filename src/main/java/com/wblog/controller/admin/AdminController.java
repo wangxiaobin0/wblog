@@ -29,7 +29,6 @@ public class AdminController {
      * 列表
      */
     @GetMapping("/list")
-    //@RequiresPermissions("wblog:admin:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = adminService.queryPage(params);
 
@@ -41,7 +40,6 @@ public class AdminController {
      * 信息
      */
     @GetMapping("/info/{id}")
-    //@RequiresPermissions("wblog:admin:info")
     public R info(@PathVariable("id") Long id){
 		AdminEntity admin = adminService.getById(id);
 

@@ -177,7 +177,7 @@
     function postArticle() {
         let title = $("#title").val();
         if (title == null || title == '') {
-            $("#title").val("[[${#dates.format(new java.util.Date().getTime(), 'yyyy-MM-dd hh:mm:ss')}]]");
+            $("#title").val("[[${#dates.format(new java.util.Date().getTime(), 'yyyy-MM-dd HH:mm:ss')}]]");
         }
         $("#html").val(editor.getHTML());
         $("#markdown").val(editor.getMarkdown());

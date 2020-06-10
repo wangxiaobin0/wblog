@@ -34,5 +34,10 @@ public class TagServiceImpl extends ServiceImpl<TagDao, TagEntity> implements Ta
         return tags;
     }
 
+    @Override
+    public Boolean updateArticleNumById(Long id) {
+        return this.baseMapper.updateArticleNumById(id);
+    }
+
 
 }
