@@ -14,6 +14,7 @@ import java.util.Date;
 @Data
 public class AdminTo implements Serializable {
 
+    private Long id;
 
     /**
      * adminId

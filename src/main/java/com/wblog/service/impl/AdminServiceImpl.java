@@ -71,6 +71,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
 
         AdminTo adminTo = new AdminTo();
         BeanUtils.copyProperties(adminProfile, adminTo);
+        adminProfileService.updateById(adminProfile);
         return adminTo;
 
     }

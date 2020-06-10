@@ -56,7 +56,7 @@ public class AuthController {
         }
     }
 
-    //@SysLog(business = "admin注册")
+    @SysLog(business = "admin注册")
     @PostMapping("/auth/register")
     @ResponseBody
     public R register(@Valid RegisterVo registerVo) {
@@ -73,8 +73,7 @@ public class AuthController {
     @SysLog(business = "admin登录")
     @PostMapping("/auth/login")
     @ResponseBody
-    public R login(@Valid LoginVo loginVo,
-                   HttpServletRequest request) {
+    public R login(@Valid LoginVo loginVo, HttpServletRequest request) {
         log.info("登录流程开始。{}", loginVo);
         AdminTo adminTo = adminService.login(loginVo);
         log.info("设置session信息{}", adminTo);
@@ -83,4 +82,11 @@ public class AuthController {
         return R.ok();
     }
 
+    @SysLog(business = "退出登录")
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        session.removeAttribute(AuthConstant.SESSION_LOGIN_USER);
+        return "redirect:/admin";
+    }
 }

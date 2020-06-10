@@ -3,6 +3,7 @@ package com.wblog.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.model.entity.AdminProfileEntity;
+import com.wblog.model.to.AdminTo;
 
 import java.util.Map;
 
@@ -13,7 +14,8 @@ import java.util.Map;
  * @email 
  */
 public interface AdminProfileService extends IService<AdminProfileEntity> {
+    AdminProfileEntity getProfileBySession();
 
-    PageUtils queryPage(Map<String, Object> params);
+    AdminTo updateProfile(AdminProfileEntity profileEntity);
 }
 

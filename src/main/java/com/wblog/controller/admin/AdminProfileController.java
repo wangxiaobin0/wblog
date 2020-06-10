@@ -3,81 +3,54 @@ package com.wblog.controller.admin;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.wblog.annotation.SysLog;
+import com.wblog.common.constant.AuthConstant;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.common.utils.R;
+import com.wblog.interceptor.AdminRequestInterceptor;
+import com.wblog.model.to.AdminTo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.wblog.model.entity.AdminProfileEntity;
 import com.wblog.service.AdminProfileService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 
 /**
- * 
- *
  * @author wangxb
- * @email 
+ * @email
  */
-@RestController
-@RequestMapping("wblog/adminprofile")
+@Controller
+@RequestMapping("admin/profile")
 public class AdminProfileController {
+
     @Autowired
     private AdminProfileService adminProfileService;
 
     /**
-     * 列表
-     */
-    @GetMapping("/list")
-    public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = adminProfileService.queryPage(params);
-
-        return R.ok().put("page", page);
-    }
-
-
-    /**
      * 信息
      */
-    @GetMapping("/info/{id}")
-    //@RequiresPermissions("wblog:adminprofile:info")
-    public R info(@PathVariable("id") Long id){
-		AdminProfileEntity adminProfile = adminProfileService.getById(id);
-
-        return R.ok().put("adminProfile", adminProfile);
+    @GetMapping
+    public String info() {
+        return "admin/profile/profile";
     }
 
-    /**
-     * 保存
-     */
-    @PostMapping("/save")
-    //@RequiresPermissions("wblog:adminprofile:save")
-    public R save(@RequestBody AdminProfileEntity adminProfile){
-		adminProfileService.save(adminProfile);
-
-        return R.ok();
+    @GetMapping("/edit")
+    public String goToEditPage() {
+        return "admin/profile/edit";
     }
 
-    /**
-     * 修改
-     */
-    @PostMapping("/update")
-    //@RequiresPermissions("wblog:adminprofile:update")
-    public R update(@RequestBody AdminProfileEntity adminProfile){
-		adminProfileService.updateById(adminProfile);
-
-        return R.ok();
+    @SysLog(business = "更新个人资料")
+    @PostMapping
+    public String updateProfile(AdminProfileEntity profileEntity, HttpServletRequest request) {
+        AdminTo adminTo = adminProfileService.updateProfile(profileEntity);
+        HttpSession session = request.getSession();
+        session.setAttribute(AuthConstant.SESSION_LOGIN_USER, adminTo);
+        return "redirect:/admin/profile";
     }
-
-    /**
-     * 删除
-     */
-    @PostMapping("/delete")
-    //@RequiresPermissions("wblog:adminprofile:delete")
-    public R delete(@RequestBody Long[] ids){
-		adminProfileService.removeByIds(Arrays.asList(ids));
-
-        return R.ok();
-    }
-
 }

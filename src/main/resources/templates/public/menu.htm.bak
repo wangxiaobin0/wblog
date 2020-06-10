@@ -48,14 +48,14 @@
                 </div>
                 <div class="dropdown">
                     <a href="#" class="nav-link pr-0 leading-none" data-toggle="dropdown">
-                        <span class="avatar" th:style="'background-image: url(' + ${session.SESSION_LOGIN_USER.avatar} + ')'"></span>
+                        <span class="avatar" style="background-image: url(/static/demo/faces/female/25.jpg)"></span>
                         <span class="ml-2 d-none d-lg-block">
                       <span class="text-default" th:text="${session.SESSION_LOGIN_USER.blogName}">Jane Pearson</span>
                     </span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                        <a class="dropdown-item" href="#" th:href="@{/admin/profile}">
-                            <i class="dropdown-icon fe fe-user"></i> 个人资料
+                        <a class="dropdown-item" href="#">
+                            <i class="dropdown-icon fe fe-user"></i> Profile
                         </a>
                         <a class="dropdown-item" href="#">
                             <i class="dropdown-icon fe fe-settings"></i> Settings
@@ -71,8 +71,8 @@
                         <a class="dropdown-item" href="#">
                             <i class="dropdown-icon fe fe-help-circle"></i> Need help?
                         </a>
-                        <a class="dropdown-item" href="#" th:href="@{/logout}">
-                            <i class="dropdown-icon fe fe-log-out"></i> 退出登录
+                        <a class="dropdown-item" href="#">
+                            <i class="dropdown-icon fe fe-log-out"></i> Sign out
                         </a>
                     </div>
                 </div>
@@ -126,7 +126,9 @@
                         <a class="nav-link" th:href="@{/admin/tag/list}" th:classappend="${menu} == 3 ? 'active' : ''"><i class="fe fe-tag"></i>标签</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/admin/profile}" th:classappend="${menu} == 4 ? 'active' : ''"><i class="fe fe-user"></i>个人资料</a>
+                        <a href="./docs/index.html" class="nav-link"
+                           th:classappend="${menu} == 4 ? 'active' : ''"><i class="fe fe-file-text"></i>
+                            操作记录</a>
                     </li>
                 </ul>
             </div>

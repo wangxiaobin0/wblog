@@ -21,9 +21,9 @@ public class BlogWebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         //为后台管理添加请求拦截器
-        registry.addInterceptor(adminRequestInterceptor).addPathPatterns("/admin/**").excludePathPatterns("/admin", "/auth/**", "/error", "/favicon.ico");
+        registry.addInterceptor(adminRequestInterceptor).addPathPatterns("/admin/**").excludePathPatterns("/admin", "/auth/**", "/error", "/favicon.ico", "/logout");
 
         //为游客访问添加请求拦截器
-        registry.addInterceptor(userRequestInterceptor).addPathPatterns("/**").excludePathPatterns("/admin/**", "/auth/**", "/error", "/favicon.ico");
+        registry.addInterceptor(userRequestInterceptor).addPathPatterns("/**").excludePathPatterns("/admin/**", "/auth/**", "/error", "/favicon.ico", "/logout");
     }
 }
