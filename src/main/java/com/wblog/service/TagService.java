@@ -20,5 +20,7 @@ public interface TagService extends IService<TagEntity> {
     List<TagEntity> listTagByArticleId(Long articleId);
 
     Boolean updateArticleNumById(Long id);
+
+    void deleteByIds(Long id);
 }
 

@@ -37,8 +37,6 @@ public class ColumnController {
     @Autowired
     private ColumnService columnService;
 
-    @Autowired
-    private ArticleService articleService;
     /**
      * 列表
      */
@@ -57,6 +55,7 @@ public class ColumnController {
     /**
      * 信息
      */
+    @SysLog(business = "专栏详情")
     @GetMapping("/{id}")
     public String columnDetail(@PathVariable("id") Long id, Model model){
         try {

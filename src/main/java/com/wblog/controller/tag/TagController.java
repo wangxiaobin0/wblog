@@ -1,11 +1,12 @@
 package com.wblog.controller.tag;
 
-import java.util.Arrays;
-import java.util.Map;
+import java.util.List;
 
-import com.wblog.common.utils.PageUtils;
+import com.wblog.annotation.SysLog;
 import com.wblog.common.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.wblog.model.entity.TagEntity;
@@ -19,8 +20,8 @@ import com.wblog.service.TagService;
  * @author wangxb
  * @email 
  */
-@RestController
-@RequestMapping("wblog/tag")
+@Controller
+@RequestMapping("admin/tag")
 public class TagController {
     @Autowired
     private TagService tagService;
@@ -29,11 +30,10 @@ public class TagController {
      * 列表
      */
     @GetMapping("/list")
-    //@RequiresPermissions("wblog:tag:list")
-    public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = tagService.queryPage(params);
-
-        return R.ok().put("page", page);
+    public String list(Model model){
+        List<TagEntity> tags = tagService.list();
+        model.addAttribute("tags", tags);
+        return "admin/tag/list";
     }
 
 
@@ -41,7 +41,6 @@ public class TagController {
      * 信息
      */
     @GetMapping("/info/{id}")
-    //@RequiresPermissions("wblog:tag:info")
     public R info(@PathVariable("id") Long id){
 		TagEntity tag = tagService.getById(id);
 
@@ -52,7 +51,6 @@ public class TagController {
      * 保存
      */
     @PostMapping("/save")
-    //@RequiresPermissions("wblog:tag:save")
     public R save(@RequestBody TagEntity tag){
 		tagService.save(tag);
 
@@ -63,7 +61,6 @@ public class TagController {
      * 修改
      */
     @PostMapping("/update")
-    //@RequiresPermissions("wblog:tag:update")
     public R update(@RequestBody TagEntity tag){
 		tagService.updateById(tag);
 
@@ -73,11 +70,11 @@ public class TagController {
     /**
      * 删除
      */
-    @PostMapping("/delete")
-    //@RequiresPermissions("wblog:tag:delete")
-    public R delete(@RequestBody Long[] ids){
-		tagService.removeByIds(Arrays.asList(ids));
-
+    @SysLog(business = "删除标签")
+    @PostMapping("/{id}")
+    @ResponseBody
+    public R delete(@PathVariable("id") Long id){
+		tagService.deleteByIds(id);
         return R.ok();
     }
 

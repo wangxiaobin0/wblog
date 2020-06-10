@@ -1,31 +1,11 @@
 <!doctype html>
 <html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="public/head :: head(专栏)"></head>
-<style>
-    .btn-options {
-        display: flex;
-        align-items: center;
-        padding: 0;
-        color: #868c97;
-        cursor: pointer;
-        background: none;
-        border: none;
-    }
-
-    .btn-options:focus {
-        outline: 0;
-    }
-
-    .btn-options .icon {
-        width: 1rem;
-        height: 1rem;
-    }
-</style>
+<head th:replace="public/head :: head(标签)"></head>
 <body class="">
 <div class="page">
     <div class="flex-fill">
         <div th:replace="public/menu :: topbar"></div>
-        <div th:replace="public/menu :: menu(2)"></div>
+        <div th:replace="public/menu :: menu(3)"></div>
         <div class="my-3 my-md-5">
             <div class="container">
                 <div class="row">
@@ -35,36 +15,29 @@
                             <div class="list-group list-group-transparent mb-0">
                                 <a href="#"
                                    class="list-group-item list-group-item-action d-flex align-items-center active"
-                                   th:href="@{/admin/column/list}">
+                                   th:href="@{/admin/tag/list}">
                                     <span class="icon mr-3"><svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                                  height="24" viewBox="0 0 24 24" fill="none"
                                                                  stroke="currentColor" stroke-width="2"
                                                                  stroke-linecap="round" stroke-linejoin="round"
-                                                                 class="icon"><polyline
-                                            points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path
-                                            d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
-                                    </span>所有专栏
-                                </a>
-                                <a href="#" class="list-group-item list-group-item-action d-flex align-items-center"
-                                   th:href="@{/admin/column}">
-                                    <span class="icon mr-3"><svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                                 height="24" viewBox="0 0 24 24" fill="none"
-                                                                 stroke="currentColor" stroke-width="2"
-                                                                 stroke-linecap="round" stroke-linejoin="round"
-                                                                 class="icon"><line x1="22" y1="2" x2="11"
-                                                                                    y2="13"></line><polygon
-                                            points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                                    </span>新增专栏
+                                                                 class="icon"><path
+                                            d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line
+                                            x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                                    </span>所有标签
                                 </a>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-9">
                         <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title">所有标签</h3>
-                            </div>
-                            <div class="card-body" th:each="tag : ${tags}">
+                            <div class="card-body">
+                                <div class="alert alert-success col-login float-right" style="position:absolute;zIndex:-1;right: 50px;display: none" role="alert"  id="alert-success">
+                                    操作成功
+                                </div>
+                                <div class="alert alert-error col-login float-right" style="position:absolute;zIndex:-1;right: 50px;display: none" role="alert"  id="alert-fail">
+                                    操作失败，请稍后重试
+                                    <a href="#" class="close" data-dismiss="alert" aria-label="close"></a>
+                                </div>
                                 <div class="table-responsive">
                                     <table class="table card-table table-hover text-nowrap">
                                         <thead>
@@ -72,30 +45,25 @@
                                             <th class="w-1">ID</th>
                                             <th>标题</th>
                                             <th>创建时间</th>
-                                            <th>收藏人数</th>
-                                            <th>排序</th>
+                                            <th>文章数</th>
                                             <th>操作</th>
                                         </tr>
                                         </thead>
-                                        <tbody th:fragment="columnItem" id="columnItem">
-                                        <tr th:each="item : ${detail.itemVos}">
+                                        <tbody>
+                                        <tr th:each="tag : ${tags}">
                                             <td>
-                                                <span class="text-muted" th:text="${item.articleId}">001401</span>
+                                                <span class="text-muted" th:text="${tag.id}">001401</span>
                                             </td>
                                             <td>
-                                                <a href="javascript:void(0)" class="text-inherit"
-                                                   th:text="${item.articleTitle}">设计模式</a>
+                                                <a href="javascript:void(0)" class="text-inherit" th:text="${tag.name}">设计模式</a>
                                             </td>
                                             <td>
                                                 <span class="tag tag-warning"
-                                                      th:text="${#dates.format(item.createTime, 'yyyy-MM-dd')}">2020-02-29</span>
+                                                      th:text="${#dates.format(tag.createTime, 'yyyy-MM-dd')}">2020-02-29</span>
                                             </td>
-                                            <td th:text="${item.collectNum}">20</td>
-                                            <td th:text="${item.sort}" id="sort" th:attr="itemId=${item.id}">
-                                            </td>
+                                            <td th:text="${tag.articleNum}">20</td>
                                             <td>
-                                                <a href="#" onclick="deleteArticle(this)"
-                                                   th:attr="itemId=${item.id}">删除</a>
+                                                <a href="#" onclick="deleteModal(this)" th:attr="tagId=${tag.id}">删除</a>
                                             </td>
                                         </tr>
                                         </tbody>
@@ -108,13 +76,24 @@
             </div>
         </div>
     </div>
-
+    <div class="modal modal-blur fade" id="deleteModal" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h4 class="modal-title bold">确认删除？</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link link-secondary mr-auto" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="deleteTag()">删除</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div th:replace="admin/dashboard :: footer"></div>
 </div>
 <script>
     let currentColumnId = "";
     let currentColumnName = "";
-
     function editItem(ele) {
         currentColumnId = $(ele).attr("columnId");
         currentColumnName = $(ele).attr("columnName");
@@ -134,17 +113,16 @@
         })
     }
 
-    function addOrDeleteColumn(ele) {
+    //被删除的tagId
+    let deleteItemId = "";
+    function deleteModal(ele) {
+        deleteItemId = $(ele).attr("tagId");
+        $("#deleteModal").modal('show');
+    }
+    function deleteTag() {
         $.ajax({
             type: "post",
-            url: "/admin/column/item",
-            data: {
-                "columnId": currentColumnId,
-                "columnName": currentColumnName,
-                "articleId": $(ele).attr("articleId"),
-                "articleTitle": $(ele).attr("articleTitle"),
-                "state": $(ele).attr("state")
-            },
+            url: "/admin/tag/" + deleteItemId,
             success: function (data) {
                 if (data.code == 200) {
                     $("#alert-success").fadeIn();

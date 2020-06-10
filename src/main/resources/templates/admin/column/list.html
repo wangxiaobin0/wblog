@@ -94,36 +94,6 @@
             }
         })
     }
-    function addOrDeleteColumn(ele) {
-        $.ajax({
-            type: "post",
-            url: "/admin/column/item",
-            data: {
-                "columnId": currentColumnId,
-                "columnName": currentColumnName,
-                "articleId": $(ele).attr("articleId"),
-                "articleTitle": $(ele).attr("articleTitle"),
-                "state": $(ele).attr("state")
-            },
-            success: function (data) {
-                if (data.code == 200) {
-                    $("#alert-success").fadeIn();
-                    setTimeout(function() {
-                        $("#alert-success").fadeOut();
-                        window.location.reload();
-                    }, 1000);
-                } else {
-                    $("#alert-fail").fadeIn();
-                    setTimeout(function () {
-                        $("#alert-fail").fadeOut();
-                    }, 800);
-                }
-            },
-            error: function (data) {
-                $("#alert-fail").fadeIn();
-            }
-        })
-    }
 </script>
 </body>
 </html>
