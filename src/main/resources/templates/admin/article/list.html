@@ -44,7 +44,7 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <span class="tag tag-warning" th:each="tag : ${item.tags}">[[${tag.name}]]</span>
+                                        <span class="tag tag-warning" th:each="tag : ${item.tags}" style="margin: 0 0.2rem">[[${tag.name}]]</span>
                                     </td>
                                     <td th:text="${#dates.format(item.updateTime, 'yyyy-MM-dd')}">
                                         2020-02-29

@@ -22,5 +22,6 @@ public interface AdminService extends IService<AdminEntity> {
     void register(RegisterVo registerVo);
 
     AdminTo login(LoginVo loginVo);
+
 }
 

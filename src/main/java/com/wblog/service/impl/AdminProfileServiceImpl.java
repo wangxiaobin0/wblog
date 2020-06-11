@@ -2,6 +2,7 @@ package com.wblog.service.impl;
 
 import com.wblog.interceptor.AdminRequestInterceptor;
 import com.wblog.model.to.AdminTo;
+import com.wblog.model.to.BloggerTo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -38,5 +39,13 @@ public class AdminProfileServiceImpl extends ServiceImpl<AdminProfileDao, AdminP
         BeanUtils.copyProperties(byId, adminTo);
         log.info("最新个人资料为：{}", adminTo);
         return adminTo;
+    }
+
+    @Override
+    public BloggerTo getBloggerInfo() {
+        AdminProfileEntity profileEntity = this.getOne(null);
+        BloggerTo bloggerTo = new BloggerTo();
+        BeanUtils.copyProperties(profileEntity, bloggerTo);
+        return bloggerTo;
     }
 }

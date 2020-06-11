@@ -5,6 +5,7 @@ import com.wblog.common.utils.Query;
 import com.wblog.exception.AuthException;
 import com.wblog.model.entity.AdminProfileEntity;
 import com.wblog.model.to.AdminTo;
+import com.wblog.model.to.BloggerTo;
 import com.wblog.model.vo.LoginVo;
 import com.wblog.model.vo.RegisterVo;
 import com.wblog.service.AdminProfileService;
@@ -13,7 +14,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.Map;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -73,7 +76,5 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
         BeanUtils.copyProperties(adminProfile, adminTo);
         adminProfileService.updateById(adminProfile);
         return adminTo;
-
     }
-
 }

@@ -1,21 +1,23 @@
 package com.wblog.service.impl;
 
+import com.wblog.common.constant.ArticleConstant;
 import com.wblog.common.enume.ArticleStateEnum;
 import com.wblog.common.enume.TagStateEnum;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.common.utils.Query;
+import com.wblog.exception.ArticleException;
 import com.wblog.interceptor.AdminRequestInterceptor;
 import com.wblog.model.entity.ArticleTagEntity;
 import com.wblog.model.entity.TagEntity;
 import com.wblog.model.to.AdminTo;
-import com.wblog.model.vo.ArticleListVo;
-import com.wblog.model.vo.ArticlePostVo;
-import com.wblog.model.vo.ArticleShowVo;
+import com.wblog.model.vo.*;
+import com.wblog.service.ArticleRedisService;
 import com.wblog.service.ArticleTagService;
 import com.wblog.service.TagService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -46,6 +48,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
     TagService tagService;
     @Autowired
     ArticleTagService articleTagService;
+
+    @Autowired
+    ArticleRedisService articleRedisService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -185,19 +190,42 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
     }
 
     @Override
-    public List<ArticleShowVo> queryArticleByColumnId(Long id) {
-        List<ArticleEntity> articleEntityList = this.baseMapper.queryArticleByColumnId(id);
-
-        return articleEntityList.stream().map(articleEntity -> {
-            ArticleShowVo showVo = new ArticleShowVo();
-            BeanUtils.copyProperties(articleEntity, showVo);
-            //查询文章关联的标签
-            List<TagEntity> tags = tagService.listTagByArticleId(showVo.getId());
-            //抽取标签名
-            List<String> tagNames = tags.stream().map(TagEntity::getName).collect(Collectors.toList());
-            showVo.setTag(tagNames);
-            return showVo;
+    public List<ArticleIndexVo> indexList() {
+        //查询首页列表
+        List<ArticleIndexVo> indexList = this.baseMapper.getIndexList();
+        return indexList.stream().map(articleIndexVo -> {
+            String abstractHtml = articleIndexVo.getAbstractHtml();
+            abstractHtml = abstractHtml.replaceAll("<[^>]*>", "").replaceAll("[(/>)<]", "");
+            articleIndexVo.setAbstractHtml(abstractHtml.substring(0, abstractHtml.length() > 40 ? 40 : abstractHtml.length()));
+            if (articleIndexVo.getTags() != null && articleIndexVo.getTags().size() > 2) {
+                while (articleIndexVo.getTags().size() != 2) {
+                    articleIndexVo.getTags().remove(2);
+                }
+            }
+            return articleIndexVo;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public ArticleItemVo getItem(Long articleId) {
+        //更新浏览数
+        articleRedisService.incrViewCount(articleId);
+        //查询数据库文章信息
+        ArticleItemVo articleItem = this.baseMapper.getArticleItem(articleId);
+        if (articleItem == null) {
+            throw new ArticleException("文章不存在");
+        }
+        //查询浏览数
+        String viewCount = articleRedisService.getCollectCount(articleId, ArticleConstant.ARTICLE_VIEW_COUNT);
+        articleItem.setViewNum(viewCount);
+        //查询收藏数
+        String collectCount = articleRedisService.getCollectCount(articleId, ArticleConstant.ARTICLE_COLLECT_COUNT);
+        articleItem.setCollectNum(collectCount);
+        //查询点赞数
+        String thumbUpCount = articleRedisService.getCollectCount(articleId, ArticleConstant.ARTICLE_THUMB_UP);
+        articleItem.setThumbUp(thumbUpCount);
+        log.info("获取文章结果：{}", articleItem);
+        return articleItem;
     }
 
     private int remainTime(Date updateTime) {

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.wblog.annotation.SysLog;
 import com.wblog.common.constant.AuthConstant;
+import com.wblog.common.constant.SessionConstant;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.common.utils.R;
 import com.wblog.interceptor.AdminRequestInterceptor;
@@ -50,7 +51,7 @@ public class AdminProfileController {
     public String updateProfile(AdminProfileEntity profileEntity, HttpServletRequest request) {
         AdminTo adminTo = adminProfileService.updateProfile(profileEntity);
         HttpSession session = request.getSession();
-        session.setAttribute(AuthConstant.SESSION_LOGIN_USER, adminTo);
+        session.setAttribute(SessionConstant.SESSION_LOGIN_USER, adminTo);
         return "redirect:/admin/profile";
     }
 }

@@ -2,6 +2,7 @@ package com.wblog.controller.admin;
 
 import com.wblog.annotation.SysLog;
 import com.wblog.common.constant.AuthConstant;
+import com.wblog.common.constant.SessionConstant;
 import com.wblog.common.utils.R;
 import com.wblog.exception.AuthException;
 import com.wblog.model.entity.AdminProfileEntity;
@@ -37,7 +38,7 @@ public class AuthController {
         log.info("跳转登录/注册页面流程开始。");
 
         HttpSession session = request.getSession();
-        AdminTo adminTo = (AdminTo) session.getAttribute(AuthConstant.SESSION_LOGIN_USER);
+        AdminTo adminTo = (AdminTo) session.getAttribute(SessionConstant.SESSION_LOGIN_USER);
         if (adminTo != null) {
             log.info("{}已登录，跳转首页", adminTo.getAdminId());
             return "redirect:/admin/dashboard";
@@ -78,7 +79,7 @@ public class AuthController {
         AdminTo adminTo = adminService.login(loginVo);
         log.info("设置session信息{}", adminTo);
         HttpSession session = request.getSession();
-        session.setAttribute(AuthConstant.SESSION_LOGIN_USER, adminTo);
+        session.setAttribute(SessionConstant.SESSION_LOGIN_USER, adminTo);
         return R.ok();
     }
 
@@ -86,7 +87,7 @@ public class AuthController {
     @GetMapping("/logout")
     public String logout(HttpServletRequest request) {
         HttpSession session = request.getSession();
-        session.removeAttribute(AuthConstant.SESSION_LOGIN_USER);
+        session.removeAttribute(SessionConstant.SESSION_LOGIN_USER);
         return "redirect:/admin";
     }
 }

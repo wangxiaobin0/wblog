@@ -7,10 +7,6 @@ import lombok.Data;
  */
 @Data
 public class AuthConstant {
-    /**
-     * session中保存的登录用户信息
-     */
-    public static final String SESSION_LOGIN_USER = "SESSION_LOGIN_USER";
 
     /**
      * 登录链接

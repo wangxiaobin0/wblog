@@ -3,7 +3,6 @@ package com.wblog.controller.user;
 import java.util.Arrays;
 import java.util.Map;
 
-//import org.apache.shiro.authz.annotation.RequiresPermissions;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.common.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,6 @@ public class UserLogController {
      * 列表
      */
     @GetMapping("/list")
-    //@RequiresPermissions("wblog:userlog:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = userLogService.queryPage(params);
 
@@ -42,7 +40,6 @@ public class UserLogController {
      * 信息
      */
     @GetMapping("/info/{id}")
-    //@RequiresPermissions("wblog:userlog:info")
     public R info(@PathVariable("id") Long id){
 		UserLogEntity userLog = userLogService.getById(id);
 
@@ -53,7 +50,6 @@ public class UserLogController {
      * 保存
      */
     @PostMapping("/save")
-    //@RequiresPermissions("wblog:userlog:save")
     public R save(@RequestBody UserLogEntity userLog){
 		userLogService.save(userLog);
 
@@ -64,7 +60,6 @@ public class UserLogController {
      * 修改
      */
     @PostMapping("/update")
-    //@RequiresPermissions("wblog:userlog:update")
     public R update(@RequestBody UserLogEntity userLog){
 		userLogService.updateById(userLog);
 

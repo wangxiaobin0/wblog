@@ -5,7 +5,7 @@
 
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="com.wblog.model.entity.ArticleEntity" id="articleMap">
-        <result property="id" column="id"/>
+        <id property="id" column="id"/>
         <result property="adminId" column="admin_id"/>
         <result property="title" column="title"/>
         <result property="html" column="html"/>
@@ -20,10 +20,45 @@
         <result property="sort" column="sort"/>
     </resultMap>
 
-    <select id="queryArticleByColumnId" parameterType="Long" resultType="ArticleEntity">
-        select *
-    from blog_article ba, blog_column_item bci
-    where ba.id = bci.article_id and bci.column_id=#{columnId}
+    <resultMap id="indexList" type="com.wblog.model.vo.ArticleIndexVo">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="abstractHtml" column="html"/>
+        <result property="updateTime" column="update_time"/>
+        <collection property="tags" ofType="com.wblog.model.vo.TagVo">
+            <id property="id" column="tag_id"/>
+            <result property="name" column="name"/>
+        </collection>
+    </resultMap>
+
+    <select id="getIndexList" resultMap="indexList">
+        select ba.id, ba.title, ba.html, ba.update_time, bat.tag_id, bt.`name`
+        from blog_article ba
+            left join blog_article_tag bat on ba.id = bat.article_id
+            left join blog_tag bt on bt.id = bat.tag_id
+        order by ba.update_time desc
+		limit 10;
+    </select>
+
+    <resultMap id="articleItem" type="com.wblog.model.vo.ArticleItemVo">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="html" column="html"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <collection property="tags" ofType="com.wblog.model.vo.TagVo">
+            <id property="id" column="tag_id"/>
+            <result property="name" column="name"/>
+        </collection>
+    </resultMap>
+
+    <select id="getArticleItem" resultMap="articleItem">
+        select ba.id, ba.title, ba.html,ba.create_time, ba.update_time, bat.tag_id, bt.`name`
+        from blog_article ba
+            left join blog_article_tag bat on ba.id = bat.article_id
+            left join blog_tag bt on bt.id = bat.tag_id
+				where ba.id = #{id} and ba.state = 1
+        order by ba.update_time desc
     </select>
 
 </mapper>

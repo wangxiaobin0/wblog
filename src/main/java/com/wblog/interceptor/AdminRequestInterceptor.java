@@ -1,6 +1,7 @@
 package com.wblog.interceptor;
 
 import com.wblog.common.constant.AuthConstant;
+import com.wblog.common.constant.SessionConstant;
 import com.wblog.model.to.AdminTo;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -29,7 +30,7 @@ public class AdminRequestInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         HttpSession session = request.getSession();
 
-        AdminTo adminTo = (AdminTo) session.getAttribute(AuthConstant.SESSION_LOGIN_USER);
+        AdminTo adminTo = (AdminTo) session.getAttribute(SessionConstant.SESSION_LOGIN_USER);
 
         if (adminTo == null) {
             response.sendRedirect(AuthConstant.LOGIN_URL + request.getRequestURI());

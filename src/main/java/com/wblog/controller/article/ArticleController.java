@@ -83,7 +83,7 @@ public class ArticleController {
     @PostMapping("/preview")
     public String preview(ArticlePostVo articlePostVo, Model model){
         ArticleShowVo showVo = articleService.preview(articlePostVo);
-        model.addAttribute("item", showVo);
+        model.addAttribute("article", showVo);
         return "item";
     }
 
