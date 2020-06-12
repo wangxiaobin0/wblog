@@ -3,7 +3,6 @@ package com.wblog.model.vo;
 import lombok.Data;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * 访客首页文章
@@ -26,9 +25,22 @@ public class ArticleIndexVo {
     private String abstractHtml;
 
     /**
+     * 浏览数
+     */
+    private String viewCount;
+
+    /**
+     * 收藏数
+     */
+    private String collectNum;
+
+    /**
+     * 点赞数
+     */
+    private String thumbUpCount;
+
+    /**
      * 更新时间
      */
     private Date updateTime;
-
-    private List<TagVo> tags;
 }

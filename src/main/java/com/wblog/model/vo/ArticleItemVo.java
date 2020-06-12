@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 访客显示的博客详情
@@ -27,14 +28,25 @@ public class ArticleItemVo {
      * 浏览数
      */
     private String viewNum;
+
     /**
      * 点赞数
      */
     private String thumbUp;
+
+    /**
+     * 访问用户是否点了赞
+     */
+    private Boolean hasThumbUp;
     /**
      * 收藏数
      */
     private String collectNum;
+
+    /**
+     * 访问用户是否收藏了
+     */
+    private Boolean hasCollect;
     /**
      * 创建时间
      */

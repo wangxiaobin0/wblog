@@ -6,7 +6,7 @@ import com.wblog.model.entity.ArticleEntity;
 import com.wblog.model.vo.ArticleIndexVo;
 import com.wblog.model.vo.ArticleItemVo;
 import com.wblog.model.vo.ArticlePostVo;
-import com.wblog.model.vo.ArticleShowVo;
+import com.wblog.model.vo.ArticlePreviewVo;
 
 import java.util.List;
 import java.util.Map;
@@ -48,7 +48,7 @@ public interface ArticleService extends IService<ArticleEntity> {
 
     void updateTop(Long id, Boolean top);
 
-    ArticleShowVo preview(ArticlePostVo articlePostVo);
+    ArticlePreviewVo preview(ArticlePostVo articlePostVo);
 
     void updateState(Long id, Integer state);
 

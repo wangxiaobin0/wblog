@@ -31,6 +31,13 @@ public class AdminProfileServiceImpl extends ServiceImpl<AdminProfileDao, AdminP
     public AdminTo updateProfile(AdminProfileEntity profileEntity) {
         AdminTo session = AdminRequestInterceptor.getAdmin();
         profileEntity.setId(session.getId());
+        if (!profileEntity.getSocialGithub().startsWith("https://")) {
+            profileEntity.setSocialGithub("https://" + profileEntity.getSocialGithub());
+        }
+        if (!profileEntity.getSocialWeibo().startsWith("https://")) {
+            profileEntity.setSocialWeibo("https://" + profileEntity.getSocialWeibo());
+        }
+
         this.updateById(profileEntity);
 
         //查询最新的个人资料，用于存入session

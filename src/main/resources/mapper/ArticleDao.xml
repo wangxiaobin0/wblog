@@ -25,17 +25,11 @@
         <result property="title" column="title"/>
         <result property="abstractHtml" column="html"/>
         <result property="updateTime" column="update_time"/>
-        <collection property="tags" ofType="com.wblog.model.vo.TagVo">
-            <id property="id" column="tag_id"/>
-            <result property="name" column="name"/>
-        </collection>
     </resultMap>
 
     <select id="getIndexList" resultMap="indexList">
-        select ba.id, ba.title, ba.html, ba.update_time, bat.tag_id, bt.`name`
+        select ba.id, ba.title, ba.html, ba.update_time
         from blog_article ba
-            left join blog_article_tag bat on ba.id = bat.article_id
-            left join blog_tag bt on bt.id = bat.tag_id
         order by ba.update_time desc
 		limit 10;
     </select>

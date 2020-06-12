@@ -7,9 +7,8 @@ import com.wblog.annotation.SysLog;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.common.utils.R;
 import com.wblog.model.vo.ArticlePostVo;
-import com.wblog.model.vo.ArticleShowVo;
-import jdk.nashorn.internal.objects.annotations.Getter;
-import org.springframework.beans.BeanUtils;
+import com.wblog.model.vo.ArticlePreviewVo;
+import com.wblog.service.ArticleRedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +30,9 @@ import com.wblog.service.ArticleService;
 public class ArticleController {
     @Autowired
     private ArticleService articleService;
+
+    @Autowired
+    ArticleRedisService articleRedisService;
 
     /**
      * 列表
@@ -82,9 +84,9 @@ public class ArticleController {
 
     @PostMapping("/preview")
     public String preview(ArticlePostVo articlePostVo, Model model){
-        ArticleShowVo showVo = articleService.preview(articlePostVo);
+        ArticlePreviewVo showVo = articleService.preview(articlePostVo);
         model.addAttribute("article", showVo);
-        return "item";
+        return "preview";
     }
 
     /**
@@ -133,5 +135,4 @@ public class ArticleController {
 
         return R.ok();
     }
-
 }

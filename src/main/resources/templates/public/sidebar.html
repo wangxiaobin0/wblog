@@ -13,13 +13,13 @@
             <div class="hr-text text-blue">社交</div>
             <ul class="social-links list-inline mb-4 mt-2">
                 <li class="list-inline-item" th:if="${session.SESSION_BLOGGER.socialGithub} != null">
-                    <a th:href="${session.SESSION_BLOGGER.socialGithub}" title="GitHub" data-toggle="tooltip"><i class="fa fa-github"></i></a>
+                    <a th:href="${session.SESSION_BLOGGER.socialGithub}" title="GitHub" data-toggle="tooltip" target="_blank"><i class="fa fa-github"></i></a>
                 </li>
                 <li class="list-inline-item" th:if="${session.SESSION_BLOGGER.socialWeibo} != null">
-                    <a th:href="${session.SESSION_BLOGGER.socialWeibo}"  title="微博" data-toggle="tooltip"><i class="fa fa-weibo"></i></a>
+                    <a th:href="${session.SESSION_BLOGGER.socialWeibo}"  title="微博" data-toggle="tooltip" target="_blank"><i class="fa fa-weibo"></i></a>
                 </li>
                 <li class="list-inline-item" th:if="${session.SESSION_BLOGGER.socialWeixin} != null">
-                    <a th:href="${session.SESSION_BLOGGER.socialWeixin}"  title="微信" data-toggle="tooltip"><i class="fa fa-wechat"></i></a>
+                    <a th:href="${session.SESSION_BLOGGER.socialWeixin}"  title="微信" data-toggle="tooltip" target="_blank"><i class="fa fa-wechat"></i></a>
                 </li>
             </ul>
             <div class="hr-text text-blue">标签</div>

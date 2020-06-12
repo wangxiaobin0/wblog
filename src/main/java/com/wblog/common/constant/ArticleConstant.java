@@ -27,7 +27,7 @@ public class ArticleConstant {
      *  value: user-key
      *  rpush
      */
-    public static final String ARTICLE_COLLECT = "article:collect";
+    public static final String ARTICLE_COLLECT = "article:collect:";
     /**
      * 文章浏览次数
      * string
@@ -44,10 +44,8 @@ public class ArticleConstant {
     public static final String ARTICLE_THUMB_UP = "article:thumbUp:";
 
     /**
-     * 文章信息
-     * sting
-     * key: article:info:articleId
-     * value: articleInfo
+     * 文章点赞次数
+     * string
      */
-    public static final String ARTICLE_INFO = "article:info:";
+    public static final String ARTICLE_THUMB_UP_COUNT = "article:thumbUp:count:";
 }

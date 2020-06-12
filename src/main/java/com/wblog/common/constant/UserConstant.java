@@ -33,6 +33,6 @@ public class UserConstant {
      * 访客专栏订阅
      *
      */
-    public static final String USER_COLUMN_SUBSCRIBE = "user:subscribe:column";
+    public static final String USER_COLUMN_SUBSCRIBE = "user:subscribe:column:";
 }
 

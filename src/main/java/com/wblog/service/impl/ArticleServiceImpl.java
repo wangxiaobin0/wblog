@@ -2,11 +2,11 @@ package com.wblog.service.impl;
 
 import com.wblog.common.constant.ArticleConstant;
 import com.wblog.common.enume.ArticleStateEnum;
-import com.wblog.common.enume.TagStateEnum;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.common.utils.Query;
 import com.wblog.exception.ArticleException;
 import com.wblog.interceptor.AdminRequestInterceptor;
+import com.wblog.interceptor.UserRequestInterceptor;
 import com.wblog.model.entity.ArticleTagEntity;
 import com.wblog.model.entity.TagEntity;
 import com.wblog.model.to.AdminTo;
@@ -17,11 +17,9 @@ import com.wblog.service.TagService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.*;
@@ -36,8 +34,6 @@ import com.wblog.model.entity.ArticleEntity;
 import com.wblog.service.ArticleService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-
-import javax.swing.text.html.HTML;
 
 
 @Slf4j
@@ -169,8 +165,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
     }
 
     @Override
-    public ArticleShowVo preview(ArticlePostVo articlePostVo) {
-        ArticleShowVo showVo = new ArticleShowVo();
+    public ArticlePreviewVo preview(ArticlePostVo articlePostVo) {
+        ArticlePreviewVo showVo = new ArticlePreviewVo();
         BeanUtils.copyProperties(articlePostVo, showVo);
         String[] split = articlePostVo.getTag().split("/");
         if (split.length != 1 || StringUtils.isEmpty(split[0])) {
@@ -197,33 +193,49 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
             String abstractHtml = articleIndexVo.getAbstractHtml();
             abstractHtml = abstractHtml.replaceAll("<[^>]*>", "").replaceAll("[(/>)<]", "");
             articleIndexVo.setAbstractHtml(abstractHtml.substring(0, abstractHtml.length() > 40 ? 40 : abstractHtml.length()));
-            if (articleIndexVo.getTags() != null && articleIndexVo.getTags().size() > 2) {
-                while (articleIndexVo.getTags().size() != 2) {
-                    articleIndexVo.getTags().remove(2);
-                }
-            }
+
+            //查询浏览数
+            String viewCount = articleRedisService.getCount(articleIndexVo.getId(), ArticleConstant.ARTICLE_VIEW_COUNT);
+            articleIndexVo.setViewCount(viewCount);
+
+            //查询点赞数
+            String thumpUpCount = articleRedisService.getCount(articleIndexVo.getId(), ArticleConstant.ARTICLE_THUMB_UP_COUNT);
+            articleIndexVo.setThumbUpCount(thumpUpCount);
+
+            //查询收藏数
+            String collectCount = articleRedisService.getCount(articleIndexVo.getId(), ArticleConstant.ARTICLE_COLLECT_COUNT);
+            articleIndexVo.setCollectNum(collectCount);
+
             return articleIndexVo;
         }).collect(Collectors.toList());
     }
 
     @Override
     public ArticleItemVo getItem(Long articleId) {
-        //更新浏览数
-        articleRedisService.incrViewCount(articleId);
+        //更新浏览数,添加浏览记录
+        articleRedisService.incrViewCountAndAddViewHistory(articleId);
         //查询数据库文章信息
         ArticleItemVo articleItem = this.baseMapper.getArticleItem(articleId);
         if (articleItem == null) {
             throw new ArticleException("文章不存在");
         }
         //查询浏览数
-        String viewCount = articleRedisService.getCollectCount(articleId, ArticleConstant.ARTICLE_VIEW_COUNT);
+        String viewCount = articleRedisService.getCount(articleId, ArticleConstant.ARTICLE_VIEW_COUNT);
         articleItem.setViewNum(viewCount);
+
+        String userKey = UserRequestInterceptor.getUser().getUserKey();
+        //当前访客是否收藏过
+        articleItem.setHasCollect(articleRedisService.orNot(articleId, ArticleConstant.ARTICLE_COLLECT, userKey));
+
         //查询收藏数
-        String collectCount = articleRedisService.getCollectCount(articleId, ArticleConstant.ARTICLE_COLLECT_COUNT);
+        String collectCount = articleRedisService.getCount(articleId, ArticleConstant.ARTICLE_COLLECT_COUNT);
         articleItem.setCollectNum(collectCount);
+
         //查询点赞数
-        String thumbUpCount = articleRedisService.getCollectCount(articleId, ArticleConstant.ARTICLE_THUMB_UP);
+        String thumbUpCount = articleRedisService.getCount(articleId, ArticleConstant.ARTICLE_THUMB_UP_COUNT);
         articleItem.setThumbUp(thumbUpCount);
+        //是否赞过
+        articleItem.setHasThumbUp(articleRedisService.orNot(articleId, ArticleConstant.ARTICLE_THUMB_UP, userKey));
         log.info("获取文章结果：{}", articleItem);
         return articleItem;
     }

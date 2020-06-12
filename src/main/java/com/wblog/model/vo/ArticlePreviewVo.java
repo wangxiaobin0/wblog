@@ -6,10 +6,10 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 博客展示Vo
+ * 博客预览Vo
  */
 @Data
-public class ArticleShowVo {
+public class ArticlePreviewVo {
     /**
      * id
      */
