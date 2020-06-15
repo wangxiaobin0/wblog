@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wblog.annotation.SysLog;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.common.utils.R;
@@ -26,10 +27,8 @@ import javax.validation.Valid;
 
 
 /**
- * 
- *
  * @author wangxb
- * @email 
+ * @email
  */
 @Controller
 @RequestMapping("/admin/column")
@@ -38,53 +37,54 @@ public class ColumnController {
     private ColumnService columnService;
 
     /**
-     * 列表
+     * 管理端：列表
      */
     @GetMapping("/list")
-    public String list(@RequestParam Map<String, Object> params, Model model){
+    public String list(@RequestParam Map<String, Object> params, Model model) {
         List<ColumnEntity> list = columnService.list();
         model.addAttribute("list", list);
         return "/admin/column/list";
     }
 
+    /**
+     * 管理端：跳转添加页面
+     *
+     * @return
+     */
     @GetMapping
     public String goToAddPage() {
         return "/admin/column/add";
     }
 
     /**
-     * 信息
+     * 管理端：专栏详情
      */
     @SysLog(business = "专栏详情")
     @GetMapping("/{id}")
-    public String columnDetail(@PathVariable("id") Long id, Model model){
-        try {
-            ColumnDetailVo columnVo = columnService.columnDetail(id);
-            model.addAttribute("detail", columnVo);
-        } catch (Exception e) {
-            model.addAttribute("detail", null);
-            e.printStackTrace();
-        }
+    public String columnDetail(@PathVariable("id") Long id, Model model) throws ExecutionException, InterruptedException {
+        ColumnDetailVo columnVo = columnService.columnDetail(id);
+        model.addAttribute("detail", columnVo);
         return "admin/column/detail";
     }
 
     /**
-     * 保存
+     * 管理端：保存
      */
     @SysLog(business = "新增专栏")
     @ResponseBody
     @PostMapping
-    public R save(@Valid ColumnEntity column){
-		columnService.add(column);
+    public R save(@Valid ColumnEntity column) {
+        columnService.add(column);
         return R.ok();
     }
 
     /**
      * 修改
      */
+    @Deprecated
     @PostMapping("/update")
-    public R update(@RequestBody ColumnEntity column){
-		columnService.updateById(column);
+    public R update(@RequestBody ColumnEntity column) {
+        columnService.updateById(column);
 
         return R.ok();
     }
@@ -93,10 +93,8 @@ public class ColumnController {
      * 删除
      */
     @PostMapping("/delete")
-    public R delete(@RequestBody Long[] ids){
-		columnService.removeByIds(Arrays.asList(ids));
-
+    public R delete(@RequestBody Long[] ids) {
+        columnService.removeByIds(Arrays.asList(ids));
         return R.ok();
     }
-
 }

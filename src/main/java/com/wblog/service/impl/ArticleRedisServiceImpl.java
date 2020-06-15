@@ -29,8 +29,15 @@ public class ArticleRedisServiceImpl implements ArticleRedisService {
     }
 
     @Override
-    public String getCount(Long articleId, String keyPrefix) {
-        return redisTemplate.opsForValue().get(keyPrefix + articleId);
+    public Long getCount(Long articleId, String keyPrefix) {
+        String key = keyPrefix + articleId;
+        //浏览数是累计数，不是统计不重复的浏览访客数
+        if (ArticleConstant.ARTICLE_VIEW_COUNT.equals(keyPrefix)) {
+            return Long.parseLong(redisTemplate.opsForValue().get(key));
+        } else {
+            BoundSetOperations<String, String> setOps = redisTemplate.boundSetOps(key);
+            return setOps.size();
+        }
     }
 
     @Override
@@ -59,21 +66,15 @@ public class ArticleRedisServiceImpl implements ArticleRedisService {
         BoundSetOperations<String, String> userSetOps = setOps(userRedisKey);
         //flag=true:点赞；flag=false:取消点赞
         if (flag) {
-            //没有点赞
-            if (!articleSetOps.isMember(userKey)) {
-                //添加该访客到文章点赞列表
-                articleSetOps.add(userKey);
-                //添加文章到该访客的点赞列表
-                return userSetOps.add(articleId.toString()) == 1;
-            }
+            //添加该访客到文章点赞列表
+            articleSetOps.add(userKey);
+            //添加文章到该访客的点赞列表
+            userSetOps.add(articleId.toString());
         } else {
-            //已点赞
-            if (articleSetOps.isMember(userKey)) {
-                //文章点赞列表中移除该访客
-                articleSetOps.remove(userKey);
-                //访客的点赞列表移除该文章
-                return userSetOps.remove(articleId.toString()) == 1;
-            }
+            //文章点赞列表中移除该访客
+            articleSetOps.remove(userKey);
+            //访客的点赞列表移除该文章
+            userSetOps.remove(articleId.toString());
         }
         return true;
     }

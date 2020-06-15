@@ -15,7 +15,7 @@ public class ArticleConstant {
     public static final String ARTICLE_VIEW = "article:view:";
 
     /**
-     * 文章浏览次数
+     * 文章浏览次数.由于浏览列表是set集合，会去重，不能同意同一个访客的多次访问
      * string
      */
     public static final String ARTICLE_VIEW_COUNT = "article:view:count:";
@@ -28,11 +28,6 @@ public class ArticleConstant {
      *  rpush
      */
     public static final String ARTICLE_COLLECT = "article:collect:";
-    /**
-     * 文章浏览次数
-     * string
-     */
-    public static final String ARTICLE_COLLECT_COUNT = "article:collect:count:";
 
     /**
      * 点赞过文章的访客列表
@@ -42,10 +37,4 @@ public class ArticleConstant {
      *  rpush
      */
     public static final String ARTICLE_THUMB_UP = "article:thumbUp:";
-
-    /**
-     * 文章点赞次数
-     * string
-     */
-    public static final String ARTICLE_THUMB_UP_COUNT = "article:thumbUp:count:";
 }

@@ -195,15 +195,15 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
             articleIndexVo.setAbstractHtml(abstractHtml.substring(0, abstractHtml.length() > 40 ? 40 : abstractHtml.length()));
 
             //查询浏览数
-            String viewCount = articleRedisService.getCount(articleIndexVo.getId(), ArticleConstant.ARTICLE_VIEW_COUNT);
+            Long viewCount = articleRedisService.getCount(articleIndexVo.getId(), ArticleConstant.ARTICLE_VIEW_COUNT);
             articleIndexVo.setViewCount(viewCount);
 
             //查询点赞数
-            String thumpUpCount = articleRedisService.getCount(articleIndexVo.getId(), ArticleConstant.ARTICLE_THUMB_UP_COUNT);
+            Long thumpUpCount = articleRedisService.getCount(articleIndexVo.getId(), ArticleConstant.ARTICLE_THUMB_UP);
             articleIndexVo.setThumbUpCount(thumpUpCount);
 
             //查询收藏数
-            String collectCount = articleRedisService.getCount(articleIndexVo.getId(), ArticleConstant.ARTICLE_COLLECT_COUNT);
+            Long collectCount = articleRedisService.getCount(articleIndexVo.getId(), ArticleConstant.ARTICLE_COLLECT);
             articleIndexVo.setCollectNum(collectCount);
 
             return articleIndexVo;
@@ -220,7 +220,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
             throw new ArticleException("文章不存在");
         }
         //查询浏览数
-        String viewCount = articleRedisService.getCount(articleId, ArticleConstant.ARTICLE_VIEW_COUNT);
+        Long viewCount = articleRedisService.getCount(articleId, ArticleConstant.ARTICLE_VIEW_COUNT);
         articleItem.setViewNum(viewCount);
 
         String userKey = UserRequestInterceptor.getUser().getUserKey();
@@ -228,11 +228,11 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
         articleItem.setHasCollect(articleRedisService.orNot(articleId, ArticleConstant.ARTICLE_COLLECT, userKey));
 
         //查询收藏数
-        String collectCount = articleRedisService.getCount(articleId, ArticleConstant.ARTICLE_COLLECT_COUNT);
+        Long collectCount = articleRedisService.getCount(articleId, ArticleConstant.ARTICLE_COLLECT);
         articleItem.setCollectNum(collectCount);
 
         //查询点赞数
-        String thumbUpCount = articleRedisService.getCount(articleId, ArticleConstant.ARTICLE_THUMB_UP_COUNT);
+        Long thumbUpCount = articleRedisService.getCount(articleId, ArticleConstant.ARTICLE_THUMB_UP);
         articleItem.setThumbUp(thumbUpCount);
         //是否赞过
         articleItem.setHasThumbUp(articleRedisService.orNot(articleId, ArticleConstant.ARTICLE_THUMB_UP, userKey));

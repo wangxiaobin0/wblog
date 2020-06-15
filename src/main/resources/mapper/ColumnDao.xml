@@ -10,12 +10,23 @@
         <result property="name" column="name"/>
         <result property="summary" column="summary"/>
         <result property="image" column="image"/>
-        <result property="collectNum" column="collect_num"/>
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
         <result property="state" column="state"/>
         <result property="sort" column="sort"/>
     </resultMap>
 
+    <resultMap type="com.wblog.model.vo.ColumnVo" id="columnVo">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="summary" column="summary"/>
+        <result property="image" column="image"/>
+    </resultMap>
+    
+    <select id="columnList" resultMap="columnVo">
+        select id, name, summary, image
+        from blog_column
+        order by sort
+    </select>
 
 </mapper>

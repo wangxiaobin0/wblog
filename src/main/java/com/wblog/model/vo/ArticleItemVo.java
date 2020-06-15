@@ -27,12 +27,12 @@ public class ArticleItemVo {
     /**
      * 浏览数
      */
-    private String viewNum;
+    private Long viewNum;
 
     /**
      * 点赞数
      */
-    private String thumbUp;
+    private Long thumbUp;
 
     /**
      * 访问用户是否点了赞
@@ -41,7 +41,7 @@ public class ArticleItemVo {
     /**
      * 收藏数
      */
-    private String collectNum;
+    private Long collectNum;
 
     /**
      * 访问用户是否收藏了

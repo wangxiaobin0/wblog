@@ -19,7 +19,7 @@ public interface ArticleRedisService {
      * @param keyPrefix key前缀，参见ArticleConstant
      * @return
      */
-    String getCount(Long articleId, String keyPrefix);
+    Long getCount(Long articleId, String keyPrefix);
 
     /**
      * 获取文章的点赞/收藏者列表

@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="public/head :: head(专栏)"></head>
+<body class="">
+<div class="page">
+    <div class="flex-fill">
+        <!--响应式顶部菜单-->
+        <div th:replace="public/topbar :: flexTopbar"></div>
+        <div class="my-3 my-md-5">
+            <div class="container">
+                <div class="row mb-3">
+                    <!--侧边菜单-->
+                    <div th:replace="public/sidebar :: sidebar"></div>
+                    <div class="col-lg-9">
+                        <!--顶部菜单-->
+                        <div th:replace="public/topbar :: topbar(1)"></div>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row row-sm align-items-center">
+                                    <div class="col-auto">
+                                            <span class="avatar avatar-lg"
+                                                  th:style="'background-image: url(' +  ${column.image} + ')'"></span>
+                                    </div>
+                                    <div class="col">
+                                        <h4 class="card-title m-0">
+                                            <a href="#" th:text="${column.name}">专栏名：Redis</a>
+                                        </h4>
+                                        <div class="text-muted" th:text="${column.summary}">
+                                            Working in Kare
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <a href="#" class="btn btn-sm btn-secondary text-red"
+                                           onclick= "subscribeOrCancel(false)" id="unSubscribe"
+                                            th:style="${column.hasSubscribe} ? '' : 'display:none;'">
+                                            取消收藏
+                                        </a>
+                                        <a href="#" class="btn btn-sm btn-secondary"
+                                           onclick= "subscribeOrCancel(true)" id="subscribe"
+                                           th:style="${column.hasSubscribe} ? 'display:none;' : ''">
+                                            添加收藏
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-header">
+                                <h3 class="card-title">文章列表</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table card-table table-hover text-nowrap">
+                                        <thead>
+                                        <tr>
+                                            <th class="w-1">ID</th>
+                                            <th>标题</th>
+                                            <th>创建时间</th>
+                                            <th>收藏人数</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="item : ${column.itemVos}">
+                                            <td>
+                                                <span class="text-muted" th:text="${item.articleId}">001401</span>
+                                            </td>
+                                            <td>
+                                                <a  th:href="'/item/' + ${item.articleId}" class="text-inherit"
+                                                   th:text="${item.articleTitle}">设计模式</a>
+                                            </td>
+                                            <td>
+												<span class="tag tag-warning" th:text="${#dates.format(item.createTime, 'yyyy-MM-dd')}">2020-02-29</span>
+                                            </td>
+                                            <td th:text="${item.collectNum}"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="container">
+            <div class="row align-items-center flex-row-reverse">
+                <div class="col-auto ml-lg-auto">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <ul class="list-inline list-inline-dots mb-0">
+                                <li class="list-inline-item"><a href="./docs/index.html">Documentation</a></li>
+                                <li class="list-inline-item"><a href="./faq.html">FAQ</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-auto">
+                            <a href="https://github.com/tabler/tabler" class="btn btn-outline-primary btn-sm">Source
+                                code</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-auto mt-3 mt-lg-0 text-center">
+                    Copyright © 2019 <a href="../../static">Tabler</a>. Theme by <a href="https://codecalm.net"
+                                                                                    target="_blank">codecalm.net</a>
+                    All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+<script>
+    function subscribeOrCancel(flag) {
+        $.ajax({
+            type: "post",
+            url: "/column/subscribe",
+            data: {
+                "columnId": '[[${column.id}]]',
+                "flag":flag
+            },
+            success: function (data) {
+                if (data.code == 200) {
+                    if (flag) {
+                        $("#unSubscribe").show();
+                        $("#subscribe").hide();
+                    } else {
+                        $("#unSubscribe").hide();
+                        $("#subscribe").show();
+                    }
+                }
+            }
+        })
+    }
+</script>
+</body>
+</html>

@@ -36,5 +36,5 @@ public class ColumnItemVo implements Serializable {
     /**
      * 收藏人数
      */
-    private Integer collectNum;
+    private Long collectNum;
 }

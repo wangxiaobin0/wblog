@@ -19,8 +19,7 @@
             ba.id as articleId,
             ba.title as articleTitle,
             bci.sort as sort,
-            ba.create_time as createTime,
-            ba.collect_num as collectNum
+            ba.create_time as createTime
         from blog_column_item bci, blog_article ba
         where bci.article_id = ba.id and bci.column_id = #{columnId}
     </select>

@@ -23,7 +23,7 @@
         </div>
     </div>
 </div>
-<div class="card collapse d-lg-flex" id="headerMenuCollapse" th:fragment="topbar">
+<div class="card collapse d-lg-flex" id="headerMenuCollapse" th:fragment="topbar(flag)">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-3 ml-auto">
@@ -39,25 +39,31 @@
             <div class="col-lg order-lg-first">
                 <ul class="nav nav-tabs border-0 flex-column flex-lg-row">
                     <li class="nav-item">
-                        <a href="../index.html" class="nav-link" th:href="@{/}">
+                        <a href="../index.html" class="nav-link" th:href="@{/}" th:classappend="${flag == 0} ? 'active' : ''">
                             <i class="fe fe-home"></i>
                             首页
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link" th:href="@{/column}">
-                            <i class="fe fe-tag"></i>
+                        <a href="#" class="nav-link" th:href="@{/column}" th:classappend="${flag == 1} ? 'active' : ''">
+                            <i class="fe fe-star"></i>
                             专栏
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="../archive.html" class="nav-link" th:href="@{/archive}">
+                        <a href="../archive.html" class="nav-link" th:href="@{/archive}" th:classappend="${flag == 2} ? 'active' : ''">
                             <i class="fe fe-folder"></i>
                             归档
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="../archive.html" class="nav-link" th:href="@{/archive}" th:classappend="${flag == 3} ? 'active' : ''">
+                            <i class="fe fe-user"></i>
+                            我的
+                        </a>
+                    </li>
                     <li class="nav-item toggle d-lg-none">
-                        <a href="#" class="nav-link">
+                        <a href="#" class="nav-link" th:classappend="${flag == 4} ? 'active' : ''">
                             <i class="fe fe-message-circle"></i>
                             联系我
                         </a>

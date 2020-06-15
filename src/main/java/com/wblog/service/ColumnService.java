@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.model.entity.ColumnEntity;
 import com.wblog.model.vo.ColumnDetailVo;
+import com.wblog.model.vo.ColumnVo;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -21,5 +23,7 @@ public interface ColumnService extends IService<ColumnEntity> {
     void add(ColumnEntity column);
 
     ColumnDetailVo columnDetail(Long id) throws ExecutionException, InterruptedException;
+
+    List<ColumnVo> columnList();
 }
 

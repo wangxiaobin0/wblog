@@ -44,10 +44,6 @@ public class ColumnEntity implements Serializable {
 	 */
 	private String image;
 	/**
-	 * 专栏收藏人数
-	 */
-	private Integer collectNum;
-	/**
 	 * 创建时间
 	 */
 	@TableField(fill = FieldFill.INSERT)

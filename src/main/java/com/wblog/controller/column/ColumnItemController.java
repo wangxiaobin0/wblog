@@ -58,7 +58,7 @@ public class ColumnItemController {
     @PostMapping
     @ResponseBody
     public R save(@Valid ColumnItemEntity columnItem){
-		columnItemService.save(columnItem);
+		columnItemService.addToColumn(columnItem);
         return R.ok();
     }
 

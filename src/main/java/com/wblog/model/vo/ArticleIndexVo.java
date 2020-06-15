@@ -27,17 +27,17 @@ public class ArticleIndexVo {
     /**
      * 浏览数
      */
-    private String viewCount;
+    private Long viewCount;
 
     /**
      * 收藏数
      */
-    private String collectNum;
+    private Long collectNum;
 
     /**
      * 点赞数
      */
-    private String thumbUpCount;
+    private Long thumbUpCount;
 
     /**
      * 更新时间
