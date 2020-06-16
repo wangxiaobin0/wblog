@@ -33,7 +33,8 @@ public class ArticleRedisServiceImpl implements ArticleRedisService {
         String key = keyPrefix + articleId;
         //浏览数是累计数，不是统计不重复的浏览访客数
         if (ArticleConstant.ARTICLE_VIEW_COUNT.equals(keyPrefix)) {
-            return Long.parseLong(redisTemplate.opsForValue().get(key));
+            String s = redisTemplate.opsForValue().get(key);
+            return s == null ? 0l : Long.parseLong(s);
         } else {
             BoundSetOperations<String, String> setOps = redisTemplate.boundSetOps(key);
             return setOps.size();

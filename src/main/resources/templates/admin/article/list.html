@@ -27,33 +27,33 @@
                                 <tr>
                                     <th class="w-1">ID</th>
                                     <th>标题</th>
-                                    <th>标签</th>
                                     <th>发表时间</th>
                                     <th>访问人数</th>
+                                    <th>收藏人数</th>
+                                    <th>点赞人数</th>
                                     <th>状态</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="item : ${page.list}">
-                                    <td><span class="text-muted" th:text="${item.id}">001401</span></td>
+                                <tr th:each="aritcle : ${articleList}">
+                                    <td><span class="text-muted" th:text="${aritcle.id}">001401</span></td>
                                     <td>
-                                        <a href="javascript:void(0)" class="text-inherit" th:text="${item.title}"
-                                           th:attr="viewNum=${item.viewNum},thumbUp=${item.thumbUp},,collectNum=${item.collectNum} "
-                                           onclick="showDetail(this)">Java设计模式
+                                        <a href="javascript:void(0)" class="text-inherit" th:text="${aritcle.title}">
+                                            Java设计模式
                                         </a>
+                                        <span class="badge bg-red" th:if="${aritcle.top}">置顶</span>
                                     </td>
-                                    <td>
-                                        <span class="tag tag-warning" th:each="tag : ${item.tags}" style="margin: 0 0.2rem">[[${tag.name}]]</span>
-                                    </td>
-                                    <td th:text="${#dates.format(item.updateTime, 'yyyy-MM-dd')}">
+                                    <td th:text="${#dates.format(aritcle.createTime, 'yyyy-MM-dd')}">
                                         2020-02-29
                                     </td>
-                                    <td th:text="${item.viewNum}"></td>
-                                    <td th:if="${item.state} == 1">
+                                    <td th:text="${aritcle.viewCount}"></td>
+                                    <td th:text="${aritcle.collectNum}"></td>
+                                    <td th:text="${aritcle.thumbUpCount}"></td>
+                                    <td th:if="${aritcle.state} == 1">
                                         <span class="status-icon bg-lime"></span> 公开
                                     </td>
-                                    <td th:if="${item.state} == 2">
+                                    <td th:if="${aritcle.state} == 2">
                                         <span class="status-icon bg-warning"></span> 保密
                                     </td>
                                     <td>
@@ -69,8 +69,8 @@
                                               <a class="dropdown-item" href="#">
                                                 添加到专栏
                                               </a>
-                                              <a class="dropdown-item" href="#" th:text="${item.top} ? '取消置顶':'设为置顶'"
-                                                 th:attr="articleId=${item.id},top=${!item.top}" onclick="changeTop(this)">
+                                              <a class="dropdown-item" href="#" th:text="${aritcle.top} ? '取消置顶':'设为置顶'"
+                                                 th:attr="articleId=${aritcle.id},top=${!aritcle.top}" onclick="changeTop(this)">
                                                 设置为置顶
                                               </a>
                                             </div>
@@ -83,7 +83,7 @@
                         </div>
                         <div class="card-body">
                             <ul class="pagination center float-right">
-                                <li th:class="${page.hasPrev} ?'page-item' : 'page-item disabled'">
+                                <li class="page-item disabled">
                                     <a class="page-link" href="#" tabindex="-1">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -93,7 +93,7 @@
                                         prev
                                     </a>
                                 </li>
-                                <li th:class="${page.hasNext} ?'page-item' : 'page-item disabled'">
+                                <li class="page-item">
                                     <a class="page-link" href="#">
                                         next
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -110,55 +110,9 @@
             </div>
         </div>
     </div>
-    <div class="modal modal-blur fade" id="modal-report" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitle"></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">标题</label>
-                        <p class="tracking-wide">ElasticSearch</p>
-                    </div>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-lg-4">
-                            <div class="mb-3">
-                                <p class="tracking-wide">浏览数：<mark id="viewNum"></mark></p>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="mb-3">
-                                <p class="tracking-wide">点赞数：<mark id="thumbUp"></mark></p>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="mb-3">
-                                <p class="tracking-wide">收藏数：<mark id="collectNum"></mark></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <div th:replace="admin/dashboard :: footer"></div>
 </div>
 <script>
-    function showDetail(ele) {
-        let viewNum = $(ele).attr("viewNum");
-        let thumbUp = $(ele).attr("thumbUp");
-        let collectNum = $(ele).attr("collectNum");
-        $("#viewNum").text(viewNum);
-        $("#thumbUp").text(thumbUp);
-        $("#collectNum").text(collectNum);
-        $("#modal-report").modal("show");
-    }
-    //javascript:window.location.reload()
     function changeTop(ele) {
         $.ajax({
             type: "post",
@@ -174,8 +128,6 @@
                         $("#alert-success").fadeOut();
                         window.location.reload();
                     }, 1000);
-
-
                 } else {
                     $("#alert-fail").fadeIn();
                     setTimeout(function () {

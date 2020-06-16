@@ -17,4 +17,6 @@ import java.util.List;
 @Mapper
 public interface ColumnItemDao extends BaseMapper<ColumnItemEntity> {
     List<ColumnItemVo> getColumnItems(@Param("columnId") Long id);
+
+    Integer changeSort(@Param("id") Long id, @Param("sort") Boolean sort);
 }

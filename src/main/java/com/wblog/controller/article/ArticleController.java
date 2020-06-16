@@ -1,11 +1,13 @@
 package com.wblog.controller.article;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import com.wblog.annotation.SysLog;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.common.utils.R;
+import com.wblog.model.vo.ArticleIndexVo;
 import com.wblog.model.vo.ArticlePostVo;
 import com.wblog.model.vo.ArticlePreviewVo;
 import com.wblog.service.ArticleRedisService;
@@ -39,9 +41,9 @@ public class ArticleController {
      */
     @SysLog(business = "查询已发布文章")
     @GetMapping("/publish")
-    public String listPublish(@RequestParam Map<String, Object> params, Model model){
-        PageUtils page = articleService.queryPage(params);
-        model.addAttribute("page", page);
+    public String listPublish(Model model){
+        List<ArticleIndexVo> articleList = articleService.getPublishList();
+        model.addAttribute("articleList", articleList);
         return "admin/article/list";
     }
 

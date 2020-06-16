@@ -31,4 +31,10 @@ public interface ArticleDao extends BaseMapper<ArticleEntity> {
      * @return
      */
     ArticleItemVo getArticleItem(@PathParam("id") Long articleId);
+
+    /**
+     * 查询已发布文章列表
+     * @return
+     */
+    List<ArticleIndexVo> getPublishList();
 }

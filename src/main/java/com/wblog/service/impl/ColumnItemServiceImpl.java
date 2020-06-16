@@ -69,4 +69,10 @@ public class ColumnItemServiceImpl extends ServiceImpl<ColumnItemDao, ColumnItem
         }
         this.save(columnItem);
     }
+
+    @Override
+    public Boolean changeSort(Long id, Boolean sort) {
+        Integer integer = this.baseMapper.changeSort(id, sort);
+        return integer == 1;
+    }
 }

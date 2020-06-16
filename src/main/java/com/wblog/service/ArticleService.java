@@ -21,10 +21,9 @@ public interface ArticleService extends IService<ArticleEntity> {
 
     /**
      * 查询已发布文章
-     * @param params
      * @return
      */
-    PageUtils queryPage(Map<String, Object> params);
+    List<ArticleIndexVo> queryPage();
 
     /**
      * 查询草稿箱文章
@@ -55,5 +54,7 @@ public interface ArticleService extends IService<ArticleEntity> {
     List<ArticleIndexVo> indexList();
 
     ArticleItemVo getItem(Long articleId);
+
+    List<ArticleIndexVo> getPublishList();
 }
 

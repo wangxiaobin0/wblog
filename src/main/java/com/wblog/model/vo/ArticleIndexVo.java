@@ -40,7 +40,17 @@ public class ArticleIndexVo {
     private Long thumbUpCount;
 
     /**
-     * 更新时间
+     * 状态
      */
-    private Date updateTime;
+    private Integer state;
+
+    /**
+     * 发表时间
+     */
+    private Date createTime;
+
+    /**
+     * 是否置顶
+     */
+    private Boolean top;
 }

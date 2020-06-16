@@ -2,19 +2,10 @@
 <html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="public/head :: head(专栏)"></head>
 <style>
-    .btn-options {
-    display: flex;
-    align-items: center;
-    padding: 0;
-    color: #868c97;
-    cursor: pointer;
-    background: none;
-    border: none; }
-    .btn-options:focus {
-    outline: 0; }
-    .btn-options .icon {
-    width: 1rem;
-    height: 1rem; }
+    .gw_num{border: 1px solid #dbdbdb;width: 70px;line-height: 20px;overflow: hidden;}
+    .gw_num em{display: block;height: 20px;width: 20px;float: left;color: #7A7979;border-right: 1px solid #dbdbdb;text-align: center;cursor: pointer;}
+    .gw_num .sort{display: block;float: left;text-align: center;width: 28px;font-style: normal;font-size: 14px;line-height: 20px;border: 0;}
+    .gw_num em.add{float: right;border-right: 0;border-left: 1px solid #dbdbdb;}
 </style>
 <body class="">
 <div class="page">
@@ -68,7 +59,7 @@
                                 <div class="table-responsive">
                                     <table class="table card-table table-hover text-nowrap">
                                         <thead>
-                                        <tr>
+                                        <tr class="text-center">
                                             <th class="w-1">ID</th>
                                             <th>标题</th>
                                             <th>创建时间</th>
@@ -78,7 +69,7 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr th:each="item : ${detail.itemVos}">
+                                        <tr class="text-center" th:each="item : ${detail.itemVos}">
                                             <td>
                                                 <span class="text-muted" th:text="${item.articleId}">001401</span>
                                             </td>
@@ -88,8 +79,13 @@
                                             <td>
                                                 <span class="tag tag-warning" th:text="${#dates.format(item.createTime, 'yyyy-MM-dd')}">2020-02-29</span>
                                             </td>
-                                            <td th:text="${item.collectNum}">20</td>
-                                            <td th:text="${item.sort}" id="sort" th:attr="itemId=${item.id}">
+                                            <td th:text="${item.collectNum}"></td>
+                                            <td id="sort" th:attr="itemId=${item.id}">
+                                                <div class="gw_num" style="margin: 0 auto;">
+                                                    <em class="reduce" onclick="reduceOrAddSort(this, false)">-</em>
+                                                    <span class="sort" th:text="${item.sort}" id="sortNum"></span>
+                                                    <em class="add" onclick="reduceOrAddSort(this, true)">+</em>
+                                                </div>
                                             </td>
                                             <td>
                                                 <a href="#" onclick="deleteArticle(this)" th:attr="itemId=${item.id}">删除</a>
@@ -151,6 +147,27 @@
             },
             error: function (data) {
                 $("#alert-fail").fadeIn();
+            }
+        })
+    }
+
+    function reduceOrAddSort(ele, flag) {
+        let itemId = $(ele).parent().parent().attr("itemId");
+        let sortNum = $("#sortNum").text();
+        if (sortNum == 0 && !flag) {
+            return false;
+        }
+        $.ajax({
+            type: "post",
+            url: "/admin/column/item/sort",
+            data: {
+                "id": itemId,
+                "sort": flag
+            },
+            success: function (data) {
+                if (data.code == 200) {
+                    window.location.reload();
+                }
             }
         })
     }

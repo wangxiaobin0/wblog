@@ -22,5 +22,17 @@
             ba.create_time as createTime
         from blog_column_item bci, blog_article ba
         where bci.article_id = ba.id and bci.column_id = #{columnId}
+        order by bci.sort, ba.create_time desc
     </select>
+
+    <update id="changeSort">
+        update blog_column_item
+        <if test="sort">
+            set sort = sort + 1
+        </if>
+        <if test="!sort">
+            set sort = sort - 1
+        </if>
+        where id = #{id}
+    </update>
 </mapper>

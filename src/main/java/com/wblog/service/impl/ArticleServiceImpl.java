@@ -49,26 +49,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
     ArticleRedisService articleRedisService;
 
     @Override
-    public PageUtils queryPage(Map<String, Object> params) {
-
+    public List<ArticleIndexVo> queryPage() {
         //查询状态为公开和保密的文章
-        QueryWrapper<ArticleEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("state", ArticleStateEnum.PUBLIC.getCode());
-        queryWrapper.or().eq("state", ArticleStateEnum.SECRET.getCode());
-        queryWrapper.orderByDesc("update_time");
-        IPage<ArticleEntity> page = this.page(
-                new Query<ArticleEntity>().getPage(params),
-                queryWrapper
-        );
-        //查询文章的标签
-        List<ArticleEntity> records = page.getRecords();
-        List<ArticleEntity> articleEntities = records.stream().map(articleEntity -> {
-            List<TagEntity> tagEntities = tagService.listTagByArticleId(articleEntity.getId());
-            articleEntity.setTags(tagEntities);
-            return articleEntity;
-        }).collect(Collectors.toList());
-        page.setRecords(articleEntities);
-        return new PageUtils(page);
+        List<ArticleIndexVo> indexList = this.baseMapper.getPublishList();
+        return indexList;
     }
 
     @Override
@@ -189,25 +173,16 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
     public List<ArticleIndexVo> indexList() {
         //查询首页列表
         List<ArticleIndexVo> indexList = this.baseMapper.getIndexList();
-        return indexList.stream().map(articleIndexVo -> {
+        if (indexList == null) {
+            return null;
+        }
+        List<ArticleIndexVo> indexVoList = indexList.stream().map(articleIndexVo -> {
             String abstractHtml = articleIndexVo.getAbstractHtml();
             abstractHtml = abstractHtml.replaceAll("<[^>]*>", "").replaceAll("[(/>)<]", "");
             articleIndexVo.setAbstractHtml(abstractHtml.substring(0, abstractHtml.length() > 40 ? 40 : abstractHtml.length()));
-
-            //查询浏览数
-            Long viewCount = articleRedisService.getCount(articleIndexVo.getId(), ArticleConstant.ARTICLE_VIEW_COUNT);
-            articleIndexVo.setViewCount(viewCount);
-
-            //查询点赞数
-            Long thumpUpCount = articleRedisService.getCount(articleIndexVo.getId(), ArticleConstant.ARTICLE_THUMB_UP);
-            articleIndexVo.setThumbUpCount(thumpUpCount);
-
-            //查询收藏数
-            Long collectCount = articleRedisService.getCount(articleIndexVo.getId(), ArticleConstant.ARTICLE_COLLECT);
-            articleIndexVo.setCollectNum(collectCount);
-
             return articleIndexVo;
         }).collect(Collectors.toList());
+        return getArticleIndexListWithCount(indexVoList);
     }
 
     @Override
@@ -238,6 +213,37 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
         articleItem.setHasThumbUp(articleRedisService.orNot(articleId, ArticleConstant.ARTICLE_THUMB_UP, userKey));
         log.info("获取文章结果：{}", articleItem);
         return articleItem;
+    }
+
+    @Override
+    public List<ArticleIndexVo> getPublishList() {
+        List<ArticleIndexVo> publishList = this.baseMapper.getPublishList();
+        return getArticleIndexListWithCount(publishList);
+    }
+
+    /**
+     * 查询列表中各个文章的浏览/收藏/点赞数
+     * @param publishList
+     * @return
+     */
+    private List<ArticleIndexVo> getArticleIndexListWithCount(List<ArticleIndexVo> publishList) {
+        if (publishList == null) {
+            return null;
+        }
+        return publishList.stream().map(articleIndexVo -> {
+            //查询浏览数
+            Long viewCount = articleRedisService.getCount(articleIndexVo.getId(), ArticleConstant.ARTICLE_VIEW_COUNT);
+            articleIndexVo.setViewCount(viewCount);
+
+            //查询点赞数
+            Long thumpUpCount = articleRedisService.getCount(articleIndexVo.getId(), ArticleConstant.ARTICLE_THUMB_UP);
+            articleIndexVo.setThumbUpCount(thumpUpCount);
+
+            //查询收藏数
+            Long collectCount = articleRedisService.getCount(articleIndexVo.getId(), ArticleConstant.ARTICLE_COLLECT);
+            articleIndexVo.setCollectNum(collectCount);
+            return articleIndexVo;
+        }).collect(Collectors.toList());
     }
 
     private int remainTime(Date updateTime) {

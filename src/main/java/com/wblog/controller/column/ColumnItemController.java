@@ -66,10 +66,17 @@ public class ColumnItemController {
      * 修改
      */
     @PostMapping("/update")
-    //@RequiresPermissions("wblog:columnitem:update")
     public R update(@RequestBody ColumnItemEntity columnItem){
 		columnItemService.updateById(columnItem);
 
+        return R.ok();
+    }
+
+    @SysLog(business = "修改专栏中文章的排序")
+    @ResponseBody
+    @PostMapping("/sort")
+    public R changeSort(@RequestParam("id") Long id, @RequestParam("sort") Boolean sort) {
+        columnItemService.changeSort(id, sort);
         return R.ok();
     }
 
@@ -77,10 +84,8 @@ public class ColumnItemController {
      * 删除
      */
     @PostMapping("/delete")
-    //@RequiresPermissions("wblog:columnitem:delete")
     public R delete(@RequestBody Long[] ids){
 		columnItemService.removeByIds(Arrays.asList(ids));
-
         return R.ok();
     }
 
