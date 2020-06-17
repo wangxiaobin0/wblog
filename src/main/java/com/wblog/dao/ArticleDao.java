@@ -37,4 +37,12 @@ public interface ArticleDao extends BaseMapper<ArticleEntity> {
      * @return
      */
     List<ArticleIndexVo> getPublishList();
+
+    /**
+     * 删除过期文章
+     * @param id 文章ID
+     * @param state 文章状态。3：草稿箱；4：回收站
+     * @return
+     */
+    Integer deleteExpireArticle(@Param("id") Long id, @Param("state") Integer state);
 }

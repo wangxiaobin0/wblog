@@ -30,8 +30,32 @@
         <div class="my-3 my-md-5">
             <div class="container">
                 <div class="row">
-
-                    <div class="col-md-12">
+                    <div class="col-sm-3">
+                        <h3 class="mb-4"><p class="lh-1">文章</p></h3>
+                        <div>
+                            <div class="list-group list-group-transparent mb-0">
+                                <a href="#" class="list-group-item list-group-item-action d-flex align-items-center active" th:href="@{/admin/article}">
+                                    <span class="icon mr-3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
+                                    </span>新增文章
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action d-flex align-items-center" th:href="@{/admin/article/publish}">
+                                    <span class="icon mr-3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                                    </span>已发布
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action d-flex align-items-center" th:href="@{/admin/article/draft}">
+									<span class="icon mr-3">
+										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+									</span>草稿箱
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action d-flex align-items-center" th:href="@{/admin/article/trash}">
+                                    <span class="icon mr-3">
+										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                    </span>回收箱
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-9">
                         <div class="card">
                             <div class="card-body">
                                 <form id="postForm" method="post">

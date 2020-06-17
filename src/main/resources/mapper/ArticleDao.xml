@@ -66,4 +66,10 @@
 		limit 10;
     </select>
 
+    <update id="deleteExpireArticle">
+        update blog_article
+        set state = 5
+        where id = #{id} and state = #{state}
+    </update>
+
 </mapper>

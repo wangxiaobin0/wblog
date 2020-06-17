@@ -27,15 +27,15 @@
 								<div class="d-flex align-items-center pt-5 mt-auto text-muted">
 									<div style="cursor:pointer">
 										<i class="fe fe-eye"></i>
-										[[${article.viewCount} == null ? '0' : ${article.viewCount}]]&nbsp;
+										[[${article.viewCount} == null ? '0' : ${article.viewCount}]]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 									</div>
 									<div style="cursor:pointer">
 										<i class="fe fe-thumbs-up"></i>
-										[[${article.thumbUpCount} == null ? '0' : ${article.thumbUpCount}]]&nbsp;
+										[[${article.thumbUpCount} == null ? '0' : ${article.thumbUpCount}]]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 									</div>
 									<div style="cursor:pointer">
 										<i class="fe fe-star"></i>
-										[[${article.collectNum} == null ? '0' : ${article.collectNum}]]&nbsp;
+										[[${article.collectNum} == null ? '0' : ${article.collectNum}]]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 									</div>
 									<div class="ml-auto text-muted">
 										<small class="d-inline-block text-muted" th:text="${#dates.format(article.createTime, 'yyyy-MM-dd')}">3 days ago</small>

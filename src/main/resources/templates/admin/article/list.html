@@ -8,62 +8,88 @@
         <div th:replace="public/menu :: menu(1)"></div>
         <div class="my-3 my-md-5">
             <div class="container">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">已发布</h3>
-                            <div class="alert alert-success col-login float-right" style="position:absolute;zIndex:-1;right: 50px;display: none" role="alert"  id="alert-success">
-                                修改成功
-                                <a href="#" class="close" data-dismiss="alert" aria-label="close"></a>
-                            </div>
-                            <div class="alert alert-error col-login float-right" style="position:absolute;zIndex:-1;right: 50px;display: none" role="alert"  id="alert-fail">
-                                修改失败，请稍后重试
-                                <a href="#" class="close" data-dismiss="alert" aria-label="close"></a>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <h3 class="mb-4"><p class="lh-1">文章</p></h3>
+                        <div>
+                            <div class="list-group list-group-transparent mb-0">
+                                <a href="#" class="list-group-item list-group-item-action d-flex align-items-center" th:href="@{/admin/article}">
+                                    <span class="icon mr-3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
+                                    </span>新增文章
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action d-flex align-items-center active" th:href="@{/admin/article/publish}">
+                                    <span class="icon mr-3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                                    </span>已发布
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action d-flex align-items-center" th:href="@{/admin/article/draft}">
+									<span class="icon mr-3">
+										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+									</span>草稿箱
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action d-flex align-items-center" th:href="@{/admin/article/trash}">
+                                    <span class="icon mr-3">
+										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                    </span>回收箱
+                                </a>
                             </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table card-table table-hover text-nowrap">
-                                <thead>
-                                <tr>
-                                    <th class="w-1">ID</th>
-                                    <th>标题</th>
-                                    <th>发表时间</th>
-                                    <th>访问人数</th>
-                                    <th>收藏人数</th>
-                                    <th>点赞人数</th>
-                                    <th>状态</th>
-                                    <th>操作</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="aritcle : ${articleList}">
-                                    <td><span class="text-muted" th:text="${aritcle.id}">001401</span></td>
-                                    <td>
-                                        <a href="javascript:void(0)" class="text-inherit" th:text="${aritcle.title}">
-                                            Java设计模式
-                                        </a>
-                                        <span class="badge bg-red" th:if="${aritcle.top}">置顶</span>
-                                    </td>
-                                    <td th:text="${#dates.format(aritcle.createTime, 'yyyy-MM-dd')}">
-                                        2020-02-29
-                                    </td>
-                                    <td th:text="${aritcle.viewCount}"></td>
-                                    <td th:text="${aritcle.collectNum}"></td>
-                                    <td th:text="${aritcle.thumbUpCount}"></td>
-                                    <td th:if="${aritcle.state} == 1">
-                                        <span class="status-icon bg-lime"></span> 公开
-                                    </td>
-                                    <td th:if="${aritcle.state} == 2">
-                                        <span class="status-icon bg-warning"></span> 保密
-                                    </td>
-                                    <td>
-                                        <a class="icon" href="javascript:void(0)">
-                                            <i class="fe fe-edit"></i>
-                                        </a>
-                                        <a class="icon" href="javascript:void(0)">
-                                            <i class="fe fe-trash-2"></i>
-                                        </a>
-                                        <span class="dropdown ml-1">
+                    </div>
+                    <div class="col-sm-9">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">已发布</h3>
+                                <div class="alert alert-success col-login float-right" style="position:absolute;zIndex:-1;right: 50px;display: none" role="alert"  id="alert-success">
+                                    修改成功
+                                    <a href="#" class="close" data-dismiss="alert" aria-label="close"></a>
+                                </div>
+                                <div class="alert alert-error col-login float-right" style="position:absolute;zIndex:-1;right: 50px;display: none" role="alert"  id="alert-fail">
+                                    修改失败，请稍后重试
+                                    <a href="#" class="close" data-dismiss="alert" aria-label="close"></a>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table card-table table-hover text-nowrap">
+                                    <thead>
+                                    <tr>
+                                        <th class="w-1">ID</th>
+                                        <th>标题</th>
+                                        <th>发表时间</th>
+                                        <th>访问人数</th>
+                                        <th>收藏人数</th>
+                                        <th>点赞人数</th>
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="aritcle : ${articleList}">
+                                        <td><span class="text-muted" th:text="${aritcle.id}">001401</span></td>
+                                        <td>
+                                            <a href="javascript:void(0)" class="text-inherit" th:text="${aritcle.title}">
+                                                Java设计模式
+                                            </a>
+                                            <span class="badge bg-red" th:if="${aritcle.top}">置顶</span>
+                                        </td>
+                                        <td th:text="${#dates.format(aritcle.createTime, 'yyyy-MM-dd')}">
+                                            2020-02-29
+                                        </td>
+                                        <td th:text="${aritcle.viewCount}"></td>
+                                        <td th:text="${aritcle.collectNum}"></td>
+                                        <td th:text="${aritcle.thumbUpCount}"></td>
+                                        <td th:if="${aritcle.state} == 1">
+                                            <span class="status-icon bg-lime"></span> 公开
+                                        </td>
+                                        <td th:if="${aritcle.state} == 2">
+                                            <span class="status-icon bg-warning"></span> 保密
+                                        </td>
+                                        <td>
+                                            <a class="icon" href="javascript:void(0)">
+                                                <i class="fe fe-edit"></i>
+                                            </a>
+                                            <a class="icon" href="javascript:void(0)">
+                                                <i class="fe fe-trash-2"></i>
+                                            </a>
+                                            <span class="dropdown ml-1">
                                             <button class="btn btn-secondary btn-sm dropdown-toggle align-text-top" data-boundary="viewport" data-toggle="dropdown">更多</button>
                                             <div class="dropdown-menu dropdown-menu-right">
                                               <a class="dropdown-item" href="#">
@@ -75,35 +101,35 @@
                                               </a>
                                             </div>
                                           </span>
-                                    </td>
-                                </tr>
-                                </tbody>
-
-                            </table>
-                        </div>
-                        <div class="card-body">
-                            <ul class="pagination center float-right">
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#" tabindex="-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                             stroke-linecap="round" stroke-linejoin="round" class="icon">
-                                            <polyline points="15 18 9 12 15 6"></polyline>
-                                        </svg>
-                                        prev
-                                    </a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">
-                                        next
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                             stroke-linecap="round" stroke-linejoin="round" class="icon">
-                                            <polyline points="9 18 15 12 9 6"></polyline>
-                                        </svg>
-                                    </a>
-                                </li>
-                            </ul>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-body">
+                                <ul class="pagination center float-right">
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="#" tabindex="-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                 stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                                <polyline points="15 18 9 12 15 6"></polyline>
+                                            </svg>
+                                            prev
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">
+                                            next
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                 stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                                <polyline points="9 18 15 12 9 6"></polyline>
+                                            </svg>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>

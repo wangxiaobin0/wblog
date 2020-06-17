@@ -1,25 +1,52 @@
 server:
+  #端口
   port: 88
 
 spring:
+  #项目名
   application:
     name: wang-blog
+  #数据源配置
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://112.126.59.115:3306/blog?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
     password: 123456
+  #thymeleaf缓存
   thymeleaf:
     cache: false
+  #jackson日期格式化
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
-
+  #redis
+  redis:
+    host: 127.0.0.1
+    port: 6379
+  rabbitmq:
+    host: 112.126.59.115
+    port: 5672
+    #开启发送端确认
+    publisher-confirms: true
+    #开启消息抵达队列通知
+    publisher-returns: true
+    template:
+      #交换器发送消息失败（无接收队列）时，return消息。与returnCallback配置使用
+      mandatory: true
+    #消费者配置
+    listener:
+      direct:
+        #消费者手动ack
+        acknowledge-mode: manual
 mybatis-plus:
+  #别名包
   type-aliases-package: com.wblog.model.entity
+  #mapper文件路径
   mapper-locations: classpath:mapper/**.xml
   configuration:
+    #控制台打印日志
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    #驼峰命名法
     map-underscore-to-camel-case: true
 blog:
   #对象存储
@@ -30,8 +57,13 @@ blog:
     access-key-secret: xxx
   #异步编排线程池配置
   thread:
+    #核心线程数
     core-pool-size: 50
+    #最大线程数
     max-pool-size: 80
+    #空闲线程存活时间
     keep-alive-time: 10
+    #时间单位
     time-unit: seconds
+    #任务队列容量
     queue-capacity: 100

@@ -1,6 +1,7 @@
 package com.wblog.service.impl;
 
 import com.wblog.common.constant.ArticleConstant;
+import com.wblog.common.constant.MQConstant;
 import com.wblog.common.enume.ArticleStateEnum;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.common.utils.Query;
@@ -10,11 +11,13 @@ import com.wblog.interceptor.UserRequestInterceptor;
 import com.wblog.model.entity.ArticleTagEntity;
 import com.wblog.model.entity.TagEntity;
 import com.wblog.model.to.AdminTo;
+import com.wblog.model.to.ArticleMQTo;
 import com.wblog.model.vo.*;
 import com.wblog.service.ArticleRedisService;
 import com.wblog.service.ArticleTagService;
 import com.wblog.service.TagService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +36,7 @@ import com.wblog.dao.ArticleDao;
 import com.wblog.model.entity.ArticleEntity;
 import com.wblog.service.ArticleService;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 
@@ -47,6 +51,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
 
     @Autowired
     ArticleRedisService articleRedisService;
+
+    @Autowired
+    RabbitTemplate rabbitTemplate;
 
     @Override
     public List<ArticleIndexVo> queryPage() {
@@ -137,6 +144,15 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
             articleTagService.save(articleTagEntity);
         }
         log.info("保存文章与tag的关系");
+
+        //如果保存的是草稿箱消息，发送MQ
+        if (articleEntity.getState() == ArticleStateEnum.DRAFT.getCode()) {
+            rabbitTemplate.convertAndSend(
+                    MQConstant.ArticleConstant.ARTICLE_EVENT_EXCHANGE,
+                    MQConstant.ArticleConstant.ARTICLE_DRAFT_DELAY_ROUTING_KEY,
+                    new ArticleMQTo(articleEntity.getId(), articleEntity.getState()));
+            log.info("保存草稿箱文章{}，20秒自动删除", articleEntity.getId());
+        }
     }
 
     @Override
@@ -191,6 +207,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
         articleRedisService.incrViewCountAndAddViewHistory(articleId);
         //查询数据库文章信息
         ArticleItemVo articleItem = this.baseMapper.getArticleItem(articleId);
+
+        //TODO:使用Assert处理异常
         if (articleItem == null) {
             throw new ArticleException("文章不存在");
         }
@@ -219,6 +237,18 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
     public List<ArticleIndexVo> getPublishList() {
         List<ArticleIndexVo> publishList = this.baseMapper.getPublishList();
         return getArticleIndexListWithCount(publishList);
+    }
+
+    @Override
+    public Boolean deleteExpireArticle(ArticleMQTo articleMQTo) {
+        ArticleEntity byId = this.getById(articleMQTo.getId());
+        //文章不存在算处理成功
+        if (byId == null) {
+            log.info("文章{}不存在", articleMQTo.getId());
+            return true;
+        }
+        Integer count = this.baseMapper.deleteExpireArticle(articleMQTo.getId(), articleMQTo.getState());
+        return count == 1;
     }
 
     /**

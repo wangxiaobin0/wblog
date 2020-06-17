@@ -3,6 +3,7 @@ package com.wblog.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.model.entity.ArticleEntity;
+import com.wblog.model.to.ArticleMQTo;
 import com.wblog.model.vo.ArticleIndexVo;
 import com.wblog.model.vo.ArticleItemVo;
 import com.wblog.model.vo.ArticlePostVo;
@@ -56,5 +57,7 @@ public interface ArticleService extends IService<ArticleEntity> {
     ArticleItemVo getItem(Long articleId);
 
     List<ArticleIndexVo> getPublishList();
+
+    Boolean deleteExpireArticle(ArticleMQTo articleMQTo);
 }
 
