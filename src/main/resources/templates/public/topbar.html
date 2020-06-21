@@ -10,7 +10,7 @@
         <div class="d-flex">
             <div class="d-flex order-lg-1 mr-auto">
                 <a href="#" class="nav-link pr-0 leading-none">
-                    <span class="avatar" style="background-image: url(/static/demo/faces/female/25.jpg)"></span>
+                    <span class="avatar" th:style="'background-image: url(' + ${session.SESSION_BLOGGER.avatar} + ')'"></span>
                     <span class="ml-2 d-lg-block">
 								<span class="text-default">Jane Pearson</span>
 							</span>
@@ -57,7 +57,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="../archive.html" class="nav-link" th:href="@{/archive}" th:classappend="${flag == 3} ? 'active' : ''">
+                        <a href="../archive.html" class="nav-link" th:href="@{/mine}" th:classappend="${flag == 3} ? 'active' : ''">
                             <i class="fe fe-user"></i>
                             我的
                         </a>

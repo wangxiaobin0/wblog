@@ -5,7 +5,7 @@
     <div class="card card-profile">
         <div class="card-header" style="background-image: url(/static/demo/photos/eberhard-grossgasteiger-311213-500.jpg);"></div>
         <div class="card-body text-center">
-            <img class="card-profile-img" th:src="@{/static/demo/faces/female/25.jpg}">
+            <img class="card-profile-img" th:src="${session.SESSION_BLOGGER.avatar}">
             <h3 class="mb-3" th:text="${session.SESSION_BLOGGER.blogName}">Jane Pearson</h3>
             <p class="mb-4" th:text="${session.SESSION_BLOGGER.blogIntroduce}">
                 这个家伙很懒,什么也没有留下

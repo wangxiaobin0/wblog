@@ -2,6 +2,7 @@ package com.wblog.service.impl;
 
 import com.wblog.common.constant.ArticleConstant;
 import com.wblog.common.constant.MQConstant;
+import com.wblog.common.enume.ArticleMqEnum;
 import com.wblog.common.enume.ArticleStateEnum;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.common.utils.Query;
@@ -13,9 +14,7 @@ import com.wblog.model.entity.TagEntity;
 import com.wblog.model.to.AdminTo;
 import com.wblog.model.to.ArticleMQTo;
 import com.wblog.model.vo.*;
-import com.wblog.service.ArticleRedisService;
-import com.wblog.service.ArticleTagService;
-import com.wblog.service.TagService;
+import com.wblog.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
@@ -34,9 +33,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.wblog.dao.ArticleDao;
 import com.wblog.model.entity.ArticleEntity;
-import com.wblog.service.ArticleService;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 
@@ -46,6 +43,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
 
     @Autowired
     TagService tagService;
+
     @Autowired
     ArticleTagService articleTagService;
 
@@ -53,7 +51,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
     ArticleRedisService articleRedisService;
 
     @Autowired
-    RabbitTemplate rabbitTemplate;
+    RabbitMqService rabbitMqService;
 
     @Override
     public List<ArticleIndexVo> queryPage() {
@@ -147,12 +145,20 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
 
         //如果保存的是草稿箱消息，发送MQ
         if (articleEntity.getState() == ArticleStateEnum.DRAFT.getCode()) {
-            rabbitTemplate.convertAndSend(
+            rabbitMqService.sendMessage(
                     MQConstant.ArticleConstant.ARTICLE_EVENT_EXCHANGE,
                     MQConstant.ArticleConstant.ARTICLE_DRAFT_DELAY_ROUTING_KEY,
-                    new ArticleMQTo(articleEntity.getId(), articleEntity.getState()));
+                    new ArticleMQTo(articleEntity.getId(), ArticleMqEnum.DRAFT.getCode()));
             log.info("保存草稿箱文章{}，20秒自动删除", articleEntity.getId());
+        } else {
+            //保存到ES
+            rabbitMqService.sendMessage(
+                    MQConstant.SearchConstant.SEARCH_EVENT_EXCHANGE,
+                    MQConstant.SearchConstant.SEARCH_ADD_ARTICLE_ROUTING_KEY,
+                    new ArticleMQTo(articleEntity.getId(), ArticleMqEnum.PUBLIC.getCode()));
+            log.info("保存到ES消息发送成功");
         }
+
     }
 
     @Override
@@ -240,15 +246,22 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
     }
 
     @Override
-    public Boolean deleteExpireArticle(ArticleMQTo articleMQTo) {
+    public void deleteExpireArticle(ArticleMQTo articleMQTo) {
         ArticleEntity byId = this.getById(articleMQTo.getId());
         //文章不存在算处理成功
         if (byId == null) {
             log.info("文章{}不存在", articleMQTo.getId());
-            return true;
+            return ;
+        }
+        //文章状态不是草稿箱或回收站
+        if (byId.getState() != ArticleStateEnum.DRAFT.getCode() &&
+                byId.getState() != ArticleStateEnum.TRASH.getCode()) {
+            log.info("文章{}状态已变更", byId.getId());
         }
         Integer count = this.baseMapper.deleteExpireArticle(articleMQTo.getId(), articleMQTo.getState());
-        return count == 1;
+        if (count != 1) {
+            throw new ArticleException("文章删除失败");
+        }
     }
 
     /**

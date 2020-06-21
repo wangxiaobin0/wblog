@@ -58,6 +58,6 @@ public interface ArticleService extends IService<ArticleEntity> {
 
     List<ArticleIndexVo> getPublishList();
 
-    Boolean deleteExpireArticle(ArticleMQTo articleMQTo);
+    void deleteExpireArticle(ArticleMQTo articleMQTo);
 }
 

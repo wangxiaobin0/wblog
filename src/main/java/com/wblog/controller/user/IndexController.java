@@ -8,6 +8,7 @@ import com.wblog.model.vo.ColumnVo;
 import com.wblog.service.ArticleService;
 import com.wblog.service.ColumnItemService;
 import com.wblog.service.ColumnService;
+import com.wblog.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +32,8 @@ public class IndexController {
     @Autowired
     ColumnItemService columnItemService;
 
+    @Autowired
+    SearchService searchService;
     /**
      * 访客首页
      * @param model
@@ -99,7 +102,7 @@ public class IndexController {
     }
 
     @GetMapping("/mine")
-    public String mine(@CookieValue("userKey") String userKey) {
-        return "";
+    public String mine(/*@CookieValue("userKey")*/ String userKey) {
+        return "mine";
     }
 }

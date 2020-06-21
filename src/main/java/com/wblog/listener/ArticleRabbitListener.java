@@ -1,6 +1,9 @@
 package com.wblog.listener;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.Channel;
+import com.wblog.annotation.Rabbit;
+import com.wblog.annotation.SysLog;
 import com.wblog.common.constant.MQConstant;
 import com.wblog.model.to.ArticleMQTo;
 import com.wblog.service.ArticleService;
@@ -22,18 +25,19 @@ public class ArticleRabbitListener {
     @Autowired
     ArticleService articleService;
 
+    public final ObjectMapper objectMapper = new ObjectMapper();
+
+    @SysLog(business = "删除过期文章")
+    @Rabbit
     @RabbitHandler
     public void deleteExpireArticle(ArticleMQTo articleMQTo, Message message, Channel channel) throws IOException {
-        log.info("删除过期文章:{}流程开始", articleMQTo.getId());
-        Boolean b = articleService.deleteExpireArticle(articleMQTo);
-        if (b) {
-            //更新成功，回复ack
-            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-            log.info("删除过期文章:{}成功", articleMQTo.getId());
-        } else {
-            //更新失败，消息重新入队
-            channel.basicReject(message.getMessageProperties().getDeliveryTag(), true);
-            log.info("删除过期文章:{}失败", articleMQTo.getId());
-        }
+        articleService.deleteExpireArticle(articleMQTo);
+    }
+    @SysLog(business = "删除过期文章")
+    @Rabbit
+    @RabbitHandler
+    public void deleteExpireArticleByReSend(String msg, Message message, Channel channel) throws IOException {
+        ArticleMQTo articleMQTo = objectMapper.readValue(msg, ArticleMQTo.class);
+        articleService.deleteExpireArticle(articleMQTo);
     }
 }

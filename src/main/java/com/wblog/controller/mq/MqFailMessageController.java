@@ -1,4 +1,4 @@
-package com.wblog.controller;
+package com.wblog.controller.mq;
 
 import java.util.Arrays;
 import java.util.Map;

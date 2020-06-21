@@ -34,7 +34,7 @@ public class AdminProfileEntity implements Serializable {
 	/**
 	 * 
 	 */
-	private String avatar;
+	private String avatar = "/static/assets/img/default.png";
 	/**
 	 * 
 	 */

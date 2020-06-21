@@ -35,7 +35,7 @@ spring:
       mandatory: true
     #消费者配置
     listener:
-      direct:
+      simple:
         #消费者手动ack
         acknowledge-mode: manual
 mybatis-plus:
@@ -67,3 +67,8 @@ blog:
     time-unit: seconds
     #任务队列容量
     queue-capacity: 100
+  #ElasticSearch
+  elastic:
+    host: 112.126.59.115
+    port: 9200
+    schema: http

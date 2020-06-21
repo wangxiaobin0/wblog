@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 草稿箱文章to
+ * 文章mqTo
  */
 @Data
 @NoArgsConstructor
@@ -17,7 +17,10 @@ public class ArticleMQTo {
     private Long id;
 
     /**
-     * 状态. 3:草稿箱；4:回收站
+     * 状态.
+     *  1:新增 发送添加到ES
+     *  3:草稿箱 发送延时队列做定期删除
+     *  4:回收站 发送延时队列做定期删除
      */
     private Integer state;
 }

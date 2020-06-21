@@ -1,5 +1,7 @@
 package com.wblog.model.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -23,14 +25,27 @@ public class MqFailMessageEntity implements Serializable {
 	 */
 	@TableId
 	private Long id;
+
 	/**
-	 * 博主id
+	 * 交换器
 	 */
-	private Long adminId;
+	private String exchange;
+
+	/**
+	 * 路由键
+	 */
+	private String routingKey;
+
 	/**
 	 * 消息体
 	 */
 	private String message;
+
+	/**
+	 * 失败原因
+	 */
+	private String failReason;
+
 	/**
 	 * 状态。1：发布失败；2：投递失败
 	 */
@@ -38,6 +53,7 @@ public class MqFailMessageEntity implements Serializable {
 	/**
 	 * 创建时间
 	 */
+	@TableField(fill = FieldFill.INSERT)
 	private Date createTime;
 
 }
