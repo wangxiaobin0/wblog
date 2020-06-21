@@ -124,6 +124,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
         //key为tag名，value为id
         Map<String, Long> tagMap = tagEntities.stream().collect(Collectors.toMap(TagEntity::getName, TagEntity::getId));
         for (String tag : tags) {
+            if (StringUtils.isEmpty(tag)) {
+                break;
+            }
             Long tagId = null;
             //保存新增的tag
             if (!tagMap.containsKey(tag)) {
@@ -201,7 +204,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
         List<ArticleIndexVo> indexVoList = indexList.stream().map(articleIndexVo -> {
             String abstractHtml = articleIndexVo.getAbstractHtml();
             abstractHtml = abstractHtml.replaceAll("<[^>]*>", "").replaceAll("[(/>)<]", "");
-            articleIndexVo.setAbstractHtml(abstractHtml.substring(0, abstractHtml.length() > 40 ? 40 : abstractHtml.length()));
+            articleIndexVo.setAbstractHtml(abstractHtml.substring(0, Math.min(abstractHtml.length(), 160)) + "...");
             return articleIndexVo;
         }).collect(Collectors.toList());
         return getArticleIndexListWithCount(indexVoList);

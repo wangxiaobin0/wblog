@@ -1,10 +1,7 @@
 package com.wblog.controller.user;
 
 import com.wblog.annotation.ViewCount;
-import com.wblog.model.vo.ArticleIndexVo;
-import com.wblog.model.vo.ArticleItemVo;
-import com.wblog.model.vo.ColumnDetailVo;
-import com.wblog.model.vo.ColumnVo;
+import com.wblog.model.vo.*;
 import com.wblog.service.ArticleService;
 import com.wblog.service.ColumnItemService;
 import com.wblog.service.ColumnService;
@@ -15,7 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -52,7 +51,9 @@ public class IndexController {
      * @return
      */
     @GetMapping("/search")
-    public String search() {
+    public String search(SearchParamVo searchParam, Model model) throws IOException {
+        SearchResultVo result = searchService.search(searchParam);
+        model.addAttribute("result", result);
         return "search";
     }
 

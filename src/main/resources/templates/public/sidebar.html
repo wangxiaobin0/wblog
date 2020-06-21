@@ -24,7 +24,7 @@
             </ul>
             <div class="hr-text text-blue">标签</div>
             <div class="mb-5">
-                <a class="badge bg-blue text-white mb-1" th:each="tag : ${session.SESSION_BLOG_TAG}" th:attr="tagId=${tag.id}" th:text="${tag.name}" style="margin: 0 0.1rem;">Spring Cloud </a>&nbsp;
+                <a class="badge bg-blue text-white mb-1" th:each="tag : ${session.SESSION_BLOG_TAG}" th:attr="tagId=${tag.id}" th:text="${tag.name}" style="cursor:pointer;margin: 0 0.1rem;">Spring Cloud </a>&nbsp;
             </div>
             <div class="hr-text text-blue"></div>
         </div>
