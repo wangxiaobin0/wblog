@@ -1,15 +1,18 @@
 package com.wblog.controller.article;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 
 import com.wblog.common.utils.PageUtils;
 import com.wblog.common.utils.R;
 import com.wblog.model.entity.ArticleFileEntity;
+import com.wblog.model.vo.ArticlePostVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.wblog.service.ArticleFileService;
+import org.springframework.web.multipart.MultipartFile;
 
 
 /**
@@ -19,18 +22,26 @@ import com.wblog.service.ArticleFileService;
  * @email 
  */
 @RestController
-@RequestMapping("wblog/artilefile")
+@RequestMapping("admin/article/file")
 public class ArticleFileController {
     @Autowired
-    private ArticleFileService artileFileService;
+    private ArticleFileService articleFileService;
+
+
+    @PostMapping
+    public R loadFile(@RequestParam("file") MultipartFile file) throws IOException {
+        ArticlePostVo articlePostVo = articleFileService.loadFile(file);
+        return R.ok().put("file", articlePostVo);
+    }
+
+
 
     /**
      * 列表
      */
     @GetMapping("/list")
-    //@RequiresPermissions("wblog:artilefile:list")
     public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = artileFileService.queryPage(params);
+        PageUtils page = articleFileService.queryPage(params);
 
         return R.ok().put("page", page);
     }
@@ -41,7 +52,7 @@ public class ArticleFileController {
      */
     @GetMapping("/info/{id}")
     public R info(@PathVariable("id") Long id){
-		ArticleFileEntity artileFile = artileFileService.getById(id);
+		ArticleFileEntity artileFile = articleFileService.getById(id);
 
         return R.ok().put("artileFile", artileFile);
     }
@@ -51,7 +62,7 @@ public class ArticleFileController {
      */
     @PostMapping("/save")
     public R save(@RequestBody ArticleFileEntity artileFile){
-		artileFileService.save(artileFile);
+		articleFileService.save(artileFile);
 
         return R.ok();
     }
@@ -61,7 +72,7 @@ public class ArticleFileController {
      */
     @PostMapping("/update")
     public R update(@RequestBody ArticleFileEntity artileFile){
-		artileFileService.updateById(artileFile);
+		articleFileService.updateById(artileFile);
 
         return R.ok();
     }
@@ -71,7 +82,7 @@ public class ArticleFileController {
      */
     @PostMapping("/delete")
     public R delete(@RequestBody Long[] ids){
-		artileFileService.removeByIds(Arrays.asList(ids));
+		articleFileService.removeByIds(Arrays.asList(ids));
 
         return R.ok();
     }
