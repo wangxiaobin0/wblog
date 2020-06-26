@@ -1,5 +1,8 @@
 package com.wblog.service;
 
+import com.wblog.model.vo.ArticleIndexVo;
+
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -51,4 +54,11 @@ public interface ArticleRedisService {
      * @return
      */
     Boolean thumbUpOrCancel(Long articleId, Boolean flag);
+
+    /**
+     * 获取用户浏览/点赞/收藏/订阅ids
+     * @param keyPrefix
+     * @return
+     */
+    Set<String> getUserView(String keyPrefix);
 }

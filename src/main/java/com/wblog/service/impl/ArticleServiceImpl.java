@@ -2,6 +2,7 @@ package com.wblog.service.impl;
 
 import com.wblog.common.constant.ArticleConstant;
 import com.wblog.common.constant.MQConstant;
+import com.wblog.common.constant.UserConstant;
 import com.wblog.common.enume.ArticleMqEnum;
 import com.wblog.common.enume.ArticleStateEnum;
 import com.wblog.common.utils.PageUtils;
@@ -265,6 +266,19 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
         if (count != 1) {
             throw new ArticleException("文章删除失败");
         }
+    }
+
+    @Override
+    public List<ArticleIndexVo> getUserArticleList(String keyPrefix) {
+        String userKey = UserRequestInterceptor.getUser().getUserKey();
+        Set<String> keys = articleRedisService.getUserView(keyPrefix);
+        List<Long> ids = keys.stream().map(key -> Long.parseLong(key)).collect(Collectors.toList());
+        List<ArticleEntity> articleEntities = this.list(new QueryWrapper<ArticleEntity>().in("id", ids));
+        return articleEntities.stream().map(articleEntity -> {
+            ArticleIndexVo indexVo = new ArticleIndexVo();
+            BeanUtils.copyProperties(articleEntity, indexVo);
+            return indexVo;
+        }).collect(Collectors.toList());
     }
 
     /**

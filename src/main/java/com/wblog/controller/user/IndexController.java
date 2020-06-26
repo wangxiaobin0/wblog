@@ -1,6 +1,8 @@
 package com.wblog.controller.user;
 
 import com.wblog.annotation.ViewCount;
+import com.wblog.common.constant.AuthConstant;
+import com.wblog.common.constant.UserConstant;
 import com.wblog.model.vo.*;
 import com.wblog.service.ArticleService;
 import com.wblog.service.ColumnItemService;
@@ -9,10 +11,8 @@ import com.wblog.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.util.List;
@@ -102,8 +102,22 @@ public class IndexController {
         return "columnDetail";
     }
 
-    @GetMapping("/mine")
-    public String mine(/*@CookieValue("userKey")*/ String userKey) {
-        return "mine";
+    @GetMapping("/view")
+    public String VIEW(Model model) {
+        List<ArticleIndexVo> views = articleService.getUserArticleList(UserConstant.USER_VIEW_ARTICLE);
+        model.addAttribute("viewList", views);
+        return "myView";
+    }
+    @GetMapping("/like")
+    public String like(Model model) {
+        List<ArticleIndexVo> likeList = articleService.getUserArticleList(UserConstant.USER_THUMB_UP_ARTICLE);
+        model.addAttribute("likeList", likeList);
+        return "myLike";
+    }
+    @GetMapping("/collect")
+    public String collect(Model model) {
+        List<ArticleIndexVo> collectList = articleService.getUserArticleList(UserConstant.USER_COLLECT_ARTICLE);
+        model.addAttribute("collectList", collectList);
+        return "myCollect";
     }
 }

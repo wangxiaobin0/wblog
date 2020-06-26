@@ -1,14 +1,11 @@
 package com.wblog.config;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wblog.common.enume.MqMessageFailEnum;
-import com.wblog.interceptor.AdminRequestInterceptor;
 import com.wblog.model.entity.MqFailMessageEntity;
-import com.wblog.model.entity.MqMessageEntity;
 import com.wblog.service.MqFailMessageService;
-import com.wblog.service.MqMessageService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.DefaultClassMapper;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -17,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 
 /**
  * 消息队列配置
@@ -25,18 +22,16 @@ import javax.annotation.PostConstruct;
 @Slf4j
 @Configuration
 public class MQConfig {
-    @Autowired
-    RabbitTemplate rabbitTemplate;
 
     @Autowired
     MqFailMessageService mqFailMessageService;
 
-    @PostConstruct
-    void init() {
-
-        /**
-         * publisher发布一条消息就会触发，无论成功失败
-         */
+    /**
+     * publisher发布一条消息就会触发，无论成功失败
+     */
+    @Bean
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setConfirmCallback(((correlationData, ack, cause) -> {
             log.info("生产者发布消息:{}\nack模式:{}\n发布失败原因{}", correlationData, ack, cause);
             if (cause != null) {
@@ -61,7 +56,9 @@ public class MQConfig {
             failMessageEntity.setState(MqMessageFailEnum.TO_QUEUE.getCode());
             mqFailMessageService.save(failMessageEntity);
         }));
+        return rabbitTemplate;
     }
+
     @Bean
     public MessageConverter jsonMessageConverter(ObjectMapper objectMapper) {
         Jackson2JsonMessageConverter messageConverter = new Jackson2JsonMessageConverter(objectMapper);

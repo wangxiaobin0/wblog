@@ -59,5 +59,7 @@ public interface ArticleService extends IService<ArticleEntity> {
     List<ArticleIndexVo> getPublishList();
 
     void deleteExpireArticle(ArticleMQTo articleMQTo);
+
+    List<ArticleIndexVo> getUserArticleList(String keyPrefix);
 }
 

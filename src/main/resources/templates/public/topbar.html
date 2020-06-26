@@ -5,25 +5,56 @@
     <title>Title</title>
 </head>
 <body>
-<div class="header py-4  toggle d-xl-none" th:fragment="flexTopbar">
+<div class="header toggle d-xl-none" th:fragment="flexTopbar(flag)" style="padding: 0">
     <div class="container">
         <div class="d-flex">
-            <div class="d-flex order-lg-1 mr-auto">
-                <a href="#" class="nav-link pr-0 leading-none">
-                    <span class="avatar" th:style="'background-image: url(' + ${session.SESSION_BLOGGER.avatar} + ')'"></span>
-                    <span class="ml-2 d-lg-block">
-								<span class="text-default">Jane Pearson</span>
-							</span>
-                </a>
-            </div>
-            <a href="#" class="header-toggler d-lg-none ml-3 ml-lg-0" data-toggle="collapse"
-               data-target="#headerMenuCollapse">
-                <span class="header-toggler-icon"></span>
-            </a>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link" th:href="@{/}" th:classappend="${flag == 0} ? 'active' : ''">
+                        <i class="fe fe-home"></i>
+                        首页
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" th:href="@{/column}" th:classappend="${flag == 1} ? 'active' : ''">
+                        <i class="fe fe-folder"></i>
+                        专栏
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../archive.html" class="nav-link" th:href="@{/view}" th:classappend="${flag == 2} ? 'active' : ''">
+                        <i class="fe fe-user"></i>
+                        我的
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" th:classappend="${flag == 3} ? 'active' : ''">
+                        <i class="fe fe-message-circle"></i>
+                        关于
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-toggle="collapse"
+                       data-target="#headerMenuCollapse"  th:classappend="${flag == 4} ? 'active' : ''">
+                        <i class="fe fe-search"></i>
+                        搜索
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="ml-auto collapse" id="headerMenuCollapse">
+            <form class="input-icon my-3 my-lg-0" action="../search.html" th:action="@{/search}">
+                <input type="search" class="form-control header-search"
+                       placeholder="搜索&hellip;"
+                       tabindex="1" name="key">
+                <div class="input-icon-addon">
+                    <i class="fe fe-search"></i>
+                </div>
+            </form>
         </div>
     </div>
 </div>
-<div class="card collapse d-lg-flex" id="headerMenuCollapse" th:fragment="topbar(flag)">
+<div class="card collapse d-lg-flex" th:fragment="topbar(flag)">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-3 ml-auto">
@@ -46,26 +77,14 @@
                     </li>
                     <li class="nav-item">
                         <a href="#" class="nav-link" th:href="@{/column}" th:classappend="${flag == 1} ? 'active' : ''">
-                            <i class="fe fe-star"></i>
+                            <i class="fe fe-folder"></i>
                             专栏
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="../archive.html" class="nav-link" th:href="@{/archive}" th:classappend="${flag == 2} ? 'active' : ''">
-                            <i class="fe fe-folder"></i>
-                            归档
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="../archive.html" class="nav-link" th:href="@{/mine}" th:classappend="${flag == 3} ? 'active' : ''">
+                        <a href="../archive.html" class="nav-link" th:href="@{/view}" th:classappend="${flag == 2} ? 'active' : ''">
                             <i class="fe fe-user"></i>
                             我的
-                        </a>
-                    </li>
-                    <li class="nav-item toggle d-lg-none">
-                        <a href="#" class="nav-link" th:classappend="${flag == 4} ? 'active' : ''">
-                            <i class="fe fe-message-circle"></i>
-                            联系我
                         </a>
                     </li>
                 </ul>

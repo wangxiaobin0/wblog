@@ -5,13 +5,103 @@
     <title>Title</title>
 </head>
 <body>
-<div class="header py-4" th:fragment="topbar">
+<div class="header py-4 toggle d-xl-none" th:fragment="flexMenu(flag)" style="padding: 0">
+    <div class="d-flex">
+        <div class="d-flex order-lg-2 ml-auto">
+            <div class="dropdown d-md-flex">
+                <div class="dropdown-menu dropdown-menu-arrow">
+                    <a href="#" class="dropdown-item d-flex">
+                                    <span class="avatar mr-3 align-self-center"
+                                          style="background-image: url(/static/demo/faces/male/41.jpg)"></span>
+                        <div>
+                            <strong>Nathan</strong> pushed new commit: Fix page load performance issue.
+                            <div class="small text-muted">10 minutes ago</div>
+                        </div>
+                    </a>
+                    <a href="#" class="dropdown-item d-flex">
+                                    <span class="avatar mr-3 align-self-center"
+                                          style="background-image: url(demo/faces/female/1.jpg)"></span>
+                        <div>
+                            <strong>Alice</strong> started new task: Tabler UI design.
+                            <div class="small text-muted">1 hour ago</div>
+                        </div>
+                    </a>
+                    <a href="#" class="dropdown-item d-flex">
+                                    <span class="avatar mr-3 align-self-center"
+                                          style="background-image: url(/static/assets/demo/faces/female/18.jpg)"></span>
+                        <div>
+                            <strong>Rose</strong> deployed new version of NodeJS REST Api V3
+                            <div class="small text-muted">2 hours ago</div>
+                        </div>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item text-center">Mark all as read</a>
+                </div>
+            </div>
+            <div class="dropdown float-left">
+                <a href="#" class="nav-link pr-0 leading-none" data-toggle="dropdown">
+                    <span class="avatar" th:style="'background-image: url(' + ${session.SESSION_LOGIN_USER.avatar} + ')'"></span>
+                    <span class="ml-2 d-lg-block">
+                      <span class="text-default" th:text="${session.SESSION_LOGIN_USER.blogName}">Jane Pearson</span>
+                    </span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-left dropdown-menu-arrow">
+                    <a class="dropdown-item" href="#" th:href="@{/admin/profile}">
+                        <i class="dropdown-icon fe fe-user"></i> 个人资料
+                    </a>
+                    <a class="dropdown-item" href="#">
+                        <i class="dropdown-icon fe fe-settings"></i> Settings
+                    </a>
+                    <a class="dropdown-item" href="#">
+                        <span class="float-right"><span class="badge badge-primary">6</span></span>
+                        <i class="dropdown-icon fe fe-mail"></i> Inbox
+                    </a>
+                    <a class="dropdown-item" href="#">
+                        <i class="dropdown-icon fe fe-send"></i> Message
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">
+                        <i class="dropdown-icon fe fe-help-circle"></i> Need help?
+                    </a>
+                    <a class="dropdown-item" href="#" th:href="@{/logout}">
+                        <i class="dropdown-icon fe fe-log-out"></i> 退出登录
+                    </a>
+                </div>
+            </div>
+        </div>
+        <a href="#" class="header-toggler d-lg-none ml-3 ml-lg-0" data-toggle="collapse"
+           data-target="#headerMenuCollapse">
+            <span class="header-toggler-icon"></span>
+        </a>
+    </div>
+</div>
+<div class="header collapse d-lg-flex p-0" id="headerMenuCollapse" th:fragment="menu(menu)">
     <div class="container">
-        <div class="d-flex">
-            <a class="header-brand" href="./index.html">
-                <img src="/static/demo/brand/tabler.svg" class="header-brand-img" alt="tabler logo">
-            </a>
-            <div class="d-flex order-lg-2 ml-auto">
+        <div class="row align-items-center">
+            <div class="col-lg order-lg-first">
+                <ul class="nav nav-tabs border-0 flex-column flex-lg-row">
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${menu == 0} ? 'active' : ''"
+                           th:href="@{/admin/dashboard}">
+                            <i class="fe fe-home"></i>Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${menu} == 1 ? 'active' : ''"
+                           th:href="@{/admin/article/publish}">
+                            <i class="fe fe-folder"></i>文章</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/column/list}" th:classappend="${menu} == 2 ? 'active' : ''"><i class="fe fe-star"></i> 专栏</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/tag/list}" th:classappend="${menu} == 3 ? 'active' : ''"><i class="fe fe-tag"></i>标签</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/profile}" th:classappend="${menu} == 4 ? 'active' : ''"><i class="fe fe-user"></i>个人资料</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="dropdown d-none d-flex ">
                 <div class="dropdown d-none d-md-flex">
                     <a class="nav-link icon" data-toggle="dropdown">
                         <i class="fe fe-bell"></i>
@@ -76,48 +166,6 @@
                         </a>
                     </div>
                 </div>
-            </div>
-            <a href="#" class="header-toggler d-lg-none ml-3 ml-lg-0" data-toggle="collapse"
-               data-target="#headerMenuCollapse">
-                <span class="header-toggler-icon"></span>
-            </a>
-        </div>
-    </div>
-</div>
-<div class="header collapse d-lg-flex p-0" id="headerMenuCollapse" th:fragment="menu(menu)">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-3 ml-auto">
-                <form class="input-icon my-3 my-lg-0">
-                    <input type="search" class="form-control header-search" placeholder="Search&hellip;"
-                           tabindex="1"/>
-                    <div class="input-icon-addon">
-                        <i class="fe fe-search"></i>
-                    </div>
-                </form>
-            </div>
-            <div class="col-lg order-lg-first">
-                <ul class="nav nav-tabs border-0 flex-column flex-lg-row">
-                    <li class="nav-item">
-                        <a class="nav-link" th:classappend="${menu == 0} ? 'active' : ''"
-                           th:href="@{/admin/dashboard}">
-                            <i class="fe fe-home"></i>Dashboard</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link" th:classappend="${menu} == 1 ? 'active' : ''"
-                           th:href="@{/admin/article/publish}">
-                            <i class="fe fe-folder"></i>文章</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/admin/column/list}" th:classappend="${menu} == 2 ? 'active' : ''"><i class="fe fe-star"></i> 专栏</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/admin/tag/list}" th:classappend="${menu} == 3 ? 'active' : ''"><i class="fe fe-tag"></i>标签</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/admin/profile}" th:classappend="${menu} == 4 ? 'active' : ''"><i class="fe fe-user"></i>个人资料</a>
-                    </li>
-                </ul>
             </div>
         </div>
     </div>
