@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 /**
@@ -26,12 +27,14 @@ public class MQConfig {
     @Autowired
     MqFailMessageService mqFailMessageService;
 
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
     /**
      * publisher发布一条消息就会触发，无论成功失败
      */
-    @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
-        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+    @PostConstruct
+    public void rabbitTemplate() {
         rabbitTemplate.setConfirmCallback(((correlationData, ack, cause) -> {
             log.info("生产者发布消息:{}\nack模式:{}\n发布失败原因{}", correlationData, ack, cause);
             if (cause != null) {
@@ -56,7 +59,6 @@ public class MQConfig {
             failMessageEntity.setState(MqMessageFailEnum.TO_QUEUE.getCode());
             mqFailMessageService.save(failMessageEntity);
         }));
-        return rabbitTemplate;
     }
 
     @Bean

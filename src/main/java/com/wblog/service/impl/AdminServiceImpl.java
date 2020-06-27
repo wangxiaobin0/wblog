@@ -1,14 +1,17 @@
 package com.wblog.service.impl;
 
+import com.wblog.common.constant.MQConstant;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.common.utils.Query;
 import com.wblog.exception.AuthException;
 import com.wblog.model.entity.AdminProfileEntity;
 import com.wblog.model.to.AdminTo;
 import com.wblog.model.to.BloggerTo;
+import com.wblog.model.to.MessageTo;
 import com.wblog.model.vo.LoginVo;
 import com.wblog.model.vo.RegisterVo;
 import com.wblog.service.AdminProfileService;
+import com.wblog.service.RabbitMqService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +36,9 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
 
     @Autowired
     AdminProfileService adminProfileService;
+
+    @Autowired
+    RabbitMqService rabbitMqService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -59,6 +65,12 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
         profileEntity.setBlogName(registerVo.getBlogName());
         adminProfileService.save(profileEntity);
         log.info("保存个人资料{}", profileEntity);
+
+        //发送初始化文章统计的消息
+        rabbitMqService.sendMessage(
+                MQConstant.StatisticsConstant.STATISTICS_EVENT_EXCHANGE,
+                MQConstant.StatisticsConstant.STATISTICS_INITIALIZE_ROUTING_KEY,
+                new MessageTo());
     }
 
     @Override

@@ -79,4 +79,24 @@ public class MQConstant {
          */
         public static final String SEARCH_DELETE_ARTICLE_ROUTING_KEY = "search.delete.article.#";
     }
+
+    /**
+     * 统计MQ常量
+     */
+    public static class StatisticsConstant {
+        /**
+         * 统计时间交换器
+         */
+        public static final String STATISTICS_EVENT_EXCHANGE = "statistics.event.exchange";
+
+        /**
+         * 初始化文章统计队列
+         */
+        public static final String STATISTICS_INITIALIZE_QUEUE = "statistics.article.initialize.queue";
+
+        /**
+         * 初始化文章统计路由键
+         */
+        public static final String STATISTICS_INITIALIZE_ROUTING_KEY = "statistics.article.initialize.#";
+    }
 }

@@ -8,10 +8,27 @@
         <div th:replace="public/menu :: menu(0)"></div>
         <div class="my-3 my-md-5">
             <div class="container">
-                <div class="page-header">
-                    <h1 class="page-title">
-                        Dashboard
-                    </h1>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="card ">
+                            <div class="card-header">
+                                贡献
+                            </div>
+                            <div class="card-body">
+                                <div id="cal-heatmap"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="card ">
+                            <div class="card-header">
+                                贡献
+                            </div>
+                            <div class="card-body">
+
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -41,5 +58,38 @@
         </div>
     </footer>
 </div>
+<script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
+<script>
+    let today = new Date();
+    let startDate = new Date(today.setDate(today.getDate() - 270));
+    var cal = new CalHeatMap();
+    cal.init({
+        start: startDate,
+        data: "/admin/statistics/article",
+        domain:'week', //域
+        subDomain: "day",   //子yu
+        minDate: startDate,
+        maxDate: new Date(),
+        range: 40,          //子域数量
+        tooltip: true,      //显示提示栏
+        subDomainTitleFormat: {
+            empty: "0次提交 / {date}",
+            filled: "{count}次提交 / {date}"
+        },
+        subDomainDateFormat: "%Y-%m-%d",
+        domainLabelFormat: "",
+        cellPadding: 3,
+        legend: [1, 3, 5, 8, 10],
+        highlight: ["now", new Date()],
+        domainGutter: 0,
+        cellSize: 10,
+        legendHorizontalPosition: "right",
+        previousSelector: "#previousSelector-a-previous",
+        nextSelector: "#previousSelector-a-next"
+
+    });
+</script>
 </body>
 </html>

@@ -2,11 +2,13 @@ package com.wblog.model.to;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 博主信息，存入session展示在访客页面
  */
 @Data
-public class BloggerTo {
+public class BloggerTo implements Serializable {
     /**
      * 头像
      */

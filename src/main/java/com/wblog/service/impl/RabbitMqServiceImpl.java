@@ -10,6 +10,7 @@ import com.wblog.service.RabbitMqService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class RabbitMqServiceImpl implements RabbitMqService {
     @Autowired
     MqFailMessageService failMessageService;
 
+    @Transactional(rollbackFor = Exception.class)
     public void sendMessage(String exchange, String routingKey, Object object) {
         //保存发送的消息
         MqMessageEntity mqMessage = new MqMessageEntity();
