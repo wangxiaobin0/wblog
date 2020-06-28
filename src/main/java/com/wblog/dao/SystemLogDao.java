@@ -1,6 +1,6 @@
 package com.wblog.dao;
 
-import com.wblog.model.entity.UserLogEntity;
+import com.wblog.model.entity.SystemLogEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -11,6 +11,6 @@ import org.apache.ibatis.annotations.Mapper;
  * @email 
  */
 @Mapper
-public interface UserLogDao extends BaseMapper<UserLogEntity> {
+public interface SystemLogDao extends BaseMapper<SystemLogEntity> {
 	
 }

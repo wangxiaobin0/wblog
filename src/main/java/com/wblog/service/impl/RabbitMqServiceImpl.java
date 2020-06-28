@@ -1,6 +1,7 @@
 package com.wblog.service.impl;
 
 import com.wblog.common.enume.MqMessageFailEnum;
+import com.wblog.common.utils.ThreadLocalUtils;
 import com.wblog.interceptor.AdminRequestInterceptor;
 import com.wblog.model.entity.MqFailMessageEntity;
 import com.wblog.model.entity.MqMessageEntity;
@@ -30,7 +31,7 @@ public class RabbitMqServiceImpl implements RabbitMqService {
     public void sendMessage(String exchange, String routingKey, Object object) {
         //保存发送的消息
         MqMessageEntity mqMessage = new MqMessageEntity();
-        mqMessage.setAdminId(AdminRequestInterceptor.getAdmin().getAdminId());
+        mqMessage.setAdminId(ThreadLocalUtils.getAdminTo().getAdminId());
         mqMessage.setMessage(object.toString());
         mqMessageService.save(mqMessage);
         //发送消息

@@ -1,11 +1,9 @@
 package com.wblog.service.impl;
 
 import com.wblog.annotation.SysLog;
-import com.wblog.common.enume.LogStateEnum;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.common.utils.Query;
-import com.wblog.model.entity.UserLogEntity;
-import com.wblog.service.UserLogService;
+import com.wblog.service.SystemLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements UserService {
 
     @Autowired
-    UserLogService userLogService;
+    SystemLogService systemLogService;
 
 
     @Override

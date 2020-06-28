@@ -3,12 +3,11 @@ package com.wblog.aop;
 import com.wblog.annotation.SysLog;
 import com.wblog.common.enume.LogStateEnum;
 import com.wblog.common.utils.R;
-import com.wblog.interceptor.AdminRequestInterceptor;
-import com.wblog.interceptor.UserRequestInterceptor;
-import com.wblog.model.entity.UserLogEntity;
+import com.wblog.common.utils.ThreadLocalUtils;
+import com.wblog.model.entity.SystemLogEntity;
 import com.wblog.model.to.AdminTo;
 import com.wblog.model.to.UserTo;
-import com.wblog.service.UserLogService;
+import com.wblog.service.SystemLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -18,12 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,10 +33,8 @@ import java.util.Map;
 @Component
 public class SysLogAop {
 
-    private ThreadLocal<UserLogEntity> threadLocal = new ThreadLocal<>();
-
     @Autowired
-    UserLogService userLogService;
+    SystemLogService systemLogService;
 
     /**
      * 切入点为@SysLog注解
@@ -84,9 +78,9 @@ public class SysLogAop {
      * 前置通知
      */
     public void doBefore(JoinPoint joinpoint) {
-        UserLogEntity logEntity = initialUserLogEntity(joinpoint);
+        SystemLogEntity logEntity = initialUserLogEntity(joinpoint);
         //保存logEntity到localhost
-        threadLocal.set(logEntity);
+        ThreadLocalUtils.setUserLog(logEntity);
         log.info(logEntity.getClassName() + "." + logEntity.getMethodName()+ "()流程开始");
         log.info("参数列表：" + logEntity.getParameter());
     }
@@ -96,7 +90,7 @@ public class SysLogAop {
      * @param joinpoint
      */
     public void doAfterReturning(JoinPoint joinpoint) {
-        UserLogEntity logEntity = threadLocal.get();
+        SystemLogEntity logEntity = ThreadLocalUtils.getUserLog();
         logEntity.setState(LogStateEnum.SUCCESS.getCode());
     }
 
@@ -105,7 +99,7 @@ public class SysLogAop {
      * @param t
      */
     public void doAfterThrowing(Throwable t) {
-        UserLogEntity logEntity = threadLocal.get();
+        SystemLogEntity logEntity = ThreadLocalUtils.getUserLog();
         logEntity.setState(LogStateEnum.FAIL.getCode());
         logEntity.setStateMessage(t !=null && t.getCause() !=null ? t.getCause().getMessage() : "");
         log.error(logEntity.getClassName() + "." + logEntity.getMethodName()+ "()流程异常{}", t.getMessage());
@@ -115,9 +109,9 @@ public class SysLogAop {
      * 最终通知
      */
     public void adAfter() {
-        UserLogEntity logEntity = threadLocal.get();
+        SystemLogEntity logEntity = ThreadLocalUtils.getUserLog();
         logEntity.setTime(new Date());
-        userLogService.save(logEntity);
+        systemLogService.save(logEntity);
         log.info(logEntity.getClassName() + "." + logEntity.getMethodName()+ "()日志保存成功");
         log.info(logEntity.getClassName() + "." + logEntity.getMethodName()+ "()流程结束");
     }
@@ -146,11 +140,11 @@ public class SysLogAop {
      * @param joinpoint
      * @return
      */
-    public UserLogEntity initialUserLogEntity(JoinPoint joinpoint) {
+    public SystemLogEntity initialUserLogEntity(JoinPoint joinpoint) {
         //获取访问用户信息
-        UserTo userTo = UserRequestInterceptor.getUser();
+        UserTo userTo = ThreadLocalUtils.getUserTo();
         //获取管理员信息
-        AdminTo adminTo = AdminRequestInterceptor.getAdmin();
+        AdminTo adminTo = ThreadLocalUtils.getAdminTo();
 
         //url
         Controller controller = (Controller) getAnnotation(joinpoint, Controller.class);
@@ -170,7 +164,7 @@ public class SysLogAop {
         SysLog sysLog = (SysLog) getAnnotation(joinpoint, SysLog.class);
         String business = sysLog.business();
 
-        UserLogEntity logEntity = new UserLogEntity();
+        SystemLogEntity logEntity = new SystemLogEntity();
         if (adminTo != null) {
             logEntity.setAdminId(adminTo.getAdminId());
         } else {

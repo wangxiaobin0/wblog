@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Data
 @TableName("blog_system_log")
-public class UserLogEntity implements Serializable {
+public class SystemLogEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

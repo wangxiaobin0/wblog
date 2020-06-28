@@ -2,6 +2,7 @@ package com.wblog.interceptor;
 
 import com.wblog.common.constant.AuthConstant;
 import com.wblog.common.constant.SessionConstant;
+import com.wblog.common.utils.ThreadLocalUtils;
 import com.wblog.model.entity.UserEntity;
 import com.wblog.model.to.BloggerTo;
 import com.wblog.model.to.UserTo;
@@ -26,7 +27,6 @@ import java.util.UUID;
 @Configuration
 public class UserRequestInterceptor implements HandlerInterceptor {
 
-    public static final ThreadLocal<UserTo> threadLocal = new ThreadLocal<>();
 
     @Autowired
     UserService userService;
@@ -60,21 +60,17 @@ public class UserRequestInterceptor implements HandlerInterceptor {
 
             userService.addNewUser(userKey);
         }
-        threadLocal.set(userTo);
+        ThreadLocalUtils.setUserTo(userTo);
         return true;
     }
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        Cookie userKeyCookie = new Cookie(AuthConstant.USER_COOKIE_KEY, getUser().getUserKey());
+        Cookie userKeyCookie = new Cookie(AuthConstant.USER_COOKIE_KEY, ThreadLocalUtils.getUserTo().getUserKey());
         userKeyCookie.setDomain(AuthConstant.USER_COOKIE_DOMAIN);
         userKeyCookie.setHttpOnly(true);
         userKeyCookie.setMaxAge(AuthConstant.USER_COOKIE_MAX_AGE);
         response.addCookie(userKeyCookie);
-    }
-
-    public static UserTo getUser() {
-        return threadLocal.get();
     }
 
     /**

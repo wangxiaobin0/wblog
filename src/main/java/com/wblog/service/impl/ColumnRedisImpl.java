@@ -2,6 +2,7 @@ package com.wblog.service.impl;
 
 import com.wblog.common.constant.ColumnConstant;
 import com.wblog.common.constant.UserConstant;
+import com.wblog.common.utils.ThreadLocalUtils;
 import com.wblog.controller.user.UserController;
 import com.wblog.interceptor.UserRequestInterceptor;
 import com.wblog.service.ColumnRedisService;
@@ -28,7 +29,7 @@ public class ColumnRedisImpl implements ColumnRedisService {
 
     @Override
     public void subscribe(Long columnId, Boolean flag) {
-        String userKey = UserRequestInterceptor.getUser().getUserKey();
+        String userKey = ThreadLocalUtils.getUserTo().getUserKey();
         //专栏订阅用户key
         String columnSubscribeKey = ColumnConstant.COLUMN_SUBSCRIBE + columnId;
         BoundSetOperations<String, String> columnSetOps = redisTemplate.boundSetOps(columnSubscribeKey);

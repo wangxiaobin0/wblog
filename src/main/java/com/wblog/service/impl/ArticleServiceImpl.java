@@ -7,6 +7,7 @@ import com.wblog.common.enume.ArticleMqEnum;
 import com.wblog.common.enume.ArticleStateEnum;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.common.utils.Query;
+import com.wblog.common.utils.ThreadLocalUtils;
 import com.wblog.exception.ArticleException;
 import com.wblog.interceptor.AdminRequestInterceptor;
 import com.wblog.interceptor.UserRequestInterceptor;
@@ -114,7 +115,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
         //保存文章
         ArticleEntity articleEntity = new ArticleEntity();
         BeanUtils.copyProperties(article, articleEntity);
-        AdminTo adminTo = AdminRequestInterceptor.getAdmin();
+        AdminTo adminTo = ThreadLocalUtils.getAdminTo();
         articleEntity.setAdminId(adminTo.getAdminId());
         this.save(articleEntity);
         log.info("保存文章。id:{}", articleEntity.getId());
@@ -226,7 +227,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
         Long viewCount = articleRedisService.getCount(articleId, ArticleConstant.ARTICLE_VIEW_COUNT);
         articleItem.setViewNum(viewCount);
 
-        String userKey = UserRequestInterceptor.getUser().getUserKey();
+        String userKey = ThreadLocalUtils.getUserTo().getUserKey();
         //当前访客是否收藏过
         articleItem.setHasCollect(articleRedisService.orNot(articleId, ArticleConstant.ARTICLE_COLLECT, userKey));
 
@@ -270,7 +271,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
 
     @Override
     public List<ArticleIndexVo> getUserArticleList(String keyPrefix) {
-        String userKey = UserRequestInterceptor.getUser().getUserKey();
+        String userKey = ThreadLocalUtils.getUserTo().getUserKey();
         Set<String> keys = articleRedisService.getUserView(keyPrefix);
         List<Long> ids = keys.stream().map(key -> Long.parseLong(key)).collect(Collectors.toList());
         List<ArticleEntity> articleEntities = this.list(new QueryWrapper<ArticleEntity>().in("id", ids));

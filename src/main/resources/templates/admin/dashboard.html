@@ -1,7 +1,27 @@
 <!doctype html>
 <html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="public/head :: head(DASHBOARD)"></head>
-<body class="">
+<style>
+    .list-timeline-icon {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        color: #ffffff;
+        text-align: center;
+        background: #868c97;
+        border-radius: 50%;
+    }
+    .list-timeline:not(.list-timeline-simple) .list-timeline-icon {
+        top: 0.5rem;
+        left: 6.75rem;
+    }
+</style>
+<body class="" onload="loadHistory()">
 <div class="page">
     <div class="flex-fill">
         <div th:replace="public/menu :: flexMenu(0)"></div>
@@ -9,23 +29,50 @@
         <div class="my-3 my-md-5">
             <div class="container">
                 <div class="row">
-                    <div class="col-sm-6">
-                        <div class="card ">
-                            <div class="card-header">
-                                贡献
-                            </div>
-                            <div class="card-body">
-                                <div id="cal-heatmap"></div>
+                    <div class="col-sm-3">
+                        <div class="card card-profile">
+                            <div class="card-header"></div>
+                            <div class="card-body text-center">
+                                <img class="card-profile-img" th:src="${session.SESSION_LOGIN_USER.avatar}">
+                                <h3 class="mb-3" th:text="${session.SESSION_LOGIN_USER.blogName}">Jane Pearson</h3>
+                                <p class="mb-4" th:text="${session.SESSION_LOGIN_USER.blogIntroduce}">
+                                    这个家伙很懒,什么也没有留下
+                                </p>
+                                <a href="#" class="btn btn-outline-secondary btn-block" th:href="@{/admin/profile/edit}">
+                                    编辑资料
+                                </a>
+                                <hr>
+                                <div class="row">
+                                    <div class="lh-sm col-sm-4">
+                                        <a style="font-size: 1.15em">32</a>
+                                        <div class="text-muted"><small>访问次数</small></div>
+                                    </div>
+                                    <div class="lh-sm col-sm-4">
+                                        <a style="cursor: pointer; font-size: 1.15em" th:href="@{/admin/article/publish}">32</a>
+                                        <div class="text-muted"><small>文章</small></div>
+                                    </div>
+                                    <div class="lh-sm col-sm-4">
+                                        <a style="cursor: pointer; font-size: 1.15em" th:href="@{/admin/column/list}">32</a>
+                                        <div class="text-muted"><small>专栏</small></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-9">
                         <div class="card ">
                             <div class="card-header">
                                 贡献
                             </div>
                             <div class="card-body">
-
+                                <div id="cal-heatmap" style="left: 7%;"></div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">动态</h3>
+                            </div>
+                            <div class="card-body" id="history">
                             </div>
                         </div>
                     </div>
@@ -63,7 +110,7 @@
 <link rel="stylesheet" href="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
 <script>
     let today = new Date();
-    let startDate = new Date(today.setDate(today.getDate() - 270));
+    let startDate = new Date(today.setDate(today.getDate() - 365));
     var cal = new CalHeatMap();
     cal.init({
         start: startDate,
@@ -72,7 +119,7 @@
         subDomain: "day",   //子yu
         minDate: startDate,
         maxDate: new Date(),
-        range: 40,          //子域数量
+        range: 54,          //子域数量
         tooltip: true,      //显示提示栏
         subDomainTitleFormat: {
             empty: "0次提交 / {date}",
@@ -88,8 +135,25 @@
         legendHorizontalPosition: "right",
         previousSelector: "#previousSelector-a-previous",
         nextSelector: "#previousSelector-a-next"
-
     });
+
+    function showQRCode() {
+        $("#dddd").dropdown('toggle');
+    }
+     function loadHistory() {
+         var httpRequest = new XMLHttpRequest();//第一步：建立所需的对象
+         httpRequest.open('GET', '/admin/log/list', true);//第二步：打开连接  将请求参数写在url中  ps:"./Ptest.php?name=test&nameone=testone"
+         httpRequest.send();//第三步：发送请求  将请求参数写在URL中
+         /**
+          * 获取数据后的处理程序
+          */
+         httpRequest.onreadystatechange = function () {
+             if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+                 var data = httpRequest.responseText;//获取到json字符串，还需解析
+                document.getElementById("history").innerHTML = data;
+             }
+         };
+     }
 </script>
 </body>
 </html>

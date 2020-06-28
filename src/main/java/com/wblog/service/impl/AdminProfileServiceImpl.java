@@ -1,5 +1,6 @@
 package com.wblog.service.impl;
 
+import com.wblog.common.utils.ThreadLocalUtils;
 import com.wblog.interceptor.AdminRequestInterceptor;
 import com.wblog.model.to.AdminTo;
 import com.wblog.model.to.BloggerTo;
@@ -19,7 +20,7 @@ public class AdminProfileServiceImpl extends ServiceImpl<AdminProfileDao, AdminP
 
     @Override
     public AdminProfileEntity getProfileBySession() {
-        AdminTo admin = AdminRequestInterceptor.getAdmin();
+        AdminTo admin = ThreadLocalUtils.getAdminTo();
         Long adminId = admin.getAdminId();
         QueryWrapper<AdminProfileEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("admin_id", adminId);
@@ -29,7 +30,7 @@ public class AdminProfileServiceImpl extends ServiceImpl<AdminProfileDao, AdminP
 
     @Override
     public AdminTo updateProfile(AdminProfileEntity profileEntity) {
-        AdminTo session = AdminRequestInterceptor.getAdmin();
+        AdminTo session = ThreadLocalUtils.getAdminTo();
         profileEntity.setId(session.getId());
         if (!profileEntity.getSocialGithub().startsWith("https://")) {
             profileEntity.setSocialGithub("https://" + profileEntity.getSocialGithub());

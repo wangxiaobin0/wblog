@@ -18,8 +18,18 @@
                 <li class="list-inline-item" th:if="${session.SESSION_BLOGGER.socialWeibo} != null">
                     <a th:href="${session.SESSION_BLOGGER.socialWeibo}"  title="微博" data-toggle="tooltip" target="_blank"><i class="fa fa-weibo"></i></a>
                 </li>
-                <li class="list-inline-item" th:if="${session.SESSION_BLOGGER.socialWeixin} != null">
-                    <a th:href="${session.SESSION_BLOGGER.socialWeixin}"  title="微信" data-toggle="tooltip" target="_blank"><i class="fa fa-wechat"></i></a>
+                <li class="list-inline-item" th:if="${session.SESSION_LOGIN_USER.socialWeixin} != null">
+                    <div class="dropdown">
+                        <a target="_blank" data-toggle="dropdown" onmouseover="javascript:$(this).click()" th:onmouseout="javascript:$(this).click()" style="color: #9aa0ac;"><i class="fa fa-wechat"></i></a>
+                        <div class="dropdown-menu dropdown-menu-card" id="weixinQRCode">
+                            <div class="card-body">
+                                <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1593344461142&di=5464815858cb617cd69b47063b25e4a6&imgtype=0&src=http%3A%2F%2Fefile.kaoyan.com%2Fimg%2F2020%2F05%2F25%2F193612_5ecbadac69b24.png">
+                            </div>
+                            <div class="card-footer text-center">
+                                <h5>欢迎关注</h5>
+                            </div>
+                        </div>
+                    </div>
                 </li>
             </ul>
             <div class="hr-text text-blue">标签</div>

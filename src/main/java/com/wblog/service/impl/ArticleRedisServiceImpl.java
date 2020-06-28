@@ -2,6 +2,7 @@ package com.wblog.service.impl;
 
 import com.wblog.common.constant.ArticleConstant;
 import com.wblog.common.constant.UserConstant;
+import com.wblog.common.utils.ThreadLocalUtils;
 import com.wblog.interceptor.UserRequestInterceptor;
 import com.wblog.model.vo.ArticleIndexVo;
 import com.wblog.service.ArticleRedisService;
@@ -22,7 +23,7 @@ public class ArticleRedisServiceImpl implements ArticleRedisService {
 
     @Override
     public Long incrViewCountAndAddViewHistory(Long articleId) {
-        String userKey = UserRequestInterceptor.getUser().getUserKey();
+        String userKey = ThreadLocalUtils.getUserTo().getUserKey();
         //添加访客的浏览记录
         redisTemplate.opsForSet().add(UserConstant.USER_VIEW_ARTICLE + userKey, articleId.toString());
         //添加文章的访客记录
@@ -59,7 +60,7 @@ public class ArticleRedisServiceImpl implements ArticleRedisService {
     @Override
     public Boolean collectOrCancel(Long articleId, Boolean flag) {
         //用户key
-        String userKey = UserRequestInterceptor.getUser().getUserKey();
+        String userKey = ThreadLocalUtils.getUserTo().getUserKey();
 
         //文章redisKey
         String articleRedisKey = ArticleConstant.ARTICLE_COLLECT + articleId;
@@ -85,7 +86,7 @@ public class ArticleRedisServiceImpl implements ArticleRedisService {
     @Override
     public Boolean thumbUpOrCancel(Long articleId, Boolean flag) {
         //用户key
-        String userKey = UserRequestInterceptor.getUser().getUserKey();
+        String userKey = ThreadLocalUtils.getUserTo().getUserKey();
 
         //文章redisKey
         String articleRedisKey = ArticleConstant.ARTICLE_THUMB_UP + articleId;
@@ -116,7 +117,7 @@ public class ArticleRedisServiceImpl implements ArticleRedisService {
 
     @Override
     public Set<String> getUserView(String keyPrefix) {
-        String userKey = UserRequestInterceptor.getUser().getUserKey();
+        String userKey = ThreadLocalUtils.getUserTo().getUserKey();
         BoundSetOperations<String, String> setOps = redisTemplate.boundSetOps(keyPrefix + userKey);
         Set<String> ids = setOps.members();
         return ids;

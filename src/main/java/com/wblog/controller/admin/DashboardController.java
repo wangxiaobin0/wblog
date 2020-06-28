@@ -1,9 +1,7 @@
 package com.wblog.controller.admin;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.wblog.model.entity.StatisticsEntity;
-import com.wblog.model.vo.ArticleStatisticsVo;
-import com.wblog.service.StatisticsService;
+import com.wblog.model.vo.SystemLogVo;
+import com.wblog.service.DashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,10 +15,12 @@ import java.util.List;
 public class DashboardController {
 
     @Autowired
-    StatisticsService statisticsService;
+    DashboardService dashboardService;
 
     @GetMapping("/dashboard")
-    public String dashboard() {
+    public String dashboard(Model model) {
+        List<SystemLogVo> dashboardData = dashboardService.getDashboardData();
+        model.addAttribute("dashboardData", dashboardData);
         return "admin/dashboard";
     }
 }

@@ -2,6 +2,7 @@ package com.wblog.service.impl;
 
 import com.wblog.common.utils.PageUtils;
 import com.wblog.common.utils.Query;
+import com.wblog.common.utils.ThreadLocalUtils;
 import com.wblog.interceptor.AdminRequestInterceptor;
 import com.wblog.interceptor.UserRequestInterceptor;
 import com.wblog.model.to.AdminTo;
@@ -57,7 +58,7 @@ public class ColumnServiceImpl extends ServiceImpl<ColumnDao, ColumnEntity> impl
 
     @Override
     public void add(ColumnEntity column) {
-        AdminTo adminTo = AdminRequestInterceptor.getAdmin();
+        AdminTo adminTo = ThreadLocalUtils.getAdminTo();
         column.setAdminId(adminTo.getAdminId());
         this.save(column);
         log.info("新增博客。{}", column);
@@ -93,7 +94,7 @@ public class ColumnServiceImpl extends ServiceImpl<ColumnDao, ColumnEntity> impl
             detailVo.setItemVos(itemVos);
         }, executor);
 
-        UserTo userTo = UserRequestInterceptor.getUser();
+        UserTo userTo = ThreadLocalUtils.getUserTo();
         //是否收藏，仅用于访客
         CompletableFuture<Void> hasSubscribeFuture = CompletableFuture.runAsync(() -> {
             //访客id不为null，再查询是否收藏
