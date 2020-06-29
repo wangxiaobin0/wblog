@@ -103,20 +103,20 @@ public class IndexController {
     }
 
     @GetMapping("/view")
-    public String VIEW(Model model) {
-        List<ArticleIndexVo> views = articleService.getUserArticleList(UserConstant.USER_VIEW_ARTICLE);
+    public String View(Model model) throws ExecutionException, InterruptedException {
+        UserViewVo views = articleService.getUserArticleList(UserConstant.USER_VIEW_ARTICLE);
         model.addAttribute("viewList", views);
         return "myView";
     }
     @GetMapping("/like")
-    public String like(Model model) {
-        List<ArticleIndexVo> likeList = articleService.getUserArticleList(UserConstant.USER_THUMB_UP_ARTICLE);
-        model.addAttribute("likeList", likeList);
+    public String like(Model model) throws ExecutionException, InterruptedException {
+        UserViewVo likes = articleService.getUserArticleList(UserConstant.USER_THUMB_UP_ARTICLE);
+        model.addAttribute("likeList", likes);
         return "myLike";
     }
     @GetMapping("/collect")
-    public String collect(Model model) {
-        List<ArticleIndexVo> collectList = articleService.getUserArticleList(UserConstant.USER_COLLECT_ARTICLE);
+    public String collect(Model model) throws ExecutionException, InterruptedException {
+        UserViewVo collectList = articleService.getUserArticleList(UserConstant.USER_COLLECT_ARTICLE);
         model.addAttribute("collectList", collectList);
         return "myCollect";
     }

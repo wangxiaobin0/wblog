@@ -1,16 +1,15 @@
 package com.wblog.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wblog.common.constant.ArticleConstant;
 import com.wblog.common.constant.MQConstant;
-import com.wblog.common.constant.UserConstant;
 import com.wblog.common.enume.ArticleMqEnum;
 import com.wblog.common.enume.ArticleStateEnum;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.common.utils.Query;
 import com.wblog.common.utils.ThreadLocalUtils;
 import com.wblog.exception.ArticleException;
-import com.wblog.interceptor.AdminRequestInterceptor;
-import com.wblog.interceptor.UserRequestInterceptor;
 import com.wblog.model.entity.ArticleTagEntity;
 import com.wblog.model.entity.TagEntity;
 import com.wblog.model.to.AdminTo;
@@ -18,7 +17,6 @@ import com.wblog.model.to.ArticleMQTo;
 import com.wblog.model.vo.*;
 import com.wblog.service.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +25,9 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -54,6 +55,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
 
     @Autowired
     RabbitMqService rabbitMqService;
+
+    @Autowired
+    ThreadPoolExecutor executor;
+
+    @Autowired
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public List<ArticleIndexVo> queryPage() {
@@ -270,16 +277,35 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
     }
 
     @Override
-    public List<ArticleIndexVo> getUserArticleList(String keyPrefix) {
-        String userKey = ThreadLocalUtils.getUserTo().getUserKey();
+    public UserViewVo getUserArticleList(String keyPrefix) throws ExecutionException, InterruptedException {
+        UserViewVo vo = new UserViewVo();
         Set<String> keys = articleRedisService.getUserView(keyPrefix);
-        List<Long> ids = keys.stream().map(key -> Long.parseLong(key)).collect(Collectors.toList());
-        List<ArticleEntity> articleEntities = this.list(new QueryWrapper<ArticleEntity>().in("id", ids));
-        return articleEntities.stream().map(articleEntity -> {
-            ArticleIndexVo indexVo = new ArticleIndexVo();
-            BeanUtils.copyProperties(articleEntity, indexVo);
-            return indexVo;
-        }).collect(Collectors.toList());
+        if (keys == null || keys.isEmpty()) {
+            return null;
+        }
+        //异步查询文章列表
+        CompletableFuture<Void> likeListFuture = CompletableFuture.runAsync(() -> {
+            List<Long> ids = keys.stream().map(key -> Long.parseLong(key)).collect(Collectors.toList());
+            List<ArticleEntity> articleEntities = this.list(new QueryWrapper<ArticleEntity>().in("id", ids).orderByDesc("create_time"));
+            List<ArticleIndexVo> collect = articleEntities.stream().map(articleEntity -> {
+                ArticleIndexVo indexVo = new ArticleIndexVo();
+                BeanUtils.copyProperties(articleEntity, indexVo);
+                return indexVo;
+            }).collect(Collectors.toList());
+            vo.setArticleList(collect);
+        }, executor);
+
+        //异步查询tag数据
+        CompletableFuture<Void> tagFuture = CompletableFuture.runAsync(() -> {
+            List<TagStatisticsVo> tagVo = articleTagService.queryTagStatistics(keys);
+            try {
+                vo.setTagJson(objectMapper.writeValueAsString(tagVo));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        }, executor);
+        CompletableFuture.allOf(likeListFuture, tagFuture).get();
+        return vo;
     }
 
     /**

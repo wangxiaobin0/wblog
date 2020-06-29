@@ -10,5 +10,15 @@
         <result property="tagId" column="tag_id"/>
     </resultMap>
 
-
+    <select id="queryTagStatistics" resultType="com.wblog.model.vo.TagStatisticsVo">
+        select
+            bt.name as name,
+            count(tag_id) as value
+        from blog_article_tag bat, blog_tag bt
+        where bat.tag_id = bt.id
+            <foreach collection="keys" open=" and bat.article_id in (" separator="," close=")" item="key">
+                #{key}
+            </foreach>
+        GROUP BY tag_id
+    </select>
 </mapper>

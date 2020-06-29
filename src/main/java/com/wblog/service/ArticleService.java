@@ -4,13 +4,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.model.entity.ArticleEntity;
 import com.wblog.model.to.ArticleMQTo;
-import com.wblog.model.vo.ArticleIndexVo;
-import com.wblog.model.vo.ArticleItemVo;
-import com.wblog.model.vo.ArticlePostVo;
-import com.wblog.model.vo.ArticlePreviewVo;
+import com.wblog.model.vo.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 /**
  * 
@@ -60,6 +58,6 @@ public interface ArticleService extends IService<ArticleEntity> {
 
     void deleteExpireArticle(ArticleMQTo articleMQTo);
 
-    List<ArticleIndexVo> getUserArticleList(String keyPrefix);
+    UserViewVo getUserArticleList(String keyPrefix) throws ExecutionException, InterruptedException;
 }
 

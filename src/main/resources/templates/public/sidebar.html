@@ -18,7 +18,7 @@
                 <li class="list-inline-item" th:if="${session.SESSION_BLOGGER.socialWeibo} != null">
                     <a th:href="${session.SESSION_BLOGGER.socialWeibo}"  title="微博" data-toggle="tooltip" target="_blank"><i class="fa fa-weibo"></i></a>
                 </li>
-                <li class="list-inline-item" th:if="${session.SESSION_LOGIN_USER.socialWeixin} != null">
+                <li class="list-inline-item" th:if="${session.SESSION_BLOGGER.socialWeixin} != null">
                     <div class="dropdown">
                         <a target="_blank" data-toggle="dropdown" onmouseover="javascript:$(this).click()" th:onmouseout="javascript:$(this).click()" style="color: #9aa0ac;"><i class="fa fa-wechat"></i></a>
                         <div class="dropdown-menu dropdown-menu-card" id="weixinQRCode">
