@@ -18,14 +18,16 @@
 							<div class="col-sm-8 mb-sm-5" style="text-align: center;margin: 0 auto;">
 								<div id="carousel-sample" class="carousel slide" data-ride="carousel">
 									<ol class="carousel-indicators">
-										<li data-target="#carousel-sample" data-slide-to="0" th:each="column : ${columnList}" th:attr="data-slide-to=${columnStat.index}"></li>
+										<li data-target="#carousel-sample" data-slide-to="0"
+											th:each="banner : ${bannerList}"
+											th:attr="data-slide-to=${bannerStat.index}">
+										</li>
 									</ol>
-									<div class="carousel-inner" style="height: 400px">
+									<div class="carousel-inner" style="height: 300px">
 										<a class="carousel-item"
-											 th:each="column : ${columnList}"
-											 th:classappend="${columnStat.index} == 0 ? 'active' : ''"
-											 th:href="'/column/' + ${column.id}">
-											<img class="d-block w-100" alt="" th:src="${column.image}" data-holder-rendered="true" />
+											 th:each="banner : ${bannerList}"
+											 th:classappend="${bannerStat.first} ? 'active' : ''">
+											<img class="d-block w-100" alt="" th:src="${banner.image}" data-holder-rendered="true" />
 										</a>
 									</div>
 									<a class="carousel-control-prev" href="#carousel-sample" role="button" data-slide="prev">

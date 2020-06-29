@@ -97,4 +97,19 @@ public class ColumnController {
         columnService.removeByIds(Arrays.asList(ids));
         return R.ok();
     }
+
+    /**
+     * 添加或取消轮播
+     * @param columnId
+     * @param flag
+     * @return
+     */
+    @SysLog(business = "添加或取消轮播")
+    @ResponseBody
+    @PostMapping("/banner")
+    public R addOrCancelBanner(@RequestParam("columnId") Long columnId,
+                       @RequestParam("banner") Boolean flag) {
+        columnService.addOrCancelBanner(columnId, flag);
+        return R.ok();
+    }
 }

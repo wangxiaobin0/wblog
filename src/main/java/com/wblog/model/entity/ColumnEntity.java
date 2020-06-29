@@ -33,7 +33,6 @@ public class ColumnEntity implements Serializable {
 	/**
 	 * 专栏名称
 	 */
-	@NonNull
 	private String name;
 	/**
 	 * 专栏简介
@@ -61,5 +60,10 @@ public class ColumnEntity implements Serializable {
 	 * 排序
 	 */
 	private Integer sort;
+
+	/**
+	 * 是否作为轮播图
+	 */
+	private Boolean banner;
 
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 @Controller
 @ViewCount
@@ -86,7 +87,9 @@ public class IndexController {
     @GetMapping("/column")
     public String column(Model model) {
         List<ColumnVo> columnList = columnService.columnList();
+        List<ColumnVo> bannerList = columnList.stream().filter(ColumnVo::getBanner).collect(Collectors.toList());
         model.addAttribute("columnList", columnList);
+        model.addAttribute("bannerList", bannerList);
         return "column";
     }
 

@@ -45,6 +45,18 @@
                                         <a href="#" class="btn btn-sm btn-secondary d-none d-md-inline-block" onclick="editItem(this)" th:attr="columnId=${column.id},columnName=${column.name}">
                                             添加文章
                                         </a>
+                                        <a href="#" class="btn btn-sm btn-secondary d-none d-md-inline-block" th:id="'addBanner' + ${column.id}"
+                                           onclick="addToBanner(this, true)"
+                                           th:attr="columnId=${column.id}"
+                                                    th:style="${column.banner} ? 'display:none !important;' : ''">
+                                            添加到轮播图
+                                        </a>
+                                        <a href="#" class="btn btn-sm btn-secondary d-none d-md-inline-block text-red" th:id="'cancelBanner' + ${column.id}"
+                                                    onclick="addToBanner(this, false)"
+                                                    th:attr="columnId=${column.id}"
+                                                    th:style="${column.banner} ? '' : 'display:none !important ;'">
+                                            从轮播图移除
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -73,8 +85,30 @@
                     $("#columnItem").html(data);
                 }
                 $("#modal-report").modal('show');
+                currentColumnId = "";
+                currentColumnName = "";
             },
             error: function (data) {
+                currentColumnId = "";
+                currentColumnName = "";
+            }
+        })
+    }
+
+    function addToBanner(ele, flag) {
+        currentColumnId = $(ele).attr("columnId");
+        $.ajax({
+            type: "post",
+            url: "/admin/column/banner",
+            data: {"columnId": currentColumnId, "banner": flag},
+            success: function (data) {
+                console.log(data);
+                if (data.code == 200) {
+                    window.location.reload();
+                }
+            },
+            error: function (data) {
+                currentColumnId = "";
             }
         })
     }

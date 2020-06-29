@@ -29,8 +29,9 @@ public class ColumnVo implements Serializable {
      * 专栏封面
      */
     private String image;
+
     /**
-     * 专栏收藏人数
+     *
      */
-    private Long collectNum;
+    private Boolean banner;
 }

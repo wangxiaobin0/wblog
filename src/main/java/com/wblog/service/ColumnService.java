@@ -25,5 +25,7 @@ public interface ColumnService extends IService<ColumnEntity> {
     ColumnDetailVo columnDetail(Long id) throws ExecutionException, InterruptedException;
 
     List<ColumnVo> columnList();
+
+    void addOrCancelBanner(Long columnId, Boolean flag);
 }
 

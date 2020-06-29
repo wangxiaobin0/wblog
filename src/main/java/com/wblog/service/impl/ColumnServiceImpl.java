@@ -113,13 +113,15 @@ public class ColumnServiceImpl extends ServiceImpl<ColumnDao, ColumnEntity> impl
     public List<ColumnVo> columnList() {
         //查询专栏列表
         List<ColumnVo> entityList = this.baseMapper.columnList();
-        List<ColumnVo> list = entityList.stream().map(columnVo -> {
-            //查询专栏订阅数
-            Long count = columnRedisService.getCount(columnVo.getId());
-            columnVo.setCollectNum(count);
-            return columnVo;
-        }).collect(Collectors.toList());
-        return list;
+        return entityList;
+    }
+
+    @Override
+    public void addOrCancelBanner(Long columnId, Boolean flag) {
+        ColumnEntity columnEntity = new ColumnEntity();
+        columnEntity.setId(columnId);
+        columnEntity.setBanner(flag);
+        this.updateById(columnEntity);
     }
 
 }
