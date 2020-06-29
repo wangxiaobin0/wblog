@@ -8,6 +8,7 @@ import com.wblog.annotation.SysLog;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.common.utils.R;
 import com.wblog.model.entity.ArticleEntity;
+import com.wblog.model.vo.ColumnItemVo;
 import com.wblog.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,6 +38,9 @@ public class ColumnItemController {
      */
     @GetMapping("/list")
     public String list(@RequestParam("columnId") Long columnId, Model model){
+        List<ColumnItemVo> unAddList = columnItemService.getUnAddArticle(columnId);
+        model.addAttribute("unAddList", unAddList);
+        model.addAttribute("columnId", columnId);
         return "/admin/column/columnModal :: columnItem";
     }
 
@@ -83,9 +87,10 @@ public class ColumnItemController {
     /**
      * 删除
      */
-    @PostMapping("/delete")
-    public R delete(@RequestBody Long[] ids){
-		columnItemService.removeByIds(Arrays.asList(ids));
+    @ResponseBody
+    @PostMapping("/{id}")
+    public R delete(@PathVariable("id") Long id){
+        columnItemService.removeById(id);
         return R.ok();
     }
 

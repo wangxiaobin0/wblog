@@ -19,4 +19,6 @@ public interface ColumnItemDao extends BaseMapper<ColumnItemEntity> {
     List<ColumnItemVo> getColumnItems(@Param("columnId") Long id);
 
     Integer changeSort(@Param("id") Long id, @Param("sort") Boolean sort);
+
+    List<ColumnItemVo> getUnAddArticle(@Param("id") Long columnId);
 }

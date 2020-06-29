@@ -22,5 +22,7 @@ public interface ColumnItemService extends IService<ColumnItemEntity> {
     void addToColumn(ColumnItemEntity columnItem);
 
     Boolean changeSort(Long id, Boolean sort);
+
+    List<ColumnItemVo> getUnAddArticle(Long columnId);
 }
 

@@ -11,6 +11,7 @@ import com.wblog.model.vo.ColumnItemVo;
 import com.wblog.service.ArticleRedisService;
 import com.wblog.service.ArticleService;
 import com.wblog.service.TagService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -74,5 +75,10 @@ public class ColumnItemServiceImpl extends ServiceImpl<ColumnItemDao, ColumnItem
     public Boolean changeSort(Long id, Boolean sort) {
         Integer integer = this.baseMapper.changeSort(id, sort);
         return integer == 1;
+    }
+
+    @Override
+    public List<ColumnItemVo> getUnAddArticle(Long columnId) {
+        return this.baseMapper.getUnAddArticle(columnId);
     }
 }

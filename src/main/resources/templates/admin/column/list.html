@@ -42,7 +42,7 @@
                                         </div>
                                     </div>
                                     <div class="col-auto">
-                                        <a href="#" class="btn btn-sm btn-secondary d-none d-md-inline-block" onclick="editItem(this)" th:attr="columnId=${column.id},columnName=${column.name}">
+                                        <a href="#" class="btn btn-sm btn-secondary d-none d-md-inline-block" onclick="addArticle(this)" th:attr="columnId=${column.id},columnName=${column.name}">
                                             添加文章
                                         </a>
                                         <a href="#" class="btn btn-sm btn-secondary d-none d-md-inline-block" th:id="'addBanner' + ${column.id}"
@@ -66,13 +66,13 @@
             </div>
         </div>
     </div>
-
+    <div class="modal modal-blur fade" id="modal-report" tabindex="-1" role="dialog" aria-hidden="true"></div>
     <div th:replace="admin/dashboard :: footer"></div>
 </div>
 <script>
     let currentColumnId = "";
     let currentColumnName = "";
-    function editItem(ele) {
+    function addArticle(ele) {
         currentColumnId = $(ele).attr("columnId");
         currentColumnName = $(ele).attr("columnName");
         $.ajax({
@@ -81,9 +81,7 @@
             data: {"columnId": currentColumnId},
             success: function (data) {
                 console.log(data);
-                if (data.code == 200) {
-                    $("#columnItem").html(data);
-                }
+                $("#modal-report").html(data);
                 $("#modal-report").modal('show');
                 currentColumnId = "";
                 currentColumnName = "";

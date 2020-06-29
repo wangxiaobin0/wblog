@@ -34,7 +34,6 @@ public class  ColumnItemEntity implements Serializable {
 	/**
 	 * 专栏名
 	 */
-	@NonNull
 	private String columnName;
 	/**
 	 * 文章id
@@ -44,12 +43,10 @@ public class  ColumnItemEntity implements Serializable {
 	/**
 	 * 
 	 */
-	@NonNull
 	private String articleTitle;
 
 	/**
 	 * 排序参数
 	 */
-	@NonNull
 	private Integer sort;
 }

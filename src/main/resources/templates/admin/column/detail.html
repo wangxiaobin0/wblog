@@ -45,7 +45,7 @@
                                         </div>
                                     </div>
                                     <div class="col-auto">
-                                        <a href="#" class="btn btn-sm btn-secondary d-none d-md-inline-block" onclick="editItem(this)" th:attr="columnId=${detail.id},columnName=${detail.name}">
+                                        <a href="#" class="btn btn-sm btn-secondary d-none d-md-inline-block" onclick="addArticle(this)" th:attr="columnId=${detail.id},columnName=${detail.name}">
                                             添加文章
                                         </a>
                                     </div>
@@ -100,48 +100,39 @@
             </div>
         </div>
     </div>
+    <div class="modal modal-blur fade" id="modal-report" tabindex="-1" role="dialog" aria-hidden="true"></div>
     <div th:replace="admin/dashboard :: footer"></div>
 </div>
 <script>
     let currentColumnId = "";
-    let currentColumnName = "";
-    function editItem(ele) {
+    function addArticle(ele) {
         currentColumnId = $(ele).attr("columnId");
-        currentColumnName = $(ele).attr("columnName");
         $.ajax({
             type: "get",
             url: "/admin/column/item/list",
             data: {"columnId": currentColumnId},
             success: function (data) {
                 console.log(data);
-                if (data.code == 200) {
-                    $("#columnItem").html(data);
-                }
+                $("#modal-report").html(data);
                 $("#modal-report").modal('show');
+                currentColumnId = "";
+                currentColumnName = "";
             },
             error: function (data) {
+                currentColumnId = "";
+                currentColumnName = "";
             }
         })
     }
     function deleteArticle(ele) {
         $.ajax({
             type: "post",
-            url: "/admin/column/item",
-            data: {
-                "itemId": $(ele).attr("itemId")
-            },
+            url: "/admin/column/item/" + $(ele).attr("itemId"),
             success: function (data) {
                 if (data.code == 200) {
-                    $("#alert-success").fadeIn();
                     setTimeout(function() {
-                        $("#alert-success").fadeOut();
                         window.location.reload();
                     }, 1000);
-                } else {
-                    $("#alert-fail").fadeIn();
-                    setTimeout(function () {
-                        $("#alert-fail").fadeOut();
-                    }, 800);
                 }
             },
             error: function (data) {

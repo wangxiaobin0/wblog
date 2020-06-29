@@ -35,4 +35,13 @@
         </if>
         where id = #{id}
     </update>
+
+    <select id="getUnAddArticle" parameterType="java.lang.Long" resultType="com.wblog.model.vo.ColumnItemVo">
+		select
+			id as articleId,
+			title as articleTitle,
+			create_time as createTime
+		from blog_article
+		where id not in (select article_id from blog_column_item where column_id = #{id})
+    </select>
 </mapper>
