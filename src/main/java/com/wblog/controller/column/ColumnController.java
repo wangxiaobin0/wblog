@@ -13,6 +13,7 @@ import com.wblog.common.utils.R;
 import com.wblog.interceptor.AdminRequestInterceptor;
 import com.wblog.model.entity.ArticleEntity;
 import com.wblog.model.vo.ColumnDetailVo;
+import com.wblog.model.vo.ColumnVo;
 import com.wblog.service.ArticleService;
 import jdk.nashorn.internal.objects.annotations.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,6 @@ public class ColumnController {
     /**
      * 管理端：专栏详情
      */
-    @SysLog(business = "专栏详情")
     @GetMapping("/{id}")
     public String columnDetail(@PathVariable("id") Long id, Model model) throws ExecutionException, InterruptedException {
         ColumnDetailVo columnVo = columnService.columnDetail(id);
@@ -111,5 +111,19 @@ public class ColumnController {
                        @RequestParam("banner") Boolean flag) {
         columnService.addOrCancelBanner(columnId, flag);
         return R.ok();
+    }
+
+    /**
+     * 查询文章未添加到的专栏
+     * @param articleId
+     * @param model
+     * @return
+     */
+    @GetMapping("/unAdd")
+    public String unAddColumn(@RequestParam("articleId") Long articleId, Model model) {
+        List<ColumnVo> unAddColumn = columnService.unAddColumn(articleId);
+        model.addAttribute("unAddColumn", unAddColumn);
+        model.addAttribute("articleId", articleId);
+        return "/admin/fragment/column :: column";
     }
 }

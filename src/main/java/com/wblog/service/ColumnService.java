@@ -27,5 +27,7 @@ public interface ColumnService extends IService<ColumnEntity> {
     List<ColumnVo> columnList();
 
     void addOrCancelBanner(Long columnId, Boolean flag);
+
+    List<ColumnVo> unAddColumn(Long articleId);
 }
 

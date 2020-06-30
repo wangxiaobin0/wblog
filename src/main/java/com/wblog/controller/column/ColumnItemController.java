@@ -41,7 +41,7 @@ public class ColumnItemController {
         List<ColumnItemVo> unAddList = columnItemService.getUnAddArticle(columnId);
         model.addAttribute("unAddList", unAddList);
         model.addAttribute("columnId", columnId);
-        return "/admin/column/columnModal :: columnItem";
+        return "/admin/fragment/columnItem :: columnItem";
     }
 
 

@@ -91,7 +91,8 @@
                                             <span class="dropdown ml-1">
                                             <button class="btn btn-secondary btn-sm dropdown-toggle align-text-top" data-boundary="viewport" data-toggle="dropdown">更多</button>
                                             <div class="dropdown-menu dropdown-menu-right">
-                                              <a class="dropdown-item" href="#">
+                                              <a class="dropdown-item" href="#" onclick="getUnAddColumn(this)"
+                                                 th:attr="articleId=${aritcle.id}">
                                                 添加到专栏
                                               </a>
                                               <a class="dropdown-item" href="#" th:text="${aritcle.top} ? '取消置顶':'设为置顶'"
@@ -135,9 +136,25 @@
             </div>
         </div>
     </div>
+    <div class="modal modal-blur fade" id="modal-report" tabindex="-1" role="dialog" aria-hidden="true"></div>
     <div th:replace="admin/dashboard :: footer"></div>
 </div>
 <script>
+    function getUnAddColumn(ele) {
+        $.ajax({
+            type: "get",
+            url: "/admin/column/unAdd",
+            data: {"articleId": $(ele).attr("articleId")},
+            success: function (data) {
+                console.log(data);
+                $("#modal-report").html(data);
+                $("#modal-report").modal('show');
+            },
+            error: function () {
+            }
+        })
+    }
+
     function changeTop(ele) {
         $.ajax({
             type: "post",

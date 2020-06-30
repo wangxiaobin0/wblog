@@ -39,7 +39,6 @@ public class ArticleController {
     /**
      * 列表
      */
-    @SysLog(business = "查询已发布文章")
     @GetMapping("/publish")
     public String listPublish(Model model){
         List<ArticleIndexVo> articleList = articleService.getPublishList();
@@ -52,7 +51,6 @@ public class ArticleController {
      * @param params
      * @return
      */
-    @SysLog(business = "查询草稿箱列表")
     @GetMapping("/draft")
     public String listDraft(@RequestParam Map<String, Object> params, Model model) {
         PageUtils page = articleService.listDraft(params);
@@ -65,7 +63,6 @@ public class ArticleController {
      * @param params
      * @return
      */
-    @SysLog(business = "查询回收站列表")
     @GetMapping("/trash")
     public String listTrash(@RequestParam Map<String, Object> params, Model model) {
 

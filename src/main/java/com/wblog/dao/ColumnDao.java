@@ -4,6 +4,7 @@ import com.wblog.model.entity.ColumnEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.wblog.model.vo.ColumnVo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -17,4 +18,6 @@ import java.util.List;
 public interface ColumnDao extends BaseMapper<ColumnEntity> {
 
     List<ColumnVo> columnList();
+
+    List<ColumnVo> unAddColumn(@Param("articleId") Long articleId);
 }

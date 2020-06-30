@@ -124,4 +124,10 @@ public class ColumnServiceImpl extends ServiceImpl<ColumnDao, ColumnEntity> impl
         this.updateById(columnEntity);
     }
 
+    @Override
+    public List<ColumnVo> unAddColumn(Long articleId) {
+        List<ColumnVo> columnVoList = this.baseMapper.unAddColumn(articleId);
+        return columnVoList;
+    }
+
 }

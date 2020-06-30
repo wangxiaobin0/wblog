@@ -30,4 +30,11 @@
         order by sort
     </select>
 
+    <select id="unAddColumn"  resultMap="columnVo">
+        select id, name, concat(left(summary, 32), '...') as summary
+        from blog_column
+        where id not in (select column_id from blog_column_item where article_id = #{articleId})
+        order by sort
+    </select>
+
 </mapper>
