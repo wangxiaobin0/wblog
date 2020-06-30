@@ -129,6 +129,7 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public Boolean delete(Long id) throws IOException {
         DeleteRequest deleteRequest = new DeleteRequest(ARTICLE_INDEX);
+        //设置docId
         deleteRequest.id(id.toString());
         restHighLevelClient.delete(deleteRequest, RequestOptions.DEFAULT);
         return null;

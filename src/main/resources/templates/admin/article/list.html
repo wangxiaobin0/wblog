@@ -53,54 +53,40 @@
                                         <th class="w-1">ID</th>
                                         <th>标题</th>
                                         <th>发表时间</th>
-                                        <th>访问人数</th>
-                                        <th>收藏人数</th>
-                                        <th>点赞人数</th>
                                         <th>状态</th>
+                                        <th>置顶</th>
                                         <th>操作</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr th:each="aritcle : ${articleList}">
-                                        <td><span class="text-muted" th:text="${aritcle.id}">001401</span></td>
+                                    <tr th:each="article : ${articleList}">
+                                        <td><span class="text-muted" th:text="${article.id}">001401</span></td>
                                         <td>
-                                            <a href="javascript:void(0)" class="text-inherit" th:text="${aritcle.title}">
+                                            <a href="javascript:void(0)" class="text-inherit" th:text="${article.title}">
                                                 Java设计模式
                                             </a>
-                                            <span class="badge bg-red" th:if="${aritcle.top}">置顶</span>
+                                            <span class="badge bg-red" th:if="${article.top}">置顶</span>
                                         </td>
-                                        <td th:text="${#dates.format(aritcle.createTime, 'yyyy-MM-dd')}">
+                                        <td th:text="${#dates.format(article.createTime, 'yyyy-MM-dd')}">
                                             2020-02-29
                                         </td>
-                                        <td th:text="${aritcle.viewCount}"></td>
-                                        <td th:text="${aritcle.collectNum}"></td>
-                                        <td th:text="${aritcle.thumbUpCount}"></td>
-                                        <td th:if="${aritcle.state} == 1">
+                                        <td th:if="${article.state} == 1">
                                             <span class="status-icon bg-lime"></span> 公开
                                         </td>
-                                        <td th:if="${aritcle.state} == 2">
+                                        <td th:if="${article.state} == 2">
                                             <span class="status-icon bg-warning"></span> 保密
                                         </td>
                                         <td>
-                                            <a class="icon" href="javascript:void(0)">
-                                                <i class="fe fe-edit"></i>
-                                            </a>
-                                            <a class="icon" href="#" onclick="deleteArticle(this)" th:attr="articleId=${aritcle.id}">
-                                                <i class="fe fe-trash-2"></i>
-                                            </a>
-                                            <span class="dropdown ml-1">
-                                            <button class="btn btn-secondary btn-sm dropdown-toggle align-text-top" data-boundary="viewport" data-toggle="dropdown">更多</button>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                              <a class="dropdown-item" href="#" onclick="getUnAddColumn(this)"
-                                                 th:attr="articleId=${aritcle.id}">
-                                                添加到专栏
-                                              </a>
-                                              <a class="dropdown-item" href="#" th:text="${aritcle.top} ? '取消置顶':'设为置顶'"
-                                                 th:attr="articleId=${aritcle.id},top=${!aritcle.top}" onclick="changeTop(this)">
-                                                设置为置顶
-                                              </a>
-                                            </div>
-                                          </span>
+                                            <label class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox"
+                                                       th:attr="articleId=${article.id},top=!${article.top}"
+                                                       th:checked="${article.top}"
+                                                       onclick="changeTop(this)">
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-secondary btn-sm" onclick="getUnAddColumn(this)" th:attr="articleId=${article.id}">添加到专栏</button>
+                                            <button class="btn btn-danger btn-sm" onclick="deleteArticle(this)" th:attr="articleId=${article.id}">删除</button>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -182,19 +168,20 @@
         $("#deleteArticle").attr("action", "/admin/article");
     }
     function changeTop(ele) {
+        let top = $(ele).attr("top");
+
         $.ajax({
             type: "post",
             url: "/admin/article/top",
             data: {
                 "articleId": $(ele).attr("articleId"),
-                "top":$(ele).attr("top")
+                "top": top
             },
             success: function (data) {
                 if (data.code == 200) {
                     $("#alert-success").fadeIn();
                     setTimeout(function() {
                         $("#alert-success").fadeOut();
-                        window.location.reload();
                     }, 1000);
                 } else {
                     $("#alert-fail").fadeIn();
@@ -202,6 +189,7 @@
                         $("#alert-fail").fadeOut();
                     }, 800);
                 }
+                window.location.reload();
             },
             error: function (data) {
                 $("#alert-fail").fadeIn();

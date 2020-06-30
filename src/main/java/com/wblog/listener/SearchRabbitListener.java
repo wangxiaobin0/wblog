@@ -35,6 +35,8 @@ public class SearchRabbitListener {
         searchService.add(articleMQTo.getId());
     }
 
+    @SysLog(business = "从ElasticSearch中删除文章")
+    @Rabbit
     @RabbitListener(queues = {MQConstant.SearchConstant.SEARCH_DELETE_ARTICLE_QUEUE})
     public void deleteArticle(ArticleMQTo articleMQTo, Message message, Channel channel) throws IOException {
         searchService.delete(articleMQTo.getId());

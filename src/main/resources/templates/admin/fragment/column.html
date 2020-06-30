@@ -51,7 +51,7 @@
                                 <a href="javascript:void(0)" class="text-inherit" th:text="${column.summary}">设计模式</a>
                             </td>
                             <td>
-                                <a href="#" onclick="addColumn(this)" th:attr="articleId=${articleId},columnId=${column.id}">添加</a>
+                                <button class="btn btn-secondary btn-space btn-sm" onclick="addColumn(this)" th:attr="articleId=${articleId},columnId=${column.id}">添加</button>
                             </td>
                         </tr>
                         </tbody>

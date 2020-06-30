@@ -257,8 +257,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
 
     @Override
     public List<ArticleIndexVo> getPublishList() {
-        List<ArticleIndexVo> publishList = this.baseMapper.getPublishList();
-        return getArticleIndexListWithCount(publishList);
+        return this.baseMapper.getPublishList();
     }
 
     @Override
