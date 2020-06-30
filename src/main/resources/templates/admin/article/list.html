@@ -62,7 +62,10 @@
                                     <tr th:each="article : ${articleList}">
                                         <td><span class="text-muted" th:text="${article.id}">001401</span></td>
                                         <td>
-                                            <a href="javascript:void(0)" class="text-inherit" th:text="${article.title}">
+                                            <a href="#" class="text-inherit"
+                                               th:text="${article.title}"
+                                               th:attr="articleId=${article.id}"
+                                                onclick="showDetail(this)">
                                                 Java设计模式
                                             </a>
                                             <span class="badge bg-red" th:if="${article.top}">置顶</span>
@@ -147,13 +150,24 @@
     </div>
 </div>
 <script>
+    function showDetail(ele) {
+        $.ajax({
+            type: "get",
+            url: "/admin/article/" + $(ele).attr("articleId"),
+            success: function (data) {
+                $("#modal-report").html(data);
+                $("#modal-report").modal('show');
+            },
+            error: function () {
+            }
+        })
+    }
     function getUnAddColumn(ele) {
         $.ajax({
             type: "get",
             url: "/admin/column/unAdd",
             data: {"articleId": $(ele).attr("articleId")},
             success: function (data) {
-                console.log(data);
                 $("#modal-report").html(data);
                 $("#modal-report").modal('show');
             },

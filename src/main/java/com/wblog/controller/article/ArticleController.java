@@ -8,6 +8,7 @@ import com.wblog.annotation.SysLog;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.common.utils.R;
 import com.wblog.model.vo.ArticleIndexVo;
+import com.wblog.model.vo.ArticleItemVo;
 import com.wblog.model.vo.ArticlePostVo;
 import com.wblog.model.vo.ArticlePreviewVo;
 import com.wblog.service.ArticleRedisService;
@@ -77,12 +78,13 @@ public class ArticleController {
     }
 
     /**
-     * 信息
+     * 管理端查看文章详情
      */
     @GetMapping("/{id}")
-    public R info(@PathVariable("id") Long id){
-		ArticleEntity article = articleService.getById(id);
-        return R.ok().put("article", article);
+    public String info(@PathVariable("id") Long id, Model model){
+        ArticleItemVo item = articleService.getDetail(id);
+        model.addAttribute("article", item);
+        return "/admin/fragment/article :: article";
     }
 
     @PostMapping("/preview")

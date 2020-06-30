@@ -228,30 +228,15 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
         //更新浏览数,添加浏览记录
         articleRedisService.incrViewCountAndAddViewHistory(articleId);
         //查询数据库文章信息
-        ArticleItemVo articleItem = this.baseMapper.getArticleItem(articleId);
-
-        //TODO:使用Assert处理异常
-        if (articleItem == null) {
-            throw new ArticleException("文章不存在");
-        }
-        //查询浏览数
-        Long viewCount = articleRedisService.getCount(articleId, ArticleConstant.ARTICLE_VIEW_COUNT);
-        articleItem.setViewNum(viewCount);
+        ArticleItemVo articleItem = getDetail(articleId);
 
         String userKey = ThreadLocalUtils.getUserTo().getUserKey();
         //当前访客是否收藏过
         articleItem.setHasCollect(articleRedisService.orNot(articleId, ArticleConstant.ARTICLE_COLLECT, userKey));
 
-        //查询收藏数
-        Long collectCount = articleRedisService.getCount(articleId, ArticleConstant.ARTICLE_COLLECT);
-        articleItem.setCollectNum(collectCount);
-
-        //查询点赞数
-        Long thumbUpCount = articleRedisService.getCount(articleId, ArticleConstant.ARTICLE_THUMB_UP);
-        articleItem.setThumbUp(thumbUpCount);
         //是否赞过
         articleItem.setHasThumbUp(articleRedisService.orNot(articleId, ArticleConstant.ARTICLE_THUMB_UP, userKey));
-        log.info("获取文章结果：{}", articleItem);
+
         return articleItem;
     }
 
@@ -336,6 +321,31 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
                 MQConstant.SearchConstant.SEARCH_EVENT_EXCHANGE,
                 MQConstant.SearchConstant.SEARCH_DELETE_ARTICLE_ROUTING_KEY,
                 new ArticleMQTo(articleEntity.getId(), ArticleMqEnum.DELETE.getCode()));
+    }
+
+    @Override
+    public ArticleItemVo getDetail(Long articleId) {
+        //查询数据库文章信息
+        ArticleItemVo articleItem = this.baseMapper.getArticleItem(articleId);
+
+        //TODO:使用Assert处理异常
+        if (articleItem == null) {
+            throw new ArticleException("文章不存在");
+        }
+        //查询浏览数
+        Long viewCount = articleRedisService.getCount(articleId, ArticleConstant.ARTICLE_VIEW_COUNT);
+        articleItem.setViewNum(viewCount);
+
+        //查询收藏数
+        Long collectCount = articleRedisService.getCount(articleId, ArticleConstant.ARTICLE_COLLECT);
+        articleItem.setCollectNum(collectCount);
+
+        //查询点赞数
+        Long thumbUpCount = articleRedisService.getCount(articleId, ArticleConstant.ARTICLE_THUMB_UP);
+        articleItem.setThumbUp(thumbUpCount);
+
+        log.info("获取文章结果：{}", articleItem);
+        return articleItem;
     }
 
     /**

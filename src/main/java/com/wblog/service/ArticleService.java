@@ -61,5 +61,7 @@ public interface ArticleService extends IService<ArticleEntity> {
     UserViewVo getUserArticleList(String keyPrefix) throws ExecutionException, InterruptedException;
 
     void delete(Long id);
+
+    ArticleItemVo getDetail(Long articleId);
 }
 
