@@ -11,6 +11,7 @@ import com.wblog.model.vo.ArticleIndexVo;
 import com.wblog.model.vo.ArticlePostVo;
 import com.wblog.model.vo.ArticlePreviewVo;
 import com.wblog.service.ArticleRedisService;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,6 +47,10 @@ public class ArticleController {
         return "admin/article/list";
     }
 
+    @GetMapping
+    public String list() {
+        return "admin/article/add";
+    }
     /**
      * 草稿箱列表
      * @param params
@@ -77,7 +82,6 @@ public class ArticleController {
     @GetMapping("/{id}")
     public R info(@PathVariable("id") Long id){
 		ArticleEntity article = articleService.getById(id);
-
         return R.ok().put("article", article);
     }
 
@@ -128,10 +132,10 @@ public class ArticleController {
     /**
      * 删除
      */
-    @PostMapping("/delete")
-    public R delete(@RequestBody Long[] ids){
-		articleService.removeByIds(Arrays.asList(ids));
-
-        return R.ok();
+    @SysLog(business = "删除文章")
+    @DeleteMapping
+    public String delete(@RequestParam("id") Long id){
+		articleService.delete(id);
+        return "redirect:/admin/article/trash";
     }
 }

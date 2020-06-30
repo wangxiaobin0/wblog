@@ -39,6 +39,10 @@ spring:
       simple:
         #消费者手动ack
         acknowledge-mode: manual
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
 mybatis-plus:
   #别名包
   type-aliases-package: com.wblog.model.entity

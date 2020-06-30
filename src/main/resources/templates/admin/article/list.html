@@ -85,7 +85,7 @@
                                             <a class="icon" href="javascript:void(0)">
                                                 <i class="fe fe-edit"></i>
                                             </a>
-                                            <a class="icon" href="javascript:void(0)">
+                                            <a class="icon" href="#" onclick="deleteArticle(this)" th:attr="articleId=${aritcle.id}">
                                                 <i class="fe fe-trash-2"></i>
                                             </a>
                                             <span class="dropdown ml-1">
@@ -138,6 +138,27 @@
     </div>
     <div class="modal modal-blur fade" id="modal-report" tabindex="-1" role="dialog" aria-hidden="true"></div>
     <div th:replace="admin/dashboard :: footer"></div>
+    <div class="modal modal-blur fade" id="modal-small" tabindex="-1" role="dialog"
+         aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="modal-title">确认删除?</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-link link-secondary mr-auto"
+                            data-dismiss="modal">取消
+                    </button>
+                    <form method="post" id="deleteArticle">
+                        <button name="submit" class="btn btn-danger" style="color: white;">确认删除</button>
+                        <input type="hidden" name="id" id="articleId" value="">
+                        <input type="hidden" name="_method" value="DELETE">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <script>
     function getUnAddColumn(ele) {
@@ -154,7 +175,12 @@
             }
         })
     }
-
+    function deleteArticle(ele) {
+        let id = $(ele).attr("articleId");
+        $('#modal-small').modal('show');
+        $("#articleId").val(id);
+        $("#deleteArticle").attr("action", "/admin/article");
+    }
     function changeTop(ele) {
         $.ajax({
             type: "post",

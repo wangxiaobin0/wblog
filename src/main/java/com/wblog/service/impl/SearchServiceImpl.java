@@ -9,6 +9,7 @@ import com.wblog.model.vo.SearchParamVo;
 import com.wblog.model.vo.SearchResultVo;
 import com.wblog.service.SearchService;
 import org.apache.lucene.search.join.ScoreMode;
+import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
@@ -104,8 +105,11 @@ public class SearchServiceImpl implements SearchService {
 
         articleEsTo.setContent(articleItem.getHtml().replaceAll("<[^>]*>", "").replaceAll("[(/>)<]", ""));
         IndexRequest indexRequest = new IndexRequest(ARTICLE_INDEX);
+        //设置ES中的docId
+        indexRequest.id(articleItem.getId().toString());
         indexRequest.source(objectMapper.writeValueAsString(articleEsTo), XContentType.JSON);
         IndexResponse indexResponse = restHighLevelClient.index(indexRequest, RequestOptions.DEFAULT);
+
         System.out.println(indexResponse);
         RestStatus status = indexResponse.status();
         return null;
@@ -120,6 +124,14 @@ public class SearchServiceImpl implements SearchService {
         SearchResultVo searchResult = getSearchResult(searchResponse);
         searchResult.setSearchParam(searchParam);
         return searchResult;
+    }
+
+    @Override
+    public Boolean delete(Long id) throws IOException {
+        DeleteRequest deleteRequest = new DeleteRequest(ARTICLE_INDEX);
+        deleteRequest.id(id.toString());
+        restHighLevelClient.delete(deleteRequest, RequestOptions.DEFAULT);
+        return null;
     }
 
     /**

@@ -59,5 +59,7 @@ public interface ArticleService extends IService<ArticleEntity> {
     void deleteExpireArticle(ArticleMQTo articleMQTo);
 
     UserViewVo getUserArticleList(String keyPrefix) throws ExecutionException, InterruptedException;
+
+    void delete(Long id);
 }
 

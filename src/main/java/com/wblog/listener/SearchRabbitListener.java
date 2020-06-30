@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Configuration;
 import java.io.IOException;
 
 @Configuration
-@RabbitListener(queues = {MQConstant.SearchConstant.SEARCH_ADD_ARTICLE_QUEUE, MQConstant.SearchConstant.SEARCH_DELETE_ARTICLE_QUEUE})
 public class SearchRabbitListener {
 
     @Autowired
@@ -31,10 +30,13 @@ public class SearchRabbitListener {
      */
     @SysLog(business = "添加文章到ElasticSearch")
     @Rabbit
-    @RabbitHandler
+    @RabbitListener(queues = {MQConstant.SearchConstant.SEARCH_ADD_ARTICLE_QUEUE})
     public void addArticle(ArticleMQTo articleMQTo, Message message, Channel channel) throws IOException {
-        if (articleMQTo.getState() == ArticleMqEnum.PUBLIC.getCode()) {
-            searchService.add(articleMQTo.getId());
-        }
+        searchService.add(articleMQTo.getId());
+    }
+
+    @RabbitListener(queues = {MQConstant.SearchConstant.SEARCH_DELETE_ARTICLE_QUEUE})
+    public void deleteArticle(ArticleMQTo articleMQTo, Message message, Channel channel) throws IOException {
+        searchService.delete(articleMQTo.getId());
     }
 }

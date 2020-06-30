@@ -11,6 +11,7 @@ import com.wblog.common.utils.Query;
 import com.wblog.common.utils.ThreadLocalUtils;
 import com.wblog.exception.ArticleException;
 import com.wblog.model.entity.ArticleTagEntity;
+import com.wblog.model.entity.ColumnItemEntity;
 import com.wblog.model.entity.TagEntity;
 import com.wblog.model.to.AdminTo;
 import com.wblog.model.to.ArticleMQTo;
@@ -55,6 +56,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
 
     @Autowired
     RabbitMqService rabbitMqService;
+
+    @Autowired
+    ColumnItemService columnItemService;
 
     @Autowired
     ThreadPoolExecutor executor;
@@ -308,6 +312,33 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
         return vo;
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void delete(Long id) {
+        //更新文章状态为回收站
+        ArticleEntity articleEntity = new ArticleEntity();
+        articleEntity.setId(id);
+        articleEntity.setState(ArticleStateEnum.TRASH.getCode());
+        this.updateById(articleEntity);
+
+        //删除文章与标签的对应关系
+        articleTagService.remove(new QueryWrapper<ArticleTagEntity>().eq("article_id", id));
+
+        //删除文章与专栏的对应关系
+        columnItemService.remove(new QueryWrapper<ColumnItemEntity>().eq("article_id", id));
+
+        //延时删除文章
+        rabbitMqService.sendMessage(
+                MQConstant.ArticleConstant.ARTICLE_EVENT_EXCHANGE,
+                MQConstant.ArticleConstant.ARTICLE_DRAFT_DELAY_ROUTING_KEY,
+                new ArticleMQTo(id, ArticleMqEnum.TRASH.getCode()));
+        //发送消息删除ES中的文章
+        rabbitMqService.sendMessage(
+                MQConstant.SearchConstant.SEARCH_EVENT_EXCHANGE,
+                MQConstant.SearchConstant.SEARCH_DELETE_ARTICLE_ROUTING_KEY,
+                new ArticleMQTo(articleEntity.getId(), ArticleMqEnum.DELETE.getCode()));
+    }
+
     /**
      * 查询列表中各个文章的浏览/收藏/点赞数
      * @param publishList
@@ -317,7 +348,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
         if (publishList == null) {
             return null;
         }
-        return publishList.stream().map(articleIndexVo -> {
+        return publishList.stream().peek(articleIndexVo -> {
             //查询浏览数
             Long viewCount = articleRedisService.getCount(articleIndexVo.getId(), ArticleConstant.ARTICLE_VIEW_COUNT);
             articleIndexVo.setViewCount(viewCount);
@@ -329,7 +360,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
             //查询收藏数
             Long collectCount = articleRedisService.getCount(articleIndexVo.getId(), ArticleConstant.ARTICLE_COLLECT);
             articleIndexVo.setCollectNum(collectCount);
-            return articleIndexVo;
         }).collect(Collectors.toList());
     }
 
