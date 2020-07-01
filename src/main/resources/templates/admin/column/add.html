@@ -48,15 +48,12 @@
                                     </div>
                                     <div class="mb-3  col-md-9">
                                         <label class="form-label">封面</label>
-                                        <img src="/static/demo/photos/9f36332564ca271d.jpg" class="card-img" style="height: 200px; width: auto" id="images" onclick="uploadImg()">
+                                        <img src="/static/demo/photos/9f36332564ca271d.jpg" class="card-img" style="height: 200px; width: auto" id="images" onclick="javascript:$('#columnImages').click()">
+                                        <input id="columnImages" type="file" style="display: none;" accept="image/jpeg" onchange="preImg(this.id, 'images')"/>
+                                        <input type="hidden" name="image" id="image"/>
                                     </div>
-                                    <div class="mb-3  col-md-9">
-                                        <input type="file" id="fileInput" style="display: none">
-                                        <button type="button" class="btn btn-outline-primary" onclick="uploadImg()">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                                            上传
-                                        </button>
-                                        <a href="#" class="btn btn-primary float-right" style="top:100%" onclick="addColumn()">保存专栏</a>
+                                    <div>
+                                        <a href="#" class="btn btn-primary" style="top:100%" onclick="addColumn()">保存专栏</a>
                                     </div>
                                 </form>
                             </div>
@@ -69,8 +66,78 @@
     <div th:replace="admin/dashboard :: footer"></div>
 </div>
 <script>
-    function uploadImg() {
-        $("#fileInput").click();
+    function getFileUrl(sourceId) {
+        var url;
+        if (navigator.userAgent.indexOf("MSIE")>=1) { // IE
+            url = document.getElementById(sourceId).value;
+        } else if(navigator.userAgent.indexOf("Firefox")>0) { // Firefox
+            url = window.URL.createObjectURL(document.getElementById(sourceId).files.item(0));
+        } else if(navigator.userAgent.indexOf("Chrome")>0) { // Chrome
+            url = window.URL.createObjectURL(document.getElementById(sourceId).files.item(0));
+        }
+        return url;
+    }
+    function preImg(sourceId, targetId) {
+        var url = getFileUrl(sourceId);
+        var imgPre = document.getElementById(targetId);
+        imgPre.src = url;
+        getPolicy(sourceId);
+    }
+
+    function getPolicy(sourceId) {
+        $.ajax({
+            type: "get",
+            url: "/admin/file",
+            success: function (data) {
+                upload(data.data, sourceId);
+            },
+            error: function () {
+                alert("读取文件失败");
+            }
+        })
+    }
+    function upload(param, sourceId) {
+        let imgFile = document.getElementById(sourceId).files[0];
+        let extName = imgFile.name.substring(imgFile.name.lastIndexOf("."));
+        let filePath = param.dir + random_string(8) + extName;
+        var request = new FormData();
+        request.append('ossaccessKeyId', param.accessid);
+        request.append('policy', param.policy);
+        request.append('signature', param.signature);
+        request.append('key', filePath);
+        request.append('dir', param.dir);
+        request.append('host', param.host);
+        request.append('file', imgFile);
+        request.append('submit', "Upload to OSS");
+        $.ajax({
+            url: param.host,
+            data: request,
+            processData: false,
+            cache: false,
+            async: false,
+            contentType: false,
+            //关键是要设置contentType 为false，不然发出的请求头 没有boundary
+            //该参数是让jQuery去判断contentType
+            type: "POST",
+            success: function (data, textStatus, request) {
+                if (textStatus === "nocontent") {
+                    let url = param.host + '/' + filePath;
+                    $("#image").val(url);
+                } else {
+                    alert(textStatus);
+                }
+            }
+        });
+    }
+    function random_string(len) {
+        len = len || 32;
+        var chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';
+        var maxPos = chars.length;
+        var pwd = '';
+        for (i = 0; i < len; i++) {
+            pwd += chars.charAt(Math.floor(Math.random() * maxPos));
+        }
+        return pwd;
     }
     function countNum() {
         let length = $("#summary").val().length;
@@ -83,7 +150,7 @@
             data: {
                 "name": $("#name").val(),
                 "summary": $("#summary").val(),
-                "image": $("#images").attr("src")
+                "image": $("#image").val()
             },
             success: function (data) {
                 if (data.code == 200) {

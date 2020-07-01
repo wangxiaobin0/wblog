@@ -56,10 +56,11 @@ mybatis-plus:
 blog:
   #对象存储
   oss:
-    access-key-id: xxx
-    bucket: xxx
-    endpoint: xxx
-    access-key-secret: xxx
+    access-key-id: LTAI4FmzDBZByNuokPMs7QwC
+    bucket: xbwang
+    endpoint: oss-cn-beijing.aliyuncs.com
+    access-key-secret: spbY2KlKJjoI3wk0CpPTr7eEv4X90M
+
   #异步编排线程池配置
   thread:
     #核心线程数

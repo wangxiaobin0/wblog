@@ -11,7 +11,11 @@ import com.wblog.model.vo.ArticleStatisticsVo;
  */
 public interface StatisticsService extends IService<StatisticsEntity> {
 
-    void articleStatisticsTask();
+    /**
+     * 加减天数
+     * @param addDays
+     */
+    void articleStatisticsTask(Integer addDays);
 
     void initialize();
 

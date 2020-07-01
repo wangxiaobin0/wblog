@@ -7,6 +7,7 @@ import com.wblog.model.entity.ArticleEntity;
 import com.wblog.model.entity.StatisticsEntity;
 import com.wblog.model.vo.ArticleStatisticsVo;
 import com.wblog.service.ArticleService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wblog.dao.StatisticsDao;
 import com.wblog.service.StatisticsService;
 
-
+@Slf4j
 @Service("statisticsService")
 public class StatisticsServiceImpl extends ServiceImpl<StatisticsDao, StatisticsEntity> implements StatisticsService {
 
@@ -32,18 +33,23 @@ public class StatisticsServiceImpl extends ServiceImpl<StatisticsDao, Statistics
     ArticleService articleService;
 
     @Override
-    public void articleStatisticsTask() {
+    public void articleStatisticsTask(Integer addDays) {
         LocalDate today = LocalDate.now();
-        //统计昨天的
-        LocalDate yesterday = today.plusDays(-1);
+        //根据传入天数确定日期
+        LocalDate yesterday = today.plusDays(addDays);
         String statisticsDate = DateUtils.formatLocalDate(yesterday, "yyyy-MM-dd");
         //获取昨天的数量
         int count = articleService.count(new QueryWrapper<ArticleEntity>().like("create_time", statisticsDate));
-
+        if (count == 0) {
+            log.info("{}没有发表文章", statisticsDate);
+            return;
+        }
+        boolean b = this.removeById(statisticsDate);
         StatisticsEntity statisticsEntity = new StatisticsEntity();
         statisticsEntity.setDate(statisticsDate);
         statisticsEntity.setCount(count);
         this.save(statisticsEntity);
+        log.info("{}完成统计", statisticsDate);
     }
 
     @Override
@@ -64,6 +70,10 @@ public class StatisticsServiceImpl extends ServiceImpl<StatisticsDao, Statistics
 
     @Override
     public String articleStatistics() throws JsonProcessingException {
+        /**
+         * 统计今天的
+         */
+        articleStatisticsTask(0);
         List<StatisticsEntity> list = this.list(new QueryWrapper<StatisticsEntity>().orderByDesc("date").last("limit 365"));
         Map<Long, Integer> collect = list.stream().collect(Collectors.toMap(k -> DateUtils.parseDate(k.getDate(), "yyyy-MM-dd").getTime() / 1000, StatisticsEntity::getCount));
         LinkedHashMap<Long, Integer> result = new LinkedHashMap<>();
