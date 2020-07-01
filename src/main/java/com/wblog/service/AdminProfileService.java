@@ -20,5 +20,7 @@ public interface AdminProfileService extends IService<AdminProfileEntity> {
     AdminTo updateProfile(AdminProfileEntity profileEntity);
 
     BloggerTo getBloggerInfo();
+
+    AdminTo updateImg(String key, String url);
 }
 

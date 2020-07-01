@@ -54,4 +54,13 @@ public class AdminProfileController {
         session.setAttribute(SessionConstant.SESSION_LOGIN_USER, adminTo);
         return "redirect:/admin/profile";
     }
+
+    @ResponseBody
+    @PostMapping("/img")
+    public R updateImg(@RequestParam("key") String key, @RequestParam("url") String url, HttpServletRequest request) {
+        AdminTo adminTo = adminProfileService.updateImg(key, url);
+        HttpSession session = request.getSession();
+        session.setAttribute(SessionConstant.SESSION_LOGIN_USER, adminTo);
+        return R.ok();
+    }
 }

@@ -31,4 +31,6 @@ public class AuthConstant {
      * 访客cookie生命,30天
      */
     public static final Integer USER_COOKIE_MAX_AGE = 60 * 60 * 24 * 30;
+
+    public static final String DEFAULT_AVATAR = "/static/assets/img/default.png";
 }

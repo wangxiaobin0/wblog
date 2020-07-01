@@ -2,6 +2,7 @@ package com.wblog.service.impl;
 
 import com.wblog.common.utils.ThreadLocalUtils;
 import com.wblog.interceptor.AdminRequestInterceptor;
+import com.wblog.model.entity.AdminEntity;
 import com.wblog.model.to.AdminTo;
 import com.wblog.model.to.BloggerTo;
 import lombok.extern.slf4j.Slf4j;
@@ -41,12 +42,7 @@ public class AdminProfileServiceImpl extends ServiceImpl<AdminProfileDao, AdminP
 
         this.updateById(profileEntity);
 
-        //查询最新的个人资料，用于存入session
-        AdminProfileEntity byId = this.getById(session.getId());
-        AdminTo adminTo = new AdminTo();
-        BeanUtils.copyProperties(byId, adminTo);
-        log.info("最新个人资料为：{}", adminTo);
-        return adminTo;
+        return getNewAdminTo();
     }
 
     @Override
@@ -55,5 +51,32 @@ public class AdminProfileServiceImpl extends ServiceImpl<AdminProfileDao, AdminP
         BloggerTo bloggerTo = new BloggerTo();
         BeanUtils.copyProperties(profileEntity, bloggerTo);
         return bloggerTo;
+    }
+
+    @Override
+    public AdminTo updateImg(String key, String url) {
+        Long id = ThreadLocalUtils.getAdminTo().getId();
+        AdminProfileEntity adminProfileEntity = new AdminProfileEntity();
+        adminProfileEntity.setId(id);
+        if ("avatar".equals(key)) {
+            adminProfileEntity.setAvatar(url);
+        } else if ("socialWeixin".equals(key)) {
+            adminProfileEntity.setSocialWeixin(url);
+        }
+        this.updateById(adminProfileEntity);
+        return getNewAdminTo();
+    }
+
+    /**
+     * 查询更新后的最新管理员信息
+     * @return
+     */
+    private AdminTo getNewAdminTo() {
+        //查询最新的个人资料，用于存入session
+        AdminProfileEntity byId = this.getById(ThreadLocalUtils.getAdminTo().getId());
+        AdminTo adminTo = new AdminTo();
+        BeanUtils.copyProperties(byId, adminTo);
+        log.info("最新个人资料为：{}", adminTo);
+        return adminTo;
     }
 }

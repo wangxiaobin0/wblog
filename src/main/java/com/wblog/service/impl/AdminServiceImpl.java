@@ -1,5 +1,6 @@
 package com.wblog.service.impl;
 
+import com.wblog.common.constant.AuthConstant;
 import com.wblog.common.constant.MQConstant;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.common.utils.Query;
@@ -61,6 +62,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
         log.info("保存注册信息{}", adminEntity);
 
         AdminProfileEntity profileEntity = new AdminProfileEntity();
+        profileEntity.setAvatar(AuthConstant.DEFAULT_AVATAR);
         profileEntity.setAdminId(adminEntity.getId());
         profileEntity.setBlogName(registerVo.getBlogName());
         adminProfileService.save(profileEntity);

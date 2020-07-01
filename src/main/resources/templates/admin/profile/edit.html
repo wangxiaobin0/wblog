@@ -30,8 +30,8 @@
                                     <div class="input-icon mb-3">
                                         <label class="form-label">头像</label>
                                         <div class="input-icon mb-3">
-                                            <img width="100px" height="100px" onclick="javascript:$('#avatar').click()" th:src="${session.SESSION_LOGIN_USER.avatar}">
-                                            <input type="file" style="display: none;" id="avatar" accept="image/jpeg">
+                                            <img width="100px" id="avatarShow" height="100px" onclick="javascript:$('#avatar').click()" th:src="${session.SESSION_LOGIN_USER.avatar}">
+                                            <input type="file" style="display: none;" id="avatar" accept="image/jpeg" onchange="preImg(this.id, 'avatarShow');">
                                         </div>
                                     </div>
                                     <div class="input-icon mb-3">
@@ -64,8 +64,14 @@
                                     <div class="input-icon mb-3">
                                         <label class="form-label">微信</label>
                                         <div class="input-icon mb-3">
-                                            <img width="100px" height="100px" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1593344461142&di=5464815858cb617cd69b47063b25e4a6&imgtype=0&src=http%3A%2F%2Fefile.kaoyan.com%2Fimg%2F2020%2F05%2F25%2F193612_5ecbadac69b24.png" onclick="javascript:$('#weixinQRCode').click()">
-                                            <input type="file" style="display: none;" id="weixinQRCode">
+                                        </div>
+                                        <div id="container" class="dl-horizontal form-group">
+                                            <img id="socialWeixinShow" width="100px" height="100px"
+                                                 onclick="javascript:$('#socialWeixin').click()"
+                                                 th:src="${session.SESSION_LOGIN_USER.socialWeixin} == null ? '' : ${session.SESSION_LOGIN_USER.socialWeixin}">
+                                            <br>
+                                            <input type="file" style="display: none;" id="socialWeixin" accept="image/jpeg" onchange="preImg(this.id, 'socialWeixinShow')"/>
+                                            <a href="#" class="btn btn-outline-primary">上传</a>
                                         </div>
                                     </div>
                                     <div class="input-icon mb-3">
@@ -92,4 +98,97 @@
 <div th:replace="admin/dashboard :: footer"></div>
 </div>
 </body>
+<script>
+
+    function getFileUrl(sourceId) {
+        var url;
+        if (navigator.userAgent.indexOf("MSIE")>=1) { // IE
+            url = document.getElementById(sourceId).value;
+        } else if(navigator.userAgent.indexOf("Firefox")>0) { // Firefox
+            url = window.URL.createObjectURL(document.getElementById(sourceId).files.item(0));
+        } else if(navigator.userAgent.indexOf("Chrome")>0) { // Chrome
+            url = window.URL.createObjectURL(document.getElementById(sourceId).files.item(0));
+        }
+        return url;
+    }
+    function preImg(sourceId, targetId) {
+        var url = getFileUrl(sourceId);
+        var imgPre = document.getElementById(targetId);
+        imgPre.src = url;
+        getPolicy(sourceId);
+    }
+
+    function getPolicy(sourceId) {
+        $.ajax({
+            type: "get",
+            url: "/admin/file",
+            success: function (data) {
+                upload(data.data, sourceId);
+            },
+            error: function () {
+                alert("读取文件失败");
+            }
+        })
+    }
+
+    function upload(param, sourceId) {
+        let imgFile = document.getElementById(sourceId).files[0];
+        let extName = imgFile.name.substring(imgFile.name.lastIndexOf("."));
+        let filePath = param.dir + random_string(8) + extName;
+        var request = new FormData();
+        request.append('ossaccessKeyId', param.accessid);
+        request.append('policy', param.policy);
+        request.append('signature', param.signature);
+        request.append('key', filePath);
+        request.append('dir', param.dir);
+        request.append('host', param.host);
+        request.append('file', imgFile);
+        request.append('submit', "Upload to OSS");
+        $.ajax({
+            url: param.host,
+            data: request,
+            processData: false,
+            cache: false,
+            async: false,
+            contentType: false,
+            //关键是要设置contentType 为false，不然发出的请求头 没有boundary
+            //该参数是让jQuery去判断contentType
+            type: "POST",
+            success: function (data, textStatus, request) {
+                if (textStatus === "nocontent") {
+                    let url = param.host + '/' + filePath;
+                    updateImage(sourceId, url);
+                } else {
+                    alert(textStatus);
+                }
+            }
+        });
+    }
+
+    function random_string(len) {
+        len = len || 32;
+        var chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';
+        var maxPos = chars.length;
+        var pwd = '';
+        for (i = 0; i < len; i++) {
+            pwd += chars.charAt(Math.floor(Math.random() * maxPos));
+        }
+        return pwd;
+    }
+    function updateImage(key, url) {
+        $.ajax({
+            url: '/admin/profile/img',
+            data: {'key': key, 'url': url},
+            type: "POST",
+            success: function (data, textStatus, request) {
+                if (data.code == 200) {
+                    alert("操作成功");
+                } else {
+                    alert("上传失败，请稍后重试");
+                }
+            }
+        });
+
+    }
+</script>
 </html>
