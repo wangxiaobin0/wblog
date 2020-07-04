@@ -19,14 +19,16 @@
 								<div id="carousel-sample" class="carousel slide" data-ride="carousel">
 									<ol class="carousel-indicators">
 										<li data-target="#carousel-sample" data-slide-to="0"
-											th:each="banner : ${bannerList}"
+											th:each="banner : ${columnVo.bannerList}"
 											th:attr="data-slide-to=${bannerStat.index}">
 										</li>
 									</ol>
 									<div class="carousel-inner" style="height: 300px">
 										<a class="carousel-item"
-											 th:each="banner : ${bannerList}"
-											 th:classappend="${bannerStat.first} ? 'active' : ''">
+											 th:each="banner : ${columnVo.bannerList}"
+											 th:classappend="${bannerStat.first} ? 'active' : ''"
+											 href="#"
+										     th:onclick="'javascript:location.href= \'/column/' + ${banner.id} + '\''">
 											<img class="d-block w-100" alt="" th:src="${banner.image}" data-holder-rendered="true" />
 										</a>
 									</div>
@@ -40,15 +42,40 @@
 									</a>
 								</div>
 							</div>
-							<div class="col-xl-6 mb-4" th:each="column : ${columnList}">
+							<div class="col-xl-6 mb-4" th:each="column : ${columnVo.pageResult.list}">
 								<div class="card">
-									<img th:src="${column.image}" class="card-img-top" alt="Card top image" style="height: 200px; width: auto;cursor: pointer" title="查看详情"  th:onclick="'javascript:location.href= \'/column/' + ${column.id} + '\''">
+									<img th:src="${column.image}" class="card-img-top" alt="Card top image" style="height: 200px; width: auto;cursor: pointer" title="查看详情" th:onclick="'javascript:location.href= \'/column/' + ${column.id} + '\''">
 									<div class="card-body">
 										<h3 class="card-title" th:text="${column.name}" style="cursor: pointer;"  th:onclick="'javascript:location.href= \'/column/' + ${column.id} + '\''">Card with title and image</h3>
 										<p th:text="${column.summary}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam deleniti fugit incidunt, iste, itaque minima
 											neque pariatur perferendis sed suscipit velit vitae voluptatem.</p>
 									</div>
 								</div>
+							</div>
+							<div class="card-body" th:if="${columnVo.pageResult.totalPage > 0}">
+                                <span>
+                                    共<b class="text-red">&nbsp;[[${columnVo.pageResult.totalNum}]]&nbsp;</b>
+                                    个专栏，共<b class="text-red">&nbsp;[[${columnVo.pageResult.totalPage}]]&nbsp;</b>
+                                    页，当前第<b class="text-red">&nbsp;[[${columnVo.pageResult.page}]]&nbsp;</b>页</span>
+								<ul class="pagination center float-right">
+									<li class="page-item" th:classappend="${columnVo.pageResult.totalPage == 0 || columnVo.pageResult.page == 1} ? 'disabled' : ''">
+										<a class="page-link" href="#" tabindex="-1" th:href="'/column?page=' + ${columnVo.pageResult.page - 1}">
+											<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+												<path stroke="none" d="M0 0h24v24H0z"></path>
+												<polyline points="15 6 9 12 15 18"></polyline>
+											</svg>
+										</a>
+									</li>
+									<li class="page-item" th:classappend="${columnVo.pageResult.totalPage == 0 || columnVo.pageResult.page == columnVo.pageResult.totalPage} ? 'disabled' : ''">
+										<a class="page-link" href="#" th:href="'/column?page=' + ${columnVo.pageResult.page + 1}">
+											<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+												 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+												 stroke-linecap="round" stroke-linejoin="round" class="icon">
+												<polyline points="9 18 15 12 9 6"></polyline>
+											</svg>
+										</a>
+									</li>
+								</ul>
 							</div>
 						</div>
 					</div>

@@ -3,6 +3,8 @@ package com.wblog.service.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.wblog.common.constant.ArticleConstant;
 import com.wblog.common.constant.MQConstant;
 import com.wblog.common.enume.ArticleMqEnum;
@@ -92,7 +94,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
         log.info("管理端：计算剩余保存时间");
         return new PageResult(pageResult, articleListVos);
     }
-    private IPage<ArticleEntity>  getPageResult(Long page, Long size, Object... state) {
+
+    private IPage<ArticleEntity> getPageResult(Long page, Long size, Object... state) {
         log.info("管理端：构建查询条件。页码：{}, 显示数量：{}，查询状态：{}", page, size, state);
         QueryWrapper<ArticleEntity> queryWrapper = new QueryWrapper<>();
         //查询字段
@@ -194,38 +197,44 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
     }
 
     @Override
-    public List<ArticleIndexVo> indexList() {
+    public PageResult indexList(Long page, Long size) {
+        log.info("访客：查询首页文章列表流程开始");
         //查询首页列表
+        PageHelper.startPage(page.intValue(), size.intValue());
         List<ArticleIndexVo> indexList = this.baseMapper.getIndexList();
         if (indexList == null) {
             return null;
         }
-        List<ArticleIndexVo> indexVoList = indexList.stream().map(articleIndexVo -> {
-            String abstractHtml = articleIndexVo.getAbstractHtml();
+        for (ArticleIndexVo vo : indexList) {
+            String abstractHtml = vo.getAbstractHtml();
             abstractHtml = abstractHtml.replaceAll("<[^>]*>", "").replaceAll("[(/>)<]", "");
-            articleIndexVo.setAbstractHtml(abstractHtml.substring(0, Math.min(abstractHtml.length(), 160)) + "...");
-            return articleIndexVo;
-        }).collect(Collectors.toList());
-        return getArticleIndexListWithCount(indexVoList);
+            vo.setAbstractHtml(abstractHtml.substring(0, Math.min(abstractHtml.length(), 160)) + "...");
+        }
+        PageInfo<ArticleIndexVo> pageInfo = new PageInfo<>(indexList);
+        return new PageResult(pageInfo);
     }
 
     @Override
     public ArticleItemVo getItem(Long articleId) {
+        String userKey = ThreadLocalUtils.getUserTo().getUserKey();
+        log.info("访客{}：查询文章{}", userKey, articleId);
+
         //更新浏览数,添加浏览记录
         articleRedisService.incrViewCountAndAddViewHistory(articleId);
+        log.info("访客{}：添加浏览记录", userKey);
+
         //查询数据库文章信息
         ArticleItemVo articleItem = getDetail(articleId);
 
-        String userKey = ThreadLocalUtils.getUserTo().getUserKey();
+
         //当前访客是否收藏过
         articleItem.setHasCollect(articleRedisService.orNot(articleId, ArticleConstant.ARTICLE_COLLECT, userKey));
 
         //是否赞过
         articleItem.setHasThumbUp(articleRedisService.orNot(articleId, ArticleConstant.ARTICLE_THUMB_UP, userKey));
 
-        return articleItem;
+        return getArticleItemVoWithCount(articleItem);
     }
-
 
 
     @Override
@@ -234,7 +243,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
         //文章不存在算处理成功
         if (byId == null) {
             log.info("文章{}不存在", articleMQTo.getId());
-            return ;
+            return;
         }
         //文章状态不是草稿箱或回收站
         if (byId.getState() != ArticleStateEnum.DRAFT.getCode() &&
@@ -317,42 +326,40 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
         }
         //查询浏览数
         Long viewCount = articleRedisService.getCount(articleId, ArticleConstant.ARTICLE_VIEW_COUNT);
-        articleItem.setViewNum(viewCount);
+        articleItem.setViewCount(viewCount);
 
         //查询收藏数
         Long collectCount = articleRedisService.getCount(articleId, ArticleConstant.ARTICLE_COLLECT);
-        articleItem.setCollectNum(collectCount);
+        articleItem.setCollectCount(collectCount);
 
         //查询点赞数
         Long thumbUpCount = articleRedisService.getCount(articleId, ArticleConstant.ARTICLE_THUMB_UP);
-        articleItem.setThumbUp(thumbUpCount);
+        articleItem.setThumbUpCount(thumbUpCount);
 
         log.info("获取文章结果：{}", articleItem);
         return articleItem;
     }
 
     /**
-     * 查询列表中各个文章的浏览/收藏/点赞数
-     * @param publishList
+     * 文章的浏览/收藏/点赞数
+     *
+     * @param itemVo
      * @return
      */
-    private List<ArticleIndexVo> getArticleIndexListWithCount(List<ArticleIndexVo> publishList) {
-        if (publishList == null) {
-            return null;
-        }
-        return publishList.stream().peek(articleIndexVo -> {
-            //查询浏览数
-            Long viewCount = articleRedisService.getCount(articleIndexVo.getId(), ArticleConstant.ARTICLE_VIEW_COUNT);
-            articleIndexVo.setViewCount(viewCount);
+    private ArticleItemVo getArticleItemVoWithCount(ArticleItemVo itemVo) {
 
-            //查询点赞数
-            Long thumpUpCount = articleRedisService.getCount(articleIndexVo.getId(), ArticleConstant.ARTICLE_THUMB_UP);
-            articleIndexVo.setThumbUpCount(thumpUpCount);
+        //查询浏览数
+        Long viewCount = articleRedisService.getCount(itemVo.getId(), ArticleConstant.ARTICLE_VIEW_COUNT);
+        itemVo.setViewCount(viewCount);
 
-            //查询收藏数
-            Long collectCount = articleRedisService.getCount(articleIndexVo.getId(), ArticleConstant.ARTICLE_COLLECT);
-            articleIndexVo.setCollectNum(collectCount);
-        }).collect(Collectors.toList());
+        //查询点赞数
+        Long thumpUpCount = articleRedisService.getCount(itemVo.getId(), ArticleConstant.ARTICLE_THUMB_UP);
+        itemVo.setThumbUpCount(thumpUpCount);
+
+        //查询收藏数
+        Long collectCount = articleRedisService.getCount(itemVo.getId(), ArticleConstant.ARTICLE_COLLECT);
+        itemVo.setCollectCount(collectCount);
+        return itemVo;
     }
 
     private int remainTime(Date updateTime) {

@@ -16,6 +16,16 @@ public class SearchParamVo {
     private String key;
 
     /**
+     * 页码
+     */
+    private Long page = 1l;
+
+    /**
+     * 显示数量
+     */
+    private Long size = 5l;
+
+    /**
      * 标签id
      */
     private Long tagId;

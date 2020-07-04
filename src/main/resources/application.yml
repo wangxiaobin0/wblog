@@ -10,7 +10,7 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://112.126.59.115:3306/blog?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://127.0.0.1:3306/blog?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
     password: 123456
   #thymeleaf缓存
@@ -21,11 +21,11 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
   #redis
   redis:
-    host: 112.126.59.115
+    host: 127.0.0.1
     port: 6739
     password: 1378975974@qq.com
   rabbitmq:
-    host: 112.126.59.115
+    host: 127.0.0.1
     port: 5672
     #开启发送端确认
     publisher-confirms: true
@@ -56,10 +56,10 @@ mybatis-plus:
 blog:
   #对象存储
   oss:
-    access-key-id: LTAI4FmzDBZByNuokPMs7QwC
-    bucket: xbwang
-    endpoint: oss-cn-beijing.aliyuncs.com
-    access-key-secret: spbY2KlKJjoI3wk0CpPTr7eEv4X90M
+    access-key-id: XXX
+    bucket: XXX
+    endpoint: XXX
+    access-key-secret: XXX
 
   #异步编排线程池配置
   thread:
@@ -75,6 +75,6 @@ blog:
     queue-capacity: 100
   #ElasticSearch
   elastic:
-    host: 112.126.59.115
+    host: 127.0.0.1
     port: 9200
     schema: http

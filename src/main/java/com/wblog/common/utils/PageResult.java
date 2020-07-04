@@ -35,6 +35,8 @@ public class PageResult<T> {
     @Setter
     private List list;
 
+    public PageResult() {}
+
     public PageResult(IPage iPage) {
         this.page = iPage.getCurrent();
         this.size = iPage.getSize();

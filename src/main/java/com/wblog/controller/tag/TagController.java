@@ -2,7 +2,10 @@ package com.wblog.controller.tag;
 
 import java.util.List;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.wblog.annotation.SysLog;
+import com.wblog.common.utils.PageResult;
 import com.wblog.common.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,52 +33,14 @@ public class TagController {
      * 列表
      */
     @GetMapping("/list")
-    public String list(Model model){
+    public String list(@RequestParam(value = "page", required = false, defaultValue = "1") Long page,
+                       @RequestParam(value = "size", required = false, defaultValue = "10") Long size,
+                       Model model){
+        PageHelper.startPage(page.intValue(), size.intValue());
         List<TagEntity> tags = tagService.list();
-        model.addAttribute("tags", tags);
+        PageInfo<TagEntity> pageInfo = new PageInfo<>(tags);
+        PageResult pageResult = new PageResult(pageInfo);
+        model.addAttribute("page", pageResult);
         return "admin/tag/list";
     }
-
-
-    /**
-     * 信息
-     */
-    @GetMapping("/info/{id}")
-    public R info(@PathVariable("id") Long id){
-		TagEntity tag = tagService.getById(id);
-
-        return R.ok().put("tag", tag);
-    }
-
-    /**
-     * 保存
-     */
-    @PostMapping("/save")
-    public R save(@RequestBody TagEntity tag){
-		tagService.save(tag);
-
-        return R.ok();
-    }
-
-    /**
-     * 修改
-     */
-    @PostMapping("/update")
-    public R update(@RequestBody TagEntity tag){
-		tagService.updateById(tag);
-
-        return R.ok();
-    }
-
-    /**
-     * 删除
-     */
-    @SysLog(business = "删除标签")
-    @PostMapping("/{id}")
-    @ResponseBody
-    public R delete(@PathVariable("id") Long id){
-		tagService.deleteByIds(id);
-        return R.ok();
-    }
-
 }

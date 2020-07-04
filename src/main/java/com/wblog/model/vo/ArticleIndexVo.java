@@ -25,21 +25,6 @@ public class ArticleIndexVo {
     private String abstractHtml;
 
     /**
-     * 浏览数
-     */
-    private Long viewCount;
-
-    /**
-     * 收藏数
-     */
-    private Long collectNum;
-
-    /**
-     * 点赞数
-     */
-    private Long thumbUpCount;
-
-    /**
      * 状态
      */
     private Integer state;

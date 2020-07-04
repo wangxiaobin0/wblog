@@ -1,12 +1,6 @@
 <!doctype html>
 <html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="public/head :: head(${detail.name})"></head>
-<style>
-    .gw_num{border: 1px solid #dbdbdb;width: 70px;line-height: 20px;overflow: hidden;}
-    .gw_num em{display: block;height: 20px;width: 20px;float: left;color: #7A7979;border-right: 1px solid #dbdbdb;text-align: center;cursor: pointer;}
-    .gw_num .sort{display: block;float: left;text-align: center;width: 28px;font-style: normal;font-size: 14px;line-height: 20px;border: 0;}
-    .gw_num em.add{float: right;border-right: 0;border-left: 1px solid #dbdbdb;}
-</style>
 <body onload="queryArticle(1)">
 <div class="page">
     <div class="flex-fill">
@@ -106,7 +100,7 @@
 
     function reduceOrAddSort(ele, flag) {
         let itemId = $(ele).parent().parent().attr("itemId");
-        let sortNum = $("#sortNum").text();
+        let sortNum = document.getElementById("sortNum" + itemId).innerText;
         if (sortNum == 0 && !flag) {
             return false;
         }
@@ -119,7 +113,7 @@
             },
             success: function (data) {
                 if (data.code == 200) {
-                    window.location.reload();
+                    queryArticle(1);
                 }
             }
         })
@@ -139,6 +133,18 @@
                 document.getElementById("articleFragment").innerHTML = data;
             }
         };
+    }
+    function showDetail(ele) {
+        $.ajax({
+            type: "get",
+            url: "/admin/article/" + $(ele).attr("articleId"),
+            success: function (data) {
+                $("#modal-report").html(data);
+                $("#modal-report").modal('show');
+            },
+            error: function () {
+            }
+        })
     }
 </script>
 </body>

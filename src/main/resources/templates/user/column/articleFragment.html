@@ -9,40 +9,26 @@
     <div class="table-responsive">
         <table class="table card-table table-hover text-nowrap">
             <thead>
-            <tr class="text-center">
+            <tr>
                 <th class="w-1">ID</th>
                 <th>标题</th>
-                <th>创建时间</th>
+                <th>发表时间</th>
                 <th>收藏人数</th>
-                <th>排序</th>
-                <th>操作</th>
             </tr>
             </thead>
             <tbody>
-            <tr class="text-center" th:each="item : ${page.list}">
+            <tr th:each="item : ${page.list}">
                 <td>
                     <span class="text-muted" th:text="${item.articleId}">001401</span>
                 </td>
                 <td>
-                    <a href="javascript:void(0)" class="text-inherit"
-                       th:text="${item.articleTitle}"
-                       th:attr="articleId=${item.articleId}"
-                       onclick="showDetail(this)">设计模式</a>
+                    <a  th:href="'/item/' + ${item.articleId}" class="text-inherit"
+                        th:text="${item.articleTitle}">设计模式</a>
                 </td>
                 <td>
                     <span class="tag tag-warning" th:text="${#dates.format(item.createTime, 'yyyy-MM-dd')}">2020-02-29</span>
                 </td>
                 <td th:text="${item.collectNum}"></td>
-                <td id="sort" th:attr="itemId=${item.id}">
-                    <div class="gw_num" style="margin: 0 auto;">
-                        <em class="reduce" onclick="reduceOrAddSort(this, false)">-</em>
-                        <span class="sort" th:text="${item.sort}" th:id="'sortNum' + ${item.id}"></span>
-                        <em class="add" onclick="reduceOrAddSort(this, true)">+</em>
-                    </div>
-                </td>
-                <td>
-                    <a href="#" onclick="deleteArticle(this)" th:attr="itemId=${item.id}">移除</a>
-                </td>
             </tr>
             </tbody>
         </table>

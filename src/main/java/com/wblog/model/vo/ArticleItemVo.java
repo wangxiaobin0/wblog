@@ -24,24 +24,25 @@ public class ArticleItemVo {
      * 文章html内容
      */
     private String html;
+
     /**
      * 浏览数
      */
-    private Long viewNum;
+    private Long viewCount;
+
+    /**
+     * 收藏数
+     */
+    private Long collectCount;
 
     /**
      * 点赞数
      */
-    private Long thumbUp;
-
+    private Long thumbUpCount;
     /**
      * 访问用户是否点了赞
      */
     private Boolean hasThumbUp;
-    /**
-     * 收藏数
-     */
-    private Long collectNum;
 
     /**
      * 访问用户是否收藏了

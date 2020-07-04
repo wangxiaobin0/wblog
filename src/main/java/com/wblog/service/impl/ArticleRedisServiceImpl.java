@@ -3,16 +3,12 @@ package com.wblog.service.impl;
 import com.wblog.common.constant.ArticleConstant;
 import com.wblog.common.constant.UserConstant;
 import com.wblog.common.utils.ThreadLocalUtils;
-import com.wblog.interceptor.UserRequestInterceptor;
-import com.wblog.model.vo.ArticleIndexVo;
 import com.wblog.service.ArticleRedisService;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Set;
 
 @Service

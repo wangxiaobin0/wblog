@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="public/head :: head(${column.name})"></head>
-<body class="">
+<body class="" onload="queryArticle(1)">
 <div class="page">
     <div class="flex-fill">
         <!--响应式顶部菜单-->
@@ -43,38 +43,11 @@
                                     </div>
                                 </div>
                             </div>
+                            <input type="hidden" th:value="${column.id}" id="columnId"/>
                             <div class="card-header">
                                 <h3 class="card-title">文章列表</h3>
                             </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table card-table table-hover text-nowrap">
-                                        <thead>
-                                        <tr>
-                                            <th class="w-1">ID</th>
-                                            <th>标题</th>
-                                            <th>创建时间</th>
-                                            <th>收藏人数</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr th:each="item : ${column.itemVos}">
-                                            <td>
-                                                <span class="text-muted" th:text="${item.articleId}">001401</span>
-                                            </td>
-                                            <td>
-                                                <a  th:href="'/item/' + ${item.articleId}" class="text-inherit"
-                                                   th:text="${item.articleTitle}">设计模式</a>
-                                            </td>
-                                            <td>
-												<span class="tag tag-warning" th:text="${#dates.format(item.createTime, 'yyyy-MM-dd')}">2020-02-29</span>
-                                            </td>
-                                            <td th:text="${item.collectNum}"></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                            <div class="card-body" id="articleFragment"></div>
                         </div>
                     </div>
                 </div>
@@ -128,6 +101,23 @@
                 }
             }
         })
+    }
+
+
+    function queryArticle(page) {
+        let columnId = document.getElementById("columnId").value;
+        var httpRequest = new XMLHttpRequest();//第一步：建立所需的对象
+        httpRequest.open('GET', "/column/item?columnId=" + columnId + '&page=' + page, true);//第二步：打开连接  将请求参数写在url中  ps:"./Ptest.php?name=test&nameone=testone"
+        httpRequest.send();//第三步：发送请求  将请求参数写在URL中
+        /**
+         * 获取数据后的处理程序
+         */
+        httpRequest.onreadystatechange = function () {
+            if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+                var data = httpRequest.responseText;//获取到json字符串，还需解析
+                document.getElementById("articleFragment").innerHTML = data;
+            }
+        };
     }
 </script>
 </body>

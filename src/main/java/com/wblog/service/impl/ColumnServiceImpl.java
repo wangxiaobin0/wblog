@@ -1,6 +1,8 @@
 package com.wblog.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.wblog.common.utils.PageResult;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.common.utils.Query;
@@ -10,11 +12,13 @@ import com.wblog.interceptor.UserRequestInterceptor;
 import com.wblog.model.to.AdminTo;
 import com.wblog.model.to.UserTo;
 import com.wblog.model.vo.ColumnDetailVo;
+import com.wblog.model.vo.ColumnIndexVo;
 import com.wblog.model.vo.ColumnItemVo;
 import com.wblog.model.vo.ColumnVo;
 import com.wblog.service.ColumnItemService;
 import com.wblog.service.ColumnRedisService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -107,10 +111,35 @@ public class ColumnServiceImpl extends ServiceImpl<ColumnDao, ColumnEntity> impl
     }
 
     @Override
-    public List<ColumnVo> columnList() {
-        //查询专栏列表
-        List<ColumnVo> entityList = this.baseMapper.columnList();
-        return entityList;
+    public ColumnIndexVo columnList(Long page, Long size) throws ExecutionException, InterruptedException {
+        log.info("访客：{}查询专栏列表流程开始。page：{}，size：{}", ThreadLocalUtils.getUserTo().getUserKey(), page, size);
+        ColumnIndexVo columnItemVo = new ColumnIndexVo();
+
+        CompletableFuture<Void> columnFuture = CompletableFuture.runAsync(() -> {
+            //查询专栏列表
+            PageHelper.startPage(page.intValue(), size.intValue());
+            List<ColumnVo> entityList = this.baseMapper.columnList();
+            PageInfo<ColumnVo> pageInfo = new PageInfo<>(entityList);
+            columnItemVo.setPageResult(new PageResult(pageInfo));
+            log.info("查询专栏列表");
+        }, executor);
+
+        CompletableFuture<Void> bannerFuture = CompletableFuture.runAsync(() -> {
+            QueryWrapper<ColumnEntity> queryWrapper = new QueryWrapper<>();
+            queryWrapper.select("id", "image");
+            queryWrapper.eq("banner", true);
+            queryWrapper.comment("limit 5");
+            List<ColumnEntity> list = this.list(queryWrapper);
+            List<ColumnVo> bannerList = list.stream().map(columnEntity -> {
+                ColumnVo vo = new ColumnVo();
+                BeanUtils.copyProperties(columnEntity, vo);
+                return vo;
+            }).collect(Collectors.toList());
+            columnItemVo.setBannerList(bannerList);
+            log.info("查询专栏banner位");
+        }, executor);
+        CompletableFuture.allOf(columnFuture, bannerFuture).get();
+        return columnItemVo;
     }
 
     @Override

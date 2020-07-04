@@ -59,7 +59,7 @@ public class ColumnItemServiceImpl extends ServiceImpl<ColumnItemDao, ColumnItem
     @Override
     public PageResult queryColumnItemByPage(Long id, Long page, Long size){
         log.info("分页查询专栏内文章流程开始。id：{}，page：{}，size：{}", id, page, size);
-        Page<Object> startPage = PageHelper.startPage(page.intValue(), size.intValue());
+        PageHelper.startPage(page.intValue(), size.intValue());
         List<ColumnItemVo> itemVos = this.baseMapper.getColumnItems(id);
         log.info("查询专栏内文章");
         for (ColumnItemVo vo : itemVos) {

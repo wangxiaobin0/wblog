@@ -49,7 +49,7 @@ public interface ArticleService extends IService<ArticleEntity> {
 
     void updateState(Long id, Integer state);
 
-    List<ArticleIndexVo> indexList();
+    PageResult indexList(Long page, Long size);
 
     ArticleItemVo getItem(Long articleId);
 

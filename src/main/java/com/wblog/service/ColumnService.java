@@ -5,6 +5,8 @@ import com.wblog.common.utils.PageResult;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.model.entity.ColumnEntity;
 import com.wblog.model.vo.ColumnDetailVo;
+import com.wblog.model.vo.ColumnIndexVo;
+import com.wblog.model.vo.ColumnItemVo;
 import com.wblog.model.vo.ColumnVo;
 
 import java.util.List;
@@ -25,7 +27,7 @@ public interface ColumnService extends IService<ColumnEntity> {
 
     ColumnDetailVo columnDetail(Long id) throws ExecutionException, InterruptedException;
 
-    List<ColumnVo> columnList();
+    ColumnIndexVo columnList(Long page, Long size) throws ExecutionException, InterruptedException;
 
     void addOrCancelBanner(Long columnId, Boolean flag);
 

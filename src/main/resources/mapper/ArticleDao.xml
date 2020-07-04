@@ -34,7 +34,6 @@
         from blog_article ba
         where ba.state = 1
         order by ba.top desc, ba.create_time desc
-		limit 10;
     </select>
 
     <resultMap id="articleItem" type="com.wblog.model.vo.ArticleItemVo">
@@ -63,7 +62,6 @@
         from blog_article ba
         where ba.state = 1 or ba.state = 2
         order by ba.top desc, ba.create_time desc
-		limit 10;
     </select>
 
     <update id="deleteExpireArticle">

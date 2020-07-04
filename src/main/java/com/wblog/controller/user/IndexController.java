@@ -2,6 +2,7 @@ package com.wblog.controller.user;
 
 import com.wblog.annotation.ViewCount;
 import com.wblog.common.constant.UserConstant;
+import com.wblog.common.utils.PageResult;
 import com.wblog.model.vo.*;
 import com.wblog.service.ArticleService;
 import com.wblog.service.ColumnItemService;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.util.List;
@@ -39,9 +41,11 @@ public class IndexController {
      * @return
      */
     @GetMapping(value = {"/", "/index", "index.html"})
-    public String index(Model model) {
-        List<ArticleIndexVo> articleIndexVos = articleService.indexList();
-        model.addAttribute("indexList", articleIndexVos);
+    public String index(@RequestParam(value = "page", required = false, defaultValue = "1") Long page,
+                        @RequestParam(value = "size", required = false, defaultValue = "5") Long size,
+                        Model model) {
+        PageResult pageResult = articleService.indexList(page, size);
+        model.addAttribute("page", pageResult);
         return "user/index";
     }
 
@@ -84,11 +88,11 @@ public class IndexController {
      * @return
      */
     @GetMapping("/column")
-    public String column(Model model) {
-        List<ColumnVo> columnList = columnService.columnList();
-        List<ColumnVo> bannerList = columnList.stream().filter(ColumnVo::getBanner).collect(Collectors.toList());
-        model.addAttribute("columnList", columnList);
-        model.addAttribute("bannerList", bannerList);
+    public String column(@RequestParam(value = "page", required = false, defaultValue = "1") Long page,
+                         @RequestParam(value = "size", required = false, defaultValue = "4") Long size,
+                         Model model) throws ExecutionException, InterruptedException {
+        ColumnIndexVo columnVo = columnService.columnList(page, size);
+        model.addAttribute("columnVo", columnVo);
         return "user/column/column";
     }
 
@@ -121,5 +125,15 @@ public class IndexController {
         UserViewVo collectList = articleService.getUserArticleList(UserConstant.USER_COLLECT_ARTICLE);
         model.addAttribute("collectList", collectList);
         return "user/my/myCollect";
+    }
+
+    @GetMapping("/column/item")
+    public String queryColumnItemByPage(@RequestParam("columnId") Long id,
+                                        @RequestParam(value = "page", required = false, defaultValue = "1") Long page,
+                                        @RequestParam(value = "size", required = false, defaultValue = "5") Long size,
+                                        Model model) {
+        PageResult pageResult = columnItemService.queryColumnItemByPage(id, page, size);
+        model.addAttribute("page", pageResult);
+        return "/user/column/articleFragment :: articleFragment";
     }
 }

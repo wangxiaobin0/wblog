@@ -8,6 +8,7 @@ import com.wblog.model.vo.ArticleItemVo;
 import com.wblog.model.vo.SearchParamVo;
 import com.wblog.model.vo.SearchResultVo;
 import com.wblog.service.SearchService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
@@ -44,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class SearchServiceImpl implements SearchService {
     public static final ObjectMapper objectMapper = new ObjectMapper();
@@ -143,9 +145,7 @@ public class SearchServiceImpl implements SearchService {
      */
     private SearchRequest getSearchRequest(SearchParamVo searchParam) {
         SearchRequest searchRequest = new SearchRequest();
-
-
-
+        log.info("构造ES搜索条件流程开始。{}", searchParam);
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
 
         //多字段查询
