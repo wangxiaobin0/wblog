@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="public/head :: head(博客列表)"></head>
+<head th:replace="public/head :: head(草稿箱)"></head>
 <body class="">
 <div class="page">
     <div class="flex-fill">
@@ -52,7 +52,6 @@
                                     <tr>
                                         <th class="w-1">ID</th>
                                         <th>标题</th>
-                                        <th>标签</th>
                                         <th>发表时间</th>
                                         <th>剩余保存时间</th>
                                         <th>操作</th>
@@ -63,9 +62,6 @@
                                         <td><span class="text-muted" th:text="${item.id}">001401</span></td>
                                         <td><a href="javascript:void(0)" class="text-inherit" th:text="${item.title}"
                                                onclick="showDetail(this)">Java设计模式</a>
-                                        </td>
-                                        <td>
-                                            <span class="tag tag-warning" th:each="tag : ${item.tags}" th:utext="${tag.name}"></span>
                                         </td>
                                         <td th:text="${#dates.format(item.updateTime, 'yyyy-MM-dd')}">
                                             2020-02-29
@@ -92,21 +88,22 @@
 
                                 </table>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body" th:if="${page.totalPage > 0}">
+                                <span>
+                                    共<b class="text-red">&nbsp;[[${page.totalNum}]]&nbsp;</b>
+                                    篇文章，共<b class="text-red">&nbsp;[[${page.totalPage}]]&nbsp;</b>
+                                    页，当前第<b class="text-red">&nbsp;[[${page.page}]]&nbsp;</b>页</span>
                                 <ul class="pagination center float-right">
-                                    <li th:class="${page.hasPrev} ?'page-item' : 'page-item disabled'">
-                                        <a class="page-link" href="#" tabindex="-1">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                 stroke-linecap="round" stroke-linejoin="round" class="icon">
-                                                <polyline points="15 18 9 12 15 6"></polyline>
+                                    <li class="page-item" th:classappend="${page.totalPage == 0 || page.page == 1} ? 'disabled' : ''">
+                                        <a class="page-link" href="#" tabindex="-1" th:href="'/admin/article/draft?page=' + ${page.page - 1}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z"></path>
+                                                <polyline points="15 6 9 12 15 18"></polyline>
                                             </svg>
-                                            prev
                                         </a>
                                     </li>
-                                    <li th:class="${page.hasNext} ?'page-item' : 'page-item disabled'">
-                                        <a class="page-link" href="#">
-                                            next
+                                    <li class="page-item" th:classappend="${page.totalPage == 0 || page.page == page.totalPage} ? 'disabled' : ''">
+                                        <a class="page-link" href="#" th:href="'/admin/article/draft?page=' + ${page.page + 1}">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                  stroke-linecap="round" stroke-linejoin="round" class="icon">

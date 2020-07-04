@@ -24,13 +24,21 @@
         <hibernate.validator.version>6.1.2.Final</hibernate.validator.version>
         <oss.version>3.8.0</oss.version>
         <elasticsearch.version>7.4.2</elasticsearch.version>
+        <hutool.version>5.3.7</hutool.version>
+        <pagehelper.version>1.2.13</pagehelper.version>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <version>${pagehelper.version}</version>
+        </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>5.3.7</version>
+            <version>${hutool.version}</version>
         </dependency>
         <!--ElasticSearch-->
         <dependency>

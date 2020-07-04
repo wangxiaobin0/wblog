@@ -1,5 +1,7 @@
 package com.wblog.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wblog.common.utils.PageResult;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.common.utils.Query;
 import com.wblog.common.utils.ThreadLocalUtils;
@@ -47,13 +49,13 @@ public class ColumnServiceImpl extends ServiceImpl<ColumnDao, ColumnEntity> impl
     ColumnRedisService columnRedisService;
 
     @Override
-    public PageUtils queryPage(Map<String, Object> params) {
-        IPage<ColumnEntity> page = this.page(
-                new Query<ColumnEntity>().getPage(params),
-                new QueryWrapper<ColumnEntity>()
-        );
-
-        return new PageUtils(page);
+    public PageResult listByPage(Long page, Long size) {
+        log.info("管理端：分页查询专栏列表");
+        Page<ColumnEntity> iPage = new Page<>(page, size);
+        QueryWrapper<ColumnEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByAsc("create_time");
+        IPage<ColumnEntity> pageResult = this.page(iPage, queryWrapper);
+        return new PageResult(pageResult);
     }
 
     @Override
@@ -61,11 +63,12 @@ public class ColumnServiceImpl extends ServiceImpl<ColumnDao, ColumnEntity> impl
         AdminTo adminTo = ThreadLocalUtils.getAdminTo();
         column.setAdminId(adminTo.getAdminId());
         this.save(column);
-        log.info("新增博客。{}", column);
+        log.info("管理端：新增博客。{}", column);
     }
 
     @Override
     public ColumnDetailVo columnDetail(Long id) throws ExecutionException, InterruptedException {
+        log.info("查询专栏详情流程开始");
         ColumnDetailVo detailVo = new ColumnDetailVo();
 
         /**
@@ -74,6 +77,7 @@ public class ColumnServiceImpl extends ServiceImpl<ColumnDao, ColumnEntity> impl
         CompletableFuture<Void> columnFuture = CompletableFuture.runAsync(() -> {
             ColumnEntity columnEntity = this.getById(id);
             BeanUtils.copyProperties(columnEntity, detailVo);
+            log.info("查询专栏信息");
         }, executor);
 
         /**
@@ -82,17 +86,9 @@ public class ColumnServiceImpl extends ServiceImpl<ColumnDao, ColumnEntity> impl
         CompletableFuture<Void> subscribeNum = CompletableFuture.runAsync(() -> {
             Long count = columnRedisService.getCount(id);
             detailVo.setSubscribeNum(count);
+            log.info("查询专栏订阅人数");
         }, executor);
 
-
-        /**
-         * 查询专栏内文章
-         */
-        CompletableFuture<Void> itemFuture = CompletableFuture.runAsync(() -> {
-
-            List<ColumnItemVo> itemVos = columnItemService.getColumnItems(id);
-            detailVo.setItemVos(itemVos);
-        }, executor);
 
         UserTo userTo = ThreadLocalUtils.getUserTo();
         //是否收藏，仅用于访客
@@ -101,11 +97,12 @@ public class ColumnServiceImpl extends ServiceImpl<ColumnDao, ColumnEntity> impl
             if (userTo != null) {
                 Boolean hasSubscribe = columnRedisService.hasSubscribe(id, userTo.getUserKey());
                 detailVo.setHasSubscribe(hasSubscribe);
+                log.info("访客端：查询访客{}是否订阅该专栏", userTo.getUserKey());
             }
         }, executor);
-
-        //四个异步任务执行结束后再继续执行
-        CompletableFuture.allOf(columnFuture, subscribeNum, itemFuture, hasSubscribeFuture).get();
+        //三个异步任务执行结束后再继续执行
+        CompletableFuture.allOf(columnFuture, subscribeNum, hasSubscribeFuture).get();
+        log.info("查询专栏详情流程结束");
         return detailVo;
     }
 

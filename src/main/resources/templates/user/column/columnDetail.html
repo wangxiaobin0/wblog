@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="public/head :: head(专栏)"></head>
+<head th:replace="public/head :: head(${column.name})"></head>
 <body class="">
 <div class="page">
     <div class="flex-fill">
@@ -99,8 +99,8 @@
                     </div>
                 </div>
                 <div class="col-12 col-lg-auto mt-3 mt-lg-0 text-center">
-                    Copyright © 2019 <a href="../../static">Tabler</a>. Theme by <a href="https://codecalm.net"
-                                                                                    target="_blank">codecalm.net</a>
+                    Copyright © 2019 <a href="../../../static">Tabler</a>. Theme by <a href="https://codecalm.net"
+                                                                                       target="_blank">codecalm.net</a>
                     All rights reserved.
                 </div>
             </div>

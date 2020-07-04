@@ -1,11 +1,13 @@
 package com.wblog.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wblog.common.constant.ArticleConstant;
 import com.wblog.common.constant.MQConstant;
 import com.wblog.common.enume.ArticleMqEnum;
 import com.wblog.common.enume.ArticleStateEnum;
+import com.wblog.common.utils.PageResult;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.common.utils.Query;
 import com.wblog.common.utils.ThreadLocalUtils;
@@ -67,57 +69,41 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public List<ArticleIndexVo> queryPage() {
-        //查询状态为公开和保密的文章
-        List<ArticleIndexVo> indexList = this.baseMapper.getPublishList();
-        return indexList;
+    public PageResult listPublish(Long page, Long size) {
+        log.info("管理端：分页查询文章列表流程开始");
+        IPage<ArticleEntity> pageResult = getPageResult(page, size, ArticleStateEnum.PUBLIC.getCode(), ArticleStateEnum.SECRET.getCode());
+        return new PageResult(pageResult);
     }
 
     @Override
-    public PageUtils listDraft(Map<String, Object> params) {
-        //查询草稿箱
-        QueryWrapper<ArticleEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("state", ArticleStateEnum.DRAFT.getCode());
-        queryWrapper.orderByDesc("update_time");
-        IPage page = this.page(new Query<ArticleEntity>().getPage(params), queryWrapper);
+    public PageResult listDraftOrTrash(Long page, Long size, ArticleStateEnum state) {
+        log.info("管理端：分页查询文章列表");
+        IPage<ArticleEntity> pageResult = getPageResult(page, size, state.getCode());
         //转为ArticleListVo
-        List<ArticleEntity> records = page.getRecords();
+        List<ArticleEntity> records = pageResult.getRecords();
         List<ArticleListVo> articleListVos = records.stream().map(articleEntity -> {
             ArticleListVo articleListVo = new ArticleListVo();
             BeanUtils.copyProperties(articleEntity, articleListVo);
             //计算剩余保存时间
             int remainTime = remainTime(articleEntity.getUpdateTime());
-            //查询标签
-            List<TagEntity> tagEntities = tagService.listTagByArticleId(articleEntity.getId());
-            articleListVo.setTags(tagEntities);
             articleListVo.setRemainTime(remainTime);
             return articleListVo;
         }).collect(Collectors.toList());
-        page.setRecords(articleListVos);
-        return new PageUtils(page);
+        log.info("管理端：计算剩余保存时间");
+        return new PageResult(pageResult, articleListVos);
     }
-
-    @Override
-    public PageUtils listTrash(Map<String, Object> params) {
+    private IPage<ArticleEntity>  getPageResult(Long page, Long size, Object... state) {
+        log.info("管理端：构建查询条件。页码：{}, 显示数量：{}，查询状态：{}", page, size, state);
         QueryWrapper<ArticleEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("state", ArticleStateEnum.TRASH.getCode());
-        queryWrapper.orderByDesc("update_time");
-        IPage page = this.page(new Query<ArticleEntity>().getPage(params), queryWrapper);
-        //转为ArticleListVo
-        List<ArticleEntity> records = page.getRecords();
-        List<ArticleListVo> articleListVos = records.stream().map(articleEntity -> {
-            ArticleListVo articleListVo = new ArticleListVo();
-            BeanUtils.copyProperties(articleEntity, articleListVo);
-            //计算剩余保存时间
-            int remainTime = remainTime(articleEntity.getUpdateTime());
-            //查询标签
-            List<TagEntity> tagEntities = tagService.listTagByArticleId(articleEntity.getId());
-            articleListVo.setTags(tagEntities);
-            articleListVo.setRemainTime(remainTime);
-            return articleListVo;
-        }).collect(Collectors.toList());
-        page.setRecords(articleListVos);
-        return new PageUtils(page);
+        //查询字段
+        queryWrapper.select("id", "title", "html", "update_time", "top", "state");
+        //置顶、发表时间倒序
+        queryWrapper.orderByDesc("top", "update_time");
+        //指定状态
+        queryWrapper.in("state", state);
+        Page<ArticleEntity> iPage = new Page<>(page, size);
+        IPage<ArticleEntity> pageResult = this.baseMapper.selectPage(iPage, queryWrapper);
+        return pageResult;
     }
 
     @Override
@@ -129,7 +115,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
         AdminTo adminTo = ThreadLocalUtils.getAdminTo();
         articleEntity.setAdminId(adminTo.getAdminId());
         this.save(articleEntity);
-        log.info("保存文章。id:{}", articleEntity.getId());
+        log.info("管理端：保存文章。id:{}", articleEntity.getId());
 
 
         List<TagEntity> tagEntities = tagService.list();
@@ -157,7 +143,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
             articleTagEntity.setArticleId(articleEntity.getId());
             articleTagService.save(articleTagEntity);
         }
-        log.info("保存文章与tag的关系");
+        log.info("管理端：保存文章与tag的关系");
 
         //如果保存的是草稿箱消息，发送MQ
         if (articleEntity.getState() == ArticleStateEnum.DRAFT.getCode()) {
@@ -165,21 +151,21 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
                     MQConstant.ArticleConstant.ARTICLE_EVENT_EXCHANGE,
                     MQConstant.ArticleConstant.ARTICLE_DRAFT_DELAY_ROUTING_KEY,
                     new ArticleMQTo(articleEntity.getId(), ArticleMqEnum.DRAFT.getCode()));
-            log.info("保存草稿箱文章{}，20秒自动删除", articleEntity.getId());
+            log.info("管理端：保存草稿箱文章{}，20秒自动删除", articleEntity.getId());
         } else {
             //保存到ES
             rabbitMqService.sendMessage(
                     MQConstant.SearchConstant.SEARCH_EVENT_EXCHANGE,
                     MQConstant.SearchConstant.SEARCH_ADD_ARTICLE_ROUTING_KEY,
                     new ArticleMQTo(articleEntity.getId(), ArticleMqEnum.PUBLIC.getCode()));
-            log.info("保存到ES消息发送成功");
+            log.info("管理端：保存到ES消息发送成功");
         }
 
     }
 
     @Override
     public void updateTop(Long id, Boolean top) {
-        log.info("更新博客置顶状态。id:{},top:{}", id, top);
+        log.info("管理端：更新博客置顶状态。id:{},top:{}", id, top);
         ArticleEntity articleEntity = new ArticleEntity();
         articleEntity.setId(id);
         articleEntity.setTop(top);
@@ -200,7 +186,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
 
     @Override
     public void updateState(Long id, Integer state) {
-        log.info("更新博客状态。id:{},state:{}", id, state);
+        log.info("管理端：更新博客状态。id:{},state:{}", id, state);
         ArticleEntity articleEntity = new ArticleEntity();
         articleEntity.setId(id);
         articleEntity.setState(state);
@@ -240,10 +226,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
         return articleItem;
     }
 
-    @Override
-    public List<ArticleIndexVo> getPublishList() {
-        return this.baseMapper.getPublishList();
-    }
+
 
     @Override
     public void deleteExpireArticle(ArticleMQTo articleMQTo) {

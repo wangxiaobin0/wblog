@@ -1,13 +1,13 @@
 <!doctype html>
 <html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="public/head :: head(专栏)"></head>
+<head th:replace="public/head :: head(${detail.name})"></head>
 <style>
     .gw_num{border: 1px solid #dbdbdb;width: 70px;line-height: 20px;overflow: hidden;}
     .gw_num em{display: block;height: 20px;width: 20px;float: left;color: #7A7979;border-right: 1px solid #dbdbdb;text-align: center;cursor: pointer;}
     .gw_num .sort{display: block;float: left;text-align: center;width: 28px;font-style: normal;font-size: 14px;line-height: 20px;border: 0;}
     .gw_num em.add{float: right;border-right: 0;border-left: 1px solid #dbdbdb;}
 </style>
-<body class="">
+<body onload="queryArticle(1)">
 <div class="page">
     <div class="flex-fill">
         <div th:replace="public/menu :: menu(2)"></div>
@@ -51,49 +51,12 @@
                                     </div>
                                 </div>
                             </div>
+                            <input type="hidden" th:value="${detail.id}" id="columnId"/>
                             <div class="card-header">
                                 <h3 class="card-title">已添加文章</h3>
                             </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table card-table table-hover text-nowrap">
-                                        <thead>
-                                        <tr class="text-center">
-                                            <th class="w-1">ID</th>
-                                            <th>标题</th>
-                                            <th>创建时间</th>
-                                            <th>收藏人数</th>
-                                            <th>排序</th>
-                                            <th>操作</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr class="text-center" th:each="item : ${detail.itemVos}">
-                                            <td>
-                                                <span class="text-muted" th:text="${item.articleId}">001401</span>
-                                            </td>
-                                            <td>
-                                                <a href="javascript:void(0)" class="text-inherit" th:text="${item.articleTitle}">设计模式</a>
-                                            </td>
-                                            <td>
-                                                <span class="tag tag-warning" th:text="${#dates.format(item.createTime, 'yyyy-MM-dd')}">2020-02-29</span>
-                                            </td>
-                                            <td th:text="${item.collectNum}"></td>
-                                            <td id="sort" th:attr="itemId=${item.id}">
-                                                <div class="gw_num" style="margin: 0 auto;">
-                                                    <em class="reduce" onclick="reduceOrAddSort(this, false)">-</em>
-                                                    <span class="sort" th:text="${item.sort}" id="sortNum"></span>
-                                                    <em class="add" onclick="reduceOrAddSort(this, true)">+</em>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <a href="#" onclick="deleteArticle(this)" th:attr="itemId=${item.id}">移除</a>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                            <!--专栏内文章列表-->
+                            <div class="card-body" id="articleFragment"></div>
                         </div>
                     </div>
                 </div>
@@ -160,6 +123,22 @@
                 }
             }
         })
+    }
+
+    function queryArticle(page) {
+        let columnId = document.getElementById("columnId").value;
+        var httpRequest = new XMLHttpRequest();//第一步：建立所需的对象
+        httpRequest.open('GET', "/admin/column/item?columnId=" + columnId + '&page=' + page, true);//第二步：打开连接  将请求参数写在url中  ps:"./Ptest.php?name=test&nameone=testone"
+        httpRequest.send();//第三步：发送请求  将请求参数写在URL中
+        /**
+         * 获取数据后的处理程序
+         */
+        httpRequest.onreadystatechange = function () {
+            if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+                var data = httpRequest.responseText;//获取到json字符串，还需解析
+                document.getElementById("articleFragment").innerHTML = data;
+            }
+        };
     }
 </script>
 </body>

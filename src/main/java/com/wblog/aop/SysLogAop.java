@@ -81,8 +81,8 @@ public class SysLogAop {
         SystemLogEntity logEntity = initialUserLogEntity(joinpoint);
         //保存logEntity到localhost
         ThreadLocalUtils.setUserLog(logEntity);
-        log.info(logEntity.getClassName() + "." + logEntity.getMethodName()+ "()流程开始");
-        log.info("参数列表：" + logEntity.getParameter());
+//        log.info(logEntity.getClassName() + "." + logEntity.getMethodName()+ "()流程开始");
+//        log.info("参数列表：" + logEntity.getParameter());
     }
 
     /**

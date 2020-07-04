@@ -1,7 +1,12 @@
 package com.wblog.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import com.wblog.common.constant.ArticleConstant;
 import com.wblog.common.enume.ArticleStateEnum;
+import com.wblog.common.utils.PageResult;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.common.utils.Query;
 import com.wblog.exception.ArticleException;
@@ -11,6 +16,7 @@ import com.wblog.model.vo.ColumnItemVo;
 import com.wblog.service.ArticleRedisService;
 import com.wblog.service.ArticleService;
 import com.wblog.service.TagService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +33,7 @@ import com.wblog.dao.ColumnItemDao;
 import com.wblog.service.ColumnItemService;
 
 
+@Slf4j
 @Service("columnItemService")
 public class ColumnItemServiceImpl extends ServiceImpl<ColumnItemDao, ColumnItemEntity> implements ColumnItemService {
 
@@ -50,13 +57,18 @@ public class ColumnItemServiceImpl extends ServiceImpl<ColumnItemDao, ColumnItem
     }
 
     @Override
-    public List<ColumnItemVo> getColumnItems(Long id) {
+    public PageResult queryColumnItemByPage(Long id, Long page, Long size){
+        log.info("分页查询专栏内文章流程开始。id：{}，page：{}，size：{}", id, page, size);
+        Page<Object> startPage = PageHelper.startPage(page.intValue(), size.intValue());
         List<ColumnItemVo> itemVos = this.baseMapper.getColumnItems(id);
-        return itemVos.stream().map(item -> {
-            Long count = articleRedisService.getCount(item.getArticleId(), ArticleConstant.ARTICLE_COLLECT);
-            item.setCollectNum(count);
-            return item;
-        }).collect(Collectors.toList());
+        log.info("查询专栏内文章");
+        for (ColumnItemVo vo : itemVos) {
+            Long count = articleRedisService.getCount(vo.getArticleId(), ArticleConstant.ARTICLE_COLLECT);
+            vo.setCollectNum(count);
+        }
+        log.info("查询文章收藏人数");
+        PageInfo<ColumnItemVo> pageInfo = new PageInfo<>(itemVos);
+        return new PageResult(pageInfo);
     }
 
     @Override

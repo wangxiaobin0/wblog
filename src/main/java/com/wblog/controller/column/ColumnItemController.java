@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.wblog.annotation.SysLog;
+import com.wblog.common.utils.PageResult;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.common.utils.R;
 import com.wblog.model.entity.ArticleEntity;
@@ -34,7 +35,7 @@ public class ColumnItemController {
     private ColumnItemService columnItemService;
 
     /**
-     * 查询已添加列表和未添加列表
+     * 查询未添加列表
      */
     @GetMapping("/list")
     public String list(@RequestParam("columnId") Long columnId, Model model){
@@ -43,18 +44,6 @@ public class ColumnItemController {
         model.addAttribute("columnId", columnId);
         return "/admin/fragment/columnItem :: columnItem";
     }
-
-
-    /**
-     * 信息
-     */
-    @GetMapping("/info/{id}")
-    public R info(@PathVariable("id") Long id){
-		ColumnItemEntity columnItem = columnItemService.getById(id);
-
-        return R.ok().put("columnItem", columnItem);
-    }
-
     /**
      * 保存
      */
@@ -63,16 +52,6 @@ public class ColumnItemController {
     @ResponseBody
     public R save(@Valid ColumnItemEntity columnItem){
 		columnItemService.addToColumn(columnItem);
-        return R.ok();
-    }
-
-    /**
-     * 修改
-     */
-    @PostMapping("/update")
-    public R update(@RequestBody ColumnItemEntity columnItem){
-		columnItemService.updateById(columnItem);
-
         return R.ok();
     }
 
@@ -87,11 +66,22 @@ public class ColumnItemController {
     /**
      * 删除
      */
+    @SysLog(business = "从专栏中删除")
     @ResponseBody
     @PostMapping("/{id}")
     public R delete(@PathVariable("id") Long id){
         columnItemService.removeById(id);
         return R.ok();
+    }
+
+    @GetMapping
+    public String queryColumnItemByPage(@RequestParam("columnId") Long id,
+                                        @RequestParam(value = "page", required = false, defaultValue = "1") Long page,
+                                        @RequestParam(value = "size", required = false, defaultValue = "5") Long size,
+                                        Model model) {
+        PageResult pageResult = columnItemService.queryColumnItemByPage(id, page, size);
+        model.addAttribute("page", pageResult);
+        return "/admin/column/articleFragment :: articleFragment";
     }
 
 }

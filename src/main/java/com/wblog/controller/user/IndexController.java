@@ -1,7 +1,6 @@
 package com.wblog.controller.user;
 
 import com.wblog.annotation.ViewCount;
-import com.wblog.common.constant.AuthConstant;
 import com.wblog.common.constant.UserConstant;
 import com.wblog.model.vo.*;
 import com.wblog.service.ArticleService;
@@ -43,7 +42,7 @@ public class IndexController {
     public String index(Model model) {
         List<ArticleIndexVo> articleIndexVos = articleService.indexList();
         model.addAttribute("indexList", articleIndexVos);
-        return "index";
+        return "user/index";
     }
 
 
@@ -55,7 +54,7 @@ public class IndexController {
     public String search(SearchParamVo searchParam, Model model) throws IOException {
         SearchResultVo result = searchService.search(searchParam);
         model.addAttribute("result", result);
-        return "search";
+        return "user/article/search";
     }
 
     /**
@@ -68,7 +67,7 @@ public class IndexController {
     public String item(@PathVariable("articleId") Long articleId, Model model) {
         ArticleItemVo articleItem = articleService.getItem(articleId);
         model.addAttribute("article", articleItem);
-        return "item";
+        return "user/article/item";
     }
 
     /**
@@ -77,7 +76,7 @@ public class IndexController {
      */
     @GetMapping("/archive")
     public String archive() {
-        return "archive";
+        return "user/archive";
     }
 
     /**
@@ -90,7 +89,7 @@ public class IndexController {
         List<ColumnVo> bannerList = columnList.stream().filter(ColumnVo::getBanner).collect(Collectors.toList());
         model.addAttribute("columnList", columnList);
         model.addAttribute("bannerList", bannerList);
-        return "column";
+        return "user/column/column";
     }
 
     /**
@@ -102,25 +101,25 @@ public class IndexController {
                          Model model) throws ExecutionException, InterruptedException {
         ColumnDetailVo columnDetail = columnService.columnDetail(columnId);
         model.addAttribute("column", columnDetail);
-        return "columnDetail";
+        return "user/column/columnDetail";
     }
 
     @GetMapping("/view")
     public String View(Model model) throws ExecutionException, InterruptedException {
         UserViewVo views = articleService.getUserArticleList(UserConstant.USER_VIEW_ARTICLE);
         model.addAttribute("viewList", views);
-        return "myView";
+        return "user/my/myView";
     }
     @GetMapping("/like")
     public String like(Model model) throws ExecutionException, InterruptedException {
         UserViewVo likes = articleService.getUserArticleList(UserConstant.USER_THUMB_UP_ARTICLE);
         model.addAttribute("likeList", likes);
-        return "myLike";
+        return "user/my/myLike";
     }
     @GetMapping("/collect")
     public String collect(Model model) throws ExecutionException, InterruptedException {
         UserViewVo collectList = articleService.getUserArticleList(UserConstant.USER_COLLECT_ARTICLE);
         model.addAttribute("collectList", collectList);
-        return "myCollect";
+        return "user/my/myCollect";
     }
 }

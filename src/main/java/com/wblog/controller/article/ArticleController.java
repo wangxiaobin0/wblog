@@ -1,18 +1,12 @@
 package com.wblog.controller.article;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import com.wblog.annotation.SysLog;
-import com.wblog.common.utils.PageUtils;
+import com.wblog.common.enume.ArticleStateEnum;
+import com.wblog.common.utils.PageResult;
 import com.wblog.common.utils.R;
-import com.wblog.model.vo.ArticleIndexVo;
 import com.wblog.model.vo.ArticleItemVo;
 import com.wblog.model.vo.ArticlePostVo;
 import com.wblog.model.vo.ArticlePreviewVo;
-import com.wblog.service.ArticleRedisService;
-import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,7 +19,6 @@ import com.wblog.service.ArticleService;
 
 /**
  * 
- *
  * @author wangxb
  * @email 
  */
@@ -35,50 +28,59 @@ public class ArticleController {
     @Autowired
     private ArticleService articleService;
 
-    @Autowired
-    ArticleRedisService articleRedisService;
+    /**
+     * 管理端：跳转添加文章页面
+     * @return
+     */
+    @GetMapping
+    public String add() {
+        return "admin/article/add";
+    }
 
     /**
-     * 列表
+     * 管理端：已发布文章列表
+     * @param page
+     * @param size
+     * @param model
+     * @return
      */
     @GetMapping("/publish")
-    public String listPublish(Model model){
-        List<ArticleIndexVo> articleList = articleService.getPublishList();
-        model.addAttribute("articleList", articleList);
+    public String listPublish(@RequestParam(value = "page", required = false, defaultValue = "1") Long page,
+                              @RequestParam(value = "size", required = false, defaultValue = "10") Long size,
+                              Model model){
+        PageResult pageResult = articleService.listPublish(page, size);
+        model.addAttribute("page", pageResult);
         return "admin/article/list";
     }
 
-    @GetMapping
-    public String list() {
-        return "admin/article/add";
-    }
     /**
-     * 草稿箱列表
-     * @param params
+     * 管理端：草稿箱列表
      * @return
      */
     @GetMapping("/draft")
-    public String listDraft(@RequestParam Map<String, Object> params, Model model) {
-        PageUtils page = articleService.listDraft(params);
-        model.addAttribute("page", page);
+    public String listDraft(@RequestParam(value = "page", required = false, defaultValue = "1") Long page,
+                            @RequestParam(value = "size", required = false, defaultValue = "10") Long size,
+                            Model model) {
+        PageResult pageResult = articleService.listDraftOrTrash(page, size, ArticleStateEnum.DRAFT);
+        model.addAttribute("page", pageResult);
         return "admin/article/draft";
     }
 
     /**
-     * 回收站
-     * @param params
+     * 管理端：回收站
      * @return
      */
     @GetMapping("/trash")
-    public String listTrash(@RequestParam Map<String, Object> params, Model model) {
-
-        PageUtils page = articleService.listTrash(params);
-        model.addAttribute("page", page);
+    public String listTrash(@RequestParam(value = "page", required = false, defaultValue = "1") Long page,
+                            @RequestParam(value = "size", required = false, defaultValue = "10") Long size,
+                            Model model) {
+        PageResult pageResult = articleService.listDraftOrTrash(page, size, ArticleStateEnum.TRASH);
+        model.addAttribute("page", pageResult);
         return "admin/article/trash";
     }
 
     /**
-     * 管理端查看文章详情
+     * 管理端：查看文章详情
      */
     @GetMapping("/{id}")
     public String info(@PathVariable("id") Long id, Model model){
@@ -87,15 +89,21 @@ public class ArticleController {
         return "/admin/fragment/article :: article";
     }
 
+    /**
+     * 管理端：预览
+     * @param articlePostVo
+     * @param model
+     * @return
+     */
     @PostMapping("/preview")
     public String preview(ArticlePostVo articlePostVo, Model model){
         ArticlePreviewVo showVo = articleService.preview(articlePostVo);
         model.addAttribute("article", showVo);
-        return "preview";
+        return "admin/article/preview";
     }
 
     /**
-     * 保存
+     * 管理端：发表文章
      */
     @SysLog(business = "发表博客")
     @PostMapping
@@ -104,6 +112,12 @@ public class ArticleController {
         return "redirect:/admin/article/publish";
     }
 
+    /**
+     * 管理端：修改置顶状态
+     * @param id
+     * @param top
+     * @return
+     */
     @SysLog(business = "修改博客置顶状态")
     @PostMapping("/top")
     @ResponseBody
@@ -113,6 +127,12 @@ public class ArticleController {
         return R.ok();
     }
 
+    /**
+     * 管理端：修改博客状态
+     * @param id
+     * @param state
+     * @return
+     */
     @SysLog(business = "修改博客状态")
     @PostMapping("/state")
     @ResponseBody
@@ -132,7 +152,7 @@ public class ArticleController {
     }
 
     /**
-     * 删除
+     * 管理端：删除文章
      */
     @SysLog(business = "删除文章")
     @DeleteMapping

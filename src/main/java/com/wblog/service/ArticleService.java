@@ -1,6 +1,9 @@
 package com.wblog.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.wblog.common.enume.ArticleStateEnum;
+import com.wblog.common.utils.PageResult;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.model.entity.ArticleEntity;
 import com.wblog.model.to.ArticleMQTo;
@@ -20,23 +23,19 @@ public interface ArticleService extends IService<ArticleEntity> {
 
     /**
      * 查询已发布文章
+     * @param page 页码
+     * @param size 显示数量
      * @return
      */
-    List<ArticleIndexVo> queryPage();
-
+    PageResult listPublish(Long page, Long size);
     /**
      * 查询草稿箱文章
-     * @param params
+     * @param page 页码
+     * @param size 显示数量
+     * @param state 状态
      * @return
      */
-    PageUtils listDraft(Map<String, Object> params);
-
-    /**
-     * 查询回收站文章
-     * @param params
-     * @return
-     */
-    PageUtils listTrash(Map<String, Object> params);
+    PageResult listDraftOrTrash(Long page, Long size, ArticleStateEnum state);
 
     /**
      * 保存文章
@@ -54,7 +53,6 @@ public interface ArticleService extends IService<ArticleEntity> {
 
     ArticleItemVo getItem(Long articleId);
 
-    List<ArticleIndexVo> getPublishList();
 
     void deleteExpireArticle(ArticleMQTo articleMQTo);
 

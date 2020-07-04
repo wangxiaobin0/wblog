@@ -28,7 +28,7 @@
                             <div class="card-header">
                                 <h3 class="card-title">已发布</h3>
                             </div>
-                            <div class="card-body" th:each="column : ${list}">
+                            <div class="card-body" th:each="column : ${page.list}">
                                 <div class="row row-sm align-items-center">
                                     <div class="col-auto">
                                         <span class="avatar avatar-lg" th:style="'background-image: url(' +  ${column.image} + ')'"></span>
@@ -59,6 +59,31 @@
                                         </a>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="card-body" th:if="${page.totalPage > 0}">
+                                <span>
+                                    共<b class="text-red">&nbsp;[[${page.totalNum}]]&nbsp;</b>
+                                    个专栏，共<b class="text-red">&nbsp;[[${page.totalPage}]]&nbsp;</b>
+                                    页，当前第<b class="text-red">&nbsp;[[${page.page}]]&nbsp;</b>页</span>
+                                <ul class="pagination center float-right">
+                                    <li class="page-item" th:classappend="${page.totalPage == 0 || page.page == 1} ? 'disabled' : ''">
+                                        <a class="page-link" href="#" tabindex="-1" th:href="'/admin/column/list?page=' + ${page.page - 1}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z"></path>
+                                                <polyline points="15 6 9 12 15 18"></polyline>
+                                            </svg>
+                                        </a>
+                                    </li>
+                                    <li class="page-item" th:classappend="${page.totalPage == 0 || page.page == page.totalPage} ? 'disabled' : ''">
+                                        <a class="page-link" href="#" th:href="'/admin/column/list?page=' + ${page.page + 1}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                 stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                                <polyline points="9 18 15 12 9 6"></polyline>
+                                            </svg>
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>

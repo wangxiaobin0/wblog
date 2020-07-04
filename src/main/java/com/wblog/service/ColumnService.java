@@ -1,6 +1,7 @@
 package com.wblog.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.wblog.common.utils.PageResult;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.model.entity.ColumnEntity;
 import com.wblog.model.vo.ColumnDetailVo;
@@ -18,7 +19,7 @@ import java.util.concurrent.ExecutionException;
  */
 public interface ColumnService extends IService<ColumnEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
+    PageResult listByPage(Long page, Long size);
 
     void add(ColumnEntity column);
 

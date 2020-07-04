@@ -1,6 +1,7 @@
 package com.wblog.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.wblog.common.utils.PageResult;
 import com.wblog.common.utils.PageUtils;
 import com.wblog.model.entity.ColumnItemEntity;
 import com.wblog.model.vo.ColumnItemVo;
@@ -17,7 +18,7 @@ import java.util.Map;
 public interface ColumnItemService extends IService<ColumnItemEntity> {
     PageUtils queryPage(Map<String, Object> params);
 
-    List<ColumnItemVo> getColumnItems(Long id);
+    PageResult queryColumnItemByPage(Long id, Long page, Long size);
 
     void addToColumn(ColumnItemEntity columnItem);
 

@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="public/head :: head(DASHBOARD)"></head>
+<head th:replace="public/head :: head(${session.SESSION_LOGIN_USER.blogName})"></head>
 <style>
     .list-timeline-icon {
         position: absolute;

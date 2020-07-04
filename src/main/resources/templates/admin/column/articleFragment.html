@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="articleFragment">
+    <div class="table-responsive">
+        <table class="table card-table table-hover text-nowrap">
+            <thead>
+            <tr class="text-center">
+                <th class="w-1">ID</th>
+                <th>标题</th>
+                <th>创建时间</th>
+                <th>收藏人数</th>
+                <th>排序</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="text-center" th:each="item : ${page.list}">
+                <td>
+                    <span class="text-muted" th:text="${item.articleId}">001401</span>
+                </td>
+                <td>
+                    <a href="javascript:void(0)" class="text-inherit" th:text="${item.articleTitle}">设计模式</a>
+                </td>
+                <td>
+                    <span class="tag tag-warning" th:text="${#dates.format(item.createTime, 'yyyy-MM-dd')}">2020-02-29</span>
+                </td>
+                <td th:text="${item.collectNum}"></td>
+                <td id="sort" th:attr="itemId=${item.id}">
+                    <div class="gw_num" style="margin: 0 auto;">
+                        <em class="reduce" onclick="reduceOrAddSort(this, false)">-</em>
+                        <span class="sort" th:text="${item.sort}" id="sortNum"></span>
+                        <em class="add" onclick="reduceOrAddSort(this, true)">+</em>
+                    </div>
+                </td>
+                <td>
+                    <a href="#" onclick="deleteArticle(this)" th:attr="itemId=${item.id}">移除</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="card-body" th:if="${page.totalPage > 0}">
+                                    <span>
+                                        共<b class="text-red">&nbsp;[[${page.totalNum}]]&nbsp;</b>
+                                        篇文章，共<b class="text-red">&nbsp;[[${page.totalPage}]]&nbsp;</b>
+                                        页，当前第<b class="text-red">&nbsp;[[${page.page}]]&nbsp;</b>页</span>
+        <ul class="pagination center float-right">
+            <li class="page-item" th:classappend="${page.totalPage == 0 || page.page == 1} ? 'disabled' : ''">
+                <a class="page-link" href="#" tabindex="-1" th:onclick="'queryArticle('+ ${page.page - 1} + ')'">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z"></path>
+                        <polyline points="15 6 9 12 15 18"></polyline>
+                    </svg>
+                </a>
+            </li>
+            <li class="page-item" th:classappend="${page.totalPage == 0 || page.page == page.totalPage} ? 'disabled' : ''">
+                <a class="page-link" href="#" th:onclick="'queryArticle('+ ${page.page + 1} + ')'">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round" class="icon">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>
