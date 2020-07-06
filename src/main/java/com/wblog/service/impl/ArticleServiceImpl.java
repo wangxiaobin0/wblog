@@ -120,7 +120,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
         this.save(articleEntity);
         log.info("管理端：保存文章。id:{}", articleEntity.getId());
 
-
         List<TagEntity> tagEntities = tagService.list();
         String[] tags = article.getTag().split("/");
         //key为tag名，value为id

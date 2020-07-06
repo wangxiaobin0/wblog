@@ -50,6 +50,7 @@ public class AuthController {
             return "admin/register";
         } else {
             model.addAttribute("admin", one.getAdminId());
+            model.addAttribute("avatar", one.getAvatar());
             model.addAttribute(AuthConstant.RETURN_URL, returnUrl);
             log.info("已注册，跳转登录页面");
             log.info("跳转登录/注册页面流程结束。");

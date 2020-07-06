@@ -41,6 +41,10 @@ public class ArticleMQConfig {
         return queue;
     }
 
+    /**
+     * 队列
+     * @return
+     */
     @Bean
     public Queue articleDraftDeleteQueue() {
         Queue queue = new Queue(MQConstant.ArticleConstant.ARTICLE_DRAFT_DEAD_QUEUE, true, false, false);

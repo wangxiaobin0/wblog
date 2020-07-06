@@ -23,12 +23,12 @@ public class RabbitAop {
     public void round(ProceedingJoinPoint pjp) throws IOException {
         Message message = getMessage(pjp);
         Channel channel = getChannel(pjp);
-        try {
-            Object proceed = pjp.proceed();
-            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-        } catch (Throwable t) {
-            channel.basicReject(message.getMessageProperties().getDeliveryTag(), true);
-        }
+            try {
+                Object proceed = pjp.proceed();
+                channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+            } catch (Throwable t) {
+                channel.basicReject(message.getMessageProperties().getDeliveryTag(), true);
+            }
     }
 
 
