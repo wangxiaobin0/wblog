@@ -44,15 +44,15 @@
                                 <hr>
                                 <div class="row">
                                     <div class="lh-sm col-sm-4">
-                                        <a style="font-size: 1.15em">32</a>
+                                        <a style="font-size: 1.15em" th:text="${dashboardData.viewNum}">32</a>
                                         <div class="text-muted"><small>访问次数</small></div>
                                     </div>
                                     <div class="lh-sm col-sm-4">
-                                        <a style="cursor: pointer; font-size: 1.15em" th:href="@{/admin/article/publish}">32</a>
+                                        <a style="cursor: pointer; font-size: 1.15em" th:href="@{/admin/article/publish}" th:text="${dashboardData.articleNum}">32</a>
                                         <div class="text-muted"><small>文章</small></div>
                                     </div>
                                     <div class="lh-sm col-sm-4">
-                                        <a style="cursor: pointer; font-size: 1.15em" th:href="@{/admin/column/list}">32</a>
+                                        <a style="cursor: pointer; font-size: 1.15em" th:href="@{/admin/column/list}" th:text="${dashboardData.columnNum}">32</a>
                                         <div class="text-muted"><small>专栏</small></div>
                                     </div>
                                 </div>
@@ -105,9 +105,9 @@
         </div>
     </footer>
 </div>
-<script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
-<script type="text/javascript" src="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.min.js"></script>
-<link rel="stylesheet" href="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
+<script type="text/javascript" th:src="@{/static/assets/js/d3.v3.min.js}"></script>
+<script type="text/javascript" th:src="@{/static/assets/js/cal-heatmap.min.js}"></script>
+<link rel="stylesheet" th:href="@{/static/assets/css/cal-heatmap.css}"/>
 <script>
     let today = new Date();
     let startDate = new Date(today.setDate(today.getDate() - 365));
@@ -137,9 +137,6 @@
         nextSelector: "#previousSelector-a-next"
     });
 
-    function showQRCode() {
-        $("#dddd").dropdown('toggle');
-    }
     function loadHistory() {
         var httpRequest = new XMLHttpRequest();//第一步：建立所需的对象
         httpRequest.open('GET', '/admin/log/list', true);//第二步：打开连接  将请求参数写在url中  ps:"./Ptest.php?name=test&nameone=testone"

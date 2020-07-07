@@ -86,7 +86,7 @@ public class ArticleController {
     public String info(@PathVariable("id") Long id, Model model){
         ArticleItemVo item = articleService.getDetail(id);
         model.addAttribute("article", item);
-        return "/admin/fragment/article :: article";
+        return "admin/fragment/article::article";
     }
 
     /**

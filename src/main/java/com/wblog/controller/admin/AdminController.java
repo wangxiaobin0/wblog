@@ -50,7 +50,6 @@ public class AdminController {
      * 保存
      */
     @PostMapping("/save")
-    //@RequiresPermissions("wblog:admin:save")
     public R save(@RequestBody AdminEntity admin){
 		adminService.save(admin);
 
@@ -61,7 +60,6 @@ public class AdminController {
      * 修改
      */
     @PostMapping("/update")
-    //@RequiresPermissions("wblog:admin:update")
     public R update(@RequestBody AdminEntity admin){
 		adminService.updateById(admin);
 
@@ -72,7 +70,6 @@ public class AdminController {
      * 删除
      */
     @PostMapping("/delete")
-    //@RequiresPermissions("wblog:admin:delete")
     public R delete(@RequestBody Long[] ids){
 		adminService.removeByIds(Arrays.asList(ids));
 

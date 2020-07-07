@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.wblog.model.entity.ColumnItemEntity;
 import com.wblog.service.ColumnItemService;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 
@@ -42,7 +43,7 @@ public class ColumnItemController {
         List<ColumnItemVo> unAddList = columnItemService.getUnAddArticle(columnId);
         model.addAttribute("unAddList", unAddList);
         model.addAttribute("columnId", columnId);
-        return "/admin/fragment/columnItem :: columnItem";
+        return "admin/fragment/columnItem::columnItem";
     }
     /**
      * 保存
@@ -81,7 +82,7 @@ public class ColumnItemController {
                                         Model model) {
         PageResult pageResult = columnItemService.queryColumnItemByPage(id, page, size);
         model.addAttribute("page", pageResult);
-        return "/admin/column/articleFragment :: articleFragment";
+        return "admin/column/articleFragment::articleFragment";
     }
 
 }

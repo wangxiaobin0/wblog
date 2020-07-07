@@ -29,7 +29,6 @@ public class MqMessageController {
      * 列表
      */
     @GetMapping("/list")
-    //@RequiresPermissions("wblog:mqmessage:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = mqMessageService.queryPage(params);
 

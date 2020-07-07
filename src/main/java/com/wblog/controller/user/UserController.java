@@ -55,7 +55,6 @@ public class UserController {
      * 修改
      */
     @PostMapping("/update")
-    //@RequiresPermissions("wblog:user:update")
     public R update(@RequestBody UserEntity user) {
         userService.updateById(user);
 
@@ -66,7 +65,6 @@ public class UserController {
      * 删除
      */
     @PostMapping("/delete")
-    //@RequiresPermissions("wblog:user:delete")
     public R delete(@RequestBody Long[] ids) {
         userService.removeByIds(Arrays.asList(ids));
 

@@ -50,7 +50,6 @@ public class UserSubscribeController {
      * 保存
      */
     @PostMapping("/save")
-    //@RequiresPermissions("wblog:usersubscribe:save")
     public R save(@RequestBody UserSubscribeEntity userSubscribe){
 		userSubscribeService.save(userSubscribe);
 
@@ -61,7 +60,6 @@ public class UserSubscribeController {
      * 修改
      */
     @PostMapping("/update")
-    //@RequiresPermissions("wblog:usersubscribe:update")
     public R update(@RequestBody UserSubscribeEntity userSubscribe){
 		userSubscribeService.updateById(userSubscribe);
 
@@ -72,10 +70,8 @@ public class UserSubscribeController {
      * 删除
      */
     @PostMapping("/delete")
-    //@RequiresPermissions("wblog:usersubscribe:delete")
     public R delete(@RequestBody Long[] ids){
 		userSubscribeService.removeByIds(Arrays.asList(ids));
-
         return R.ok();
     }
 

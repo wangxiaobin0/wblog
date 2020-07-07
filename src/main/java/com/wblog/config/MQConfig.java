@@ -10,12 +10,15 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.DefaultClassMapper;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
+import org.springframework.boot.autoconfigure.amqp.RabbitRetryTemplateCustomizer;
+import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
+import java.time.Duration;
 
 /**
  * 消息队列配置
@@ -27,15 +30,24 @@ public class MQConfig {
     @Autowired
     MqFailMessageService mqFailMessageService;
 
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
-
-    /**
-     * publisher发布一条消息就会触发，无论成功失败
-     */
-    @PostConstruct
-    public void rabbitTemplate() {
-        rabbitTemplate.setConfirmCallback(((correlationData, ack, cause) -> {
+    @Bean
+    public RabbitTemplate rabbitTemplate(RabbitProperties properties,
+                                         ObjectProvider<MessageConverter> messageConverter,
+                                         ObjectProvider<RabbitRetryTemplateCustomizer> retryTemplateCustomizers,
+                                         ConnectionFactory connectionFactory) {
+        PropertyMapper map = PropertyMapper.get();
+        RabbitTemplate template = new RabbitTemplate(connectionFactory);
+        messageConverter.ifUnique(template::setMessageConverter);
+        template.setMandatory(determineMandatoryFlag(properties));
+        RabbitProperties.Template templateProperties = properties.getTemplate();
+        map.from(templateProperties::getReceiveTimeout).whenNonNull().as(Duration::toMillis)
+                .to(template::setReceiveTimeout);
+        map.from(templateProperties::getReplyTimeout).whenNonNull().as(Duration::toMillis)
+                .to(template::setReplyTimeout);
+        map.from(templateProperties::getExchange).to(template::setExchange);
+        map.from(templateProperties::getRoutingKey).to(template::setRoutingKey);
+        map.from(templateProperties::getDefaultReceiveQueue).whenNonNull().to(template::setDefaultReceiveQueue);
+        template.setConfirmCallback(((correlationData, ack, cause) -> {
             log.info("生产者发布消息:{}\nack模式:{}\n发布失败原因{}", correlationData, ack, cause);
             if (cause != null) {
                 MqFailMessageEntity failMessageEntity = new MqFailMessageEntity();
@@ -48,7 +60,7 @@ public class MQConfig {
         /**
          * 交换器发送消息到队列时触发
          */
-        rabbitTemplate.setReturnCallback(((message, replyCode, replyText, exchange, routingKey) -> {
+        template.setReturnCallback(((message, replyCode, replyText, exchange, routingKey) -> {
             log.info("\n消息:{}投递失败\n响应码:{}\n响应信息:{}\n目标交换器:{}\n路由键:{}",
                     message, replyCode, replyText, exchange, routingKey);
             MqFailMessageEntity failMessageEntity = new MqFailMessageEntity();
@@ -59,6 +71,12 @@ public class MQConfig {
             failMessageEntity.setState(MqMessageFailEnum.TO_QUEUE.getCode());
             mqFailMessageService.save(failMessageEntity);
         }));
+        return template;
+    }
+
+    private boolean determineMandatoryFlag(RabbitProperties properties) {
+        Boolean mandatory = properties.getTemplate().getMandatory();
+        return (mandatory != null) ? mandatory : properties.isPublisherReturns();
     }
 
     @Bean

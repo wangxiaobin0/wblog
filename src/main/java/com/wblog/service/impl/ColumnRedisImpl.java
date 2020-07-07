@@ -5,11 +5,15 @@ import com.wblog.common.constant.UserConstant;
 import com.wblog.common.utils.ThreadLocalUtils;
 import com.wblog.controller.user.UserController;
 import com.wblog.interceptor.UserRequestInterceptor;
+import com.wblog.model.vo.ColumnIndexVo;
 import com.wblog.service.ColumnRedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class ColumnRedisImpl implements ColumnRedisService {
@@ -59,5 +63,14 @@ public class ColumnRedisImpl implements ColumnRedisService {
         String columnSubscribeKey = ColumnConstant.COLUMN_SUBSCRIBE + columnId;
         BoundSetOperations<String, String> columnSetOps = redisTemplate.boundSetOps(columnSubscribeKey);
         return columnSetOps.isMember(userKey);
+    }
+
+    @Override
+    public Set<String> getUserSubscribeList() {
+        String userKey = ThreadLocalUtils.getUserTo().getUserKey();
+        String userSubscribeKey = UserConstant.USER_COLUMN_SUBSCRIBE + userKey;
+        BoundSetOperations<String, String> userSetOps = redisTemplate.boundSetOps(userSubscribeKey);
+        Set<String> keys = userSetOps.members();
+        return keys;
     }
 }

@@ -34,7 +34,7 @@ public class SystemLogServiceImpl extends ServiceImpl<SystemLogDao, SystemLogEnt
 
     @Override
     public List<SystemLogVo> getLog() {
-        List<SystemLogEntity> list = this.list(new QueryWrapper<SystemLogEntity>().orderByDesc("time"));
+        List<SystemLogEntity> list = this.list(new QueryWrapper<SystemLogEntity>().comment("limit 10").orderByDesc("time"));
         return list.stream().map(log -> {
             SystemLogVo logVo = new SystemLogVo();
             BeanUtils.copyProperties(log, logVo);

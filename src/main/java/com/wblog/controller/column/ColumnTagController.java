@@ -29,7 +29,6 @@ public class ColumnTagController {
      * 列表
      */
     @GetMapping("/list")
-    //@RequiresPermissions("wblog:columntag:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = columnTagService.queryPage(params);
 
@@ -41,7 +40,6 @@ public class ColumnTagController {
      * 信息
      */
     @GetMapping("/info/{id}")
-    //@RequiresPermissions("wblog:columntag:info")
     public R info(@PathVariable("id") Long id){
 		ColumnTagEntity columnTag = columnTagService.getById(id);
 
@@ -52,7 +50,6 @@ public class ColumnTagController {
      * 保存
      */
     @PostMapping("/save")
-    //@RequiresPermissions("wblog:columntag:save")
     public R save(@RequestBody ColumnTagEntity columnTag){
 		columnTagService.save(columnTag);
 
@@ -63,7 +60,6 @@ public class ColumnTagController {
      * 修改
      */
     @PostMapping("/update")
-    //@RequiresPermissions("wblog:columntag:update")
     public R update(@RequestBody ColumnTagEntity columnTag){
 		columnTagService.updateById(columnTag);
 
@@ -74,7 +70,6 @@ public class ColumnTagController {
      * 删除
      */
     @PostMapping("/delete")
-    //@RequiresPermissions("wblog:columntag:delete")
     public R delete(@RequestBody Long[] ids){
 		columnTagService.removeByIds(Arrays.asList(ids));
 

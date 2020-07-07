@@ -29,7 +29,6 @@ public class UserMessageController {
      * 列表
      */
     @GetMapping("/list")
-    //@RequiresPermissions("wblog:usermessage:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = userMessageService.queryPage(params);
 
@@ -41,7 +40,6 @@ public class UserMessageController {
      * 信息
      */
     @GetMapping("/info/{id}")
-    //@RequiresPermissions("wblog:usermessage:info")
     public R info(@PathVariable("id") Long id){
 		UserMessageEntity userMessage = userMessageService.getById(id);
 
@@ -52,7 +50,6 @@ public class UserMessageController {
      * 保存
      */
     @PostMapping("/save")
-    //@RequiresPermissions("wblog:usermessage:save")
     public R save(@RequestBody UserMessageEntity userMessage){
 		userMessageService.save(userMessage);
 
@@ -63,7 +60,6 @@ public class UserMessageController {
      * 修改
      */
     @PostMapping("/update")
-    //@RequiresPermissions("wblog:usermessage:update")
     public R update(@RequestBody UserMessageEntity userMessage){
 		userMessageService.updateById(userMessage);
 
@@ -74,7 +70,6 @@ public class UserMessageController {
      * 删除
      */
     @PostMapping("/delete")
-    //@RequiresPermissions("wblog:usermessage:delete")
     public R delete(@RequestBody Long[] ids){
 		userMessageService.removeByIds(Arrays.asList(ids));
 

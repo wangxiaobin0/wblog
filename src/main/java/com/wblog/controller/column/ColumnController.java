@@ -37,7 +37,7 @@ public class ColumnController {
      */
     @GetMapping
     public String goToAddPage() {
-        return "/admin/column/add";
+        return "admin/column/add";
     }
 
     /**
@@ -49,7 +49,7 @@ public class ColumnController {
                        Model model) {
         PageResult pageResult = columnService.listByPage(page, size);
         model.addAttribute("page", pageResult);
-        return "/admin/column/list";
+        return "admin/column/list";
     }
 
     /**
@@ -99,6 +99,6 @@ public class ColumnController {
         List<ColumnVo> unAddColumn = columnService.unAddColumn(articleId);
         model.addAttribute("unAddColumn", unAddColumn);
         model.addAttribute("articleId", articleId);
-        return "/admin/fragment/column :: column";
+        return "admin/fragment/column::column";
     }
 }

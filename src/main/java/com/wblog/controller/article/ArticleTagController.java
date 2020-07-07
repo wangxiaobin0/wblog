@@ -29,7 +29,6 @@ public class ArticleTagController {
      * 列表
      */
     @GetMapping("/list")
-    //@RequiresPermissions("wblog:articletag:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = articleTagService.queryPage(params);
 
@@ -41,7 +40,6 @@ public class ArticleTagController {
      * 信息
      */
     @GetMapping("/info/{id}")
-    //@RequiresPermissions("wblog:articletag:info")
     public R info(@PathVariable("id") Long id){
 		ArticleTagEntity articleTag = articleTagService.getById(id);
 
@@ -52,7 +50,6 @@ public class ArticleTagController {
      * 保存
      */
     @PostMapping("/save")
-    //@RequiresPermissions("wblog:articletag:save")
     public R save(@RequestBody ArticleTagEntity articleTag){
 		articleTagService.save(articleTag);
 
@@ -63,7 +60,6 @@ public class ArticleTagController {
      * 修改
      */
     @PostMapping("/update")
-    //@RequiresPermissions("wblog:articletag:update")
     public R update(@RequestBody ArticleTagEntity articleTag){
 		articleTagService.updateById(articleTag);
 
@@ -74,10 +70,8 @@ public class ArticleTagController {
      * 删除
      */
     @PostMapping("/delete")
-    //@RequiresPermissions("wblog:articletag:delete")
     public R delete(@RequestBody Long[] ids){
 		articleTagService.removeByIds(Arrays.asList(ids));
-
         return R.ok();
     }
 

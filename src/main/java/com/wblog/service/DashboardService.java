@@ -1,13 +1,13 @@
 package com.wblog.service;
 
-import com.wblog.model.vo.SystemLogVo;
+import com.wblog.model.vo.DashboardVo;
 
-import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  *
  */
 public interface DashboardService {
 
-    List<SystemLogVo> getDashboardData();
+    DashboardVo getDashboardData() throws ExecutionException, InterruptedException;
 }

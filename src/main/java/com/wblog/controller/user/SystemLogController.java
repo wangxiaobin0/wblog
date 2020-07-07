@@ -26,7 +26,7 @@ public class SystemLogController {
     public String log(Model model) {
         List<SystemLogVo> logs = systemLogService.getLog();
         model.addAttribute("logs", logs);
-        return "/admin/fragment/history :: history";
+        return "admin/fragment/history :: history";
     }
 
 }

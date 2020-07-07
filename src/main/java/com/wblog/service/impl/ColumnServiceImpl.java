@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -154,6 +155,23 @@ public class ColumnServiceImpl extends ServiceImpl<ColumnDao, ColumnEntity> impl
     public List<ColumnVo> unAddColumn(Long articleId) {
         List<ColumnVo> columnVoList = this.baseMapper.unAddColumn(articleId);
         return columnVoList;
+    }
+
+    @Override
+    public List<ColumnVo> getUserSubscribeList() {
+        Set<String> keys = columnRedisService.getUserSubscribeList();
+        if (keys == null || keys.isEmpty()) {
+            return null;
+        }
+        QueryWrapper<ColumnEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id", "name", "summary", "image", "banner");
+        queryWrapper.in("id", keys);
+        List<ColumnEntity> list = this.list(queryWrapper);
+        return list.stream().map(columnEntity -> {
+            ColumnVo vo = new ColumnVo();
+            BeanUtils.copyProperties(columnEntity, vo);
+            return vo;
+        }).collect(Collectors.toList());
     }
 
 }
