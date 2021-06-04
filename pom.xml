@@ -21,7 +21,7 @@
         <druid.version>1.1.21</druid.version>
         <mybatisplus.version>3.2.0</mybatisplus.version>
         <lombok.version>1.16.18</lombok.version>
-        <hibernate.validator.version>6.1.2.Final</hibernate.validator.version>
+        <hibernate.validator.version>6.1.5.Final</hibernate.validator.version>
         <oss.version>3.8.0</oss.version>
         <elasticsearch.version>7.4.2</elasticsearch.version>
         <hutool.version>5.3.7</hutool.version>
